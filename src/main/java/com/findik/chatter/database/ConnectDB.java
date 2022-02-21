@@ -9,9 +9,10 @@ public class ConnectDB {
 	private static Connection connection = null;
 
 	static {
+
 		String userName = "postgres";
-		String password = "Hsnmhmtksl1907*";
-		String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+		String password = "postgres";
+		String dbUrl = "jdbc:postgresql://localhost:5432/CHATTER";
 
 		try {
 			Class.forName("org.postgresql.Driver");

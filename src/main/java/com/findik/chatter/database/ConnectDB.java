@@ -28,4 +28,9 @@ public class ConnectDB {
 	public static Connection getConnection() {
 		return connection;
 	}
+
+	public static Connection closeConnection() {
+		connection = null;
+		return connection;
+	}
 }

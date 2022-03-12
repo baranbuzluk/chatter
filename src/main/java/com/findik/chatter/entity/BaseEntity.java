@@ -24,7 +24,7 @@ public abstract class BaseEntity implements Serializable {
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
-	public BaseEntity() {
+	protected BaseEntity() {
 		createdAt = LocalDateTime.now();
 	}
 

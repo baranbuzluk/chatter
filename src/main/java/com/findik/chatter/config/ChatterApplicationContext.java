@@ -3,7 +3,6 @@ package com.findik.chatter.config;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.InjectionPoint;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.Scope;
 
 @Configuration
 @ComponentScan(basePackages = "com.findik.chatter")
-@EnableAutoConfiguration
 @Import({ DatabaseConfig.class })
 public class ChatterApplicationContext {
 

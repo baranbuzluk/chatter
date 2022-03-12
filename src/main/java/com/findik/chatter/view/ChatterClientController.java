@@ -59,6 +59,7 @@ public class ChatterClientController {
 			Message message = getMessageFromTxtArea();
 			if (message != null) {
 				listViewMessage.getItems().add(message);
+				listViewMessage.scrollTo(message);
 				messageAddListeners.parallelStream().forEach(listener -> listener.accept(message));
 			}
 		});
@@ -66,7 +67,8 @@ public class ChatterClientController {
 	}
 
 	private Message getMessageFromTxtArea() {
-		String text = txtAreaMessage.getText();
+		String text = txtAreaMessage.getText().trim();
+		txtAreaMessage.setText("");
 		if (text == null || text.isBlank()) {
 			return null;
 		}
@@ -74,6 +76,11 @@ public class ChatterClientController {
 		message.setContent(text);
 		message.setUsername("Username");
 		return message;
+	}
+
+	public void setMessages(List<Message> findByCreatedAtAsc) {
+		listViewMessage.getItems().clear();
+		listViewMessage.getItems().addAll(findByCreatedAtAsc);
 	}
 
 }

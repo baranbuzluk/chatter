@@ -33,6 +33,7 @@ public class ChatterClientWindow implements IWindow {
 	private void initController() {
 		controller = new ChatterClientController();
 		controller.addMessageAddListener(e -> Optional.ofNullable(e).ifPresent(messageRepository::save));
+		controller.setMessages(messageRepository.findAllByOrderByCreatedAtAsc());
 	}
 
 }

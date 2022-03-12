@@ -1,29 +1,31 @@
 package com.findik.chatter.entity;
 
-import java.math.BigInteger;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Message {
+@Entity
+public class Message extends DateAudit {
 
-	private BigInteger id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+
 	private String username;
+
 	private String content;
 
 	public Message() {
-
 	}
 
 	public Message(String username, String content) {
 		this.username = username;
 		this.content = content;
-
 	}
 
-	public BigInteger getId() {
+	public Long getId() {
 		return id;
-	}
-
-	public void setId(BigInteger id) {
-		this.id = id;
 	}
 
 	public String getUsername() {

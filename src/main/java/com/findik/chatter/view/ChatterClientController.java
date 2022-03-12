@@ -1,7 +1,9 @@
 package com.findik.chatter.view;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import com.findik.chatter.config.ChatterApplicationContext;
+import com.findik.chatter.entity.Message;
+import com.findik.chatter.repository.IMessageRepository;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -23,6 +25,8 @@ public class ChatterClientController {
 	@FXML
 	private TextArea txtAreaMessage;
 
+	private IMessageRepository messageRepository;
+
 	public ChatterClientController() {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatterClient.fxml"));
@@ -35,12 +39,9 @@ public class ChatterClientController {
 	}
 
 	private void init() {
-
-		btnSendMessage.setOnMouseClicked(new EventHandler<Event>() {
-			@Override
-			public void handle(Event event) {
-				btnSendMessage.setText("Test et");
-			};
+		messageRepository = ChatterApplicationContext.getBean(IMessageRepository.class);
+		btnSendMessage.setOnMouseClicked(e -> {
+			messageRepository.save(new Message("baran", txtAreaMessage.getText()));
 		});
 	}
 

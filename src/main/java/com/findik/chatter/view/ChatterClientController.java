@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.findik.chatter.entity.Message;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -78,9 +79,16 @@ public class ChatterClientController {
 		return message;
 	}
 
-	public void setMessages(List<Message> findByCreatedAtAsc) {
-		listViewMessage.getItems().clear();
-		listViewMessage.getItems().addAll(findByCreatedAtAsc);
+	public void setMessages(List<Message> messages) {
+		if (messages == null || messages.isEmpty()) {
+			return;
+		}
+		Platform.runLater(() -> {
+			listViewMessage.getItems().clear();
+			listViewMessage.getItems().addAll(messages);
+			int lastItemIndex = listViewMessage.getItems().size() - 1;
+			listViewMessage.scrollTo(lastItemIndex);
+		});
 	}
 
 }

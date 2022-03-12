@@ -4,6 +4,7 @@ module chatter {
 	exports com.findik.chatter.entity;
 	exports com.findik.chatter.config;
 	exports com.findik.chatter.repository;
+	exports com.findik.chatter.window;
 
 	requires transitive java.sql;
 	requires transitive javafx.base;
@@ -20,10 +21,12 @@ module chatter {
 	requires transitive spring.data.commons;
 	requires transitive spring.boot.autoconfigure;
 	requires transitive spring.core;
+	requires transitive java.annotation;
 
 	opens com.findik.chatter.main;
 	opens com.findik.chatter.view;
 	opens com.findik.chatter.entity;
 	opens com.findik.chatter.repository;
 	opens com.findik.chatter.config;
+	opens com.findik.chatter.window;
 }

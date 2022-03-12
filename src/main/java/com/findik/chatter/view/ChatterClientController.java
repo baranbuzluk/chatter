@@ -1,8 +1,10 @@
 package com.findik.chatter.view;
 
-import com.findik.chatter.config.ChatterApplicationContext;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import com.findik.chatter.entity.Message;
-import com.findik.chatter.repository.IMessageRepository;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +19,7 @@ public class ChatterClientController {
 	private Button btnSendMessage;
 
 	@FXML
-	private ListView<?> listViewMessage;
+	private ListView<Message> listViewMessage;
 
 	@FXML
 	private StackPane rootPane;
@@ -25,7 +27,7 @@ public class ChatterClientController {
 	@FXML
 	private TextArea txtAreaMessage;
 
-	private IMessageRepository messageRepository;
+	private List<Consumer<Message>> messageAddListeners = new ArrayList<>();
 
 	public ChatterClientController() {
 		try {
@@ -35,18 +37,43 @@ public class ChatterClientController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		init();
 	}
 
-	private void init() {
-		messageRepository = ChatterApplicationContext.getBean(IMessageRepository.class);
-		btnSendMessage.setOnMouseClicked(e -> {
-			messageRepository.save(new Message("baran", txtAreaMessage.getText()));
-		});
+	@FXML
+	public void initialize() {
+		initSendMessageButtonEventHandler();
 	}
 
 	public StackPane getRootPane() {
 		return rootPane;
+	}
+
+	public void addMessageAddListener(Consumer<Message> value) {
+		if (!messageAddListeners.contains(value)) {
+			messageAddListeners.add(value);
+		}
+	}
+
+	private void initSendMessageButtonEventHandler() {
+		btnSendMessage.setOnMouseClicked(e -> {
+			Message message = getMessageFromTxtArea();
+			if (message != null) {
+				listViewMessage.getItems().add(message);
+				messageAddListeners.parallelStream().forEach(listener -> listener.accept(message));
+			}
+		});
+
+	}
+
+	private Message getMessageFromTxtArea() {
+		String text = txtAreaMessage.getText();
+		if (text == null || text.isBlank()) {
+			return null;
+		}
+		Message message = new Message();
+		message.setContent(text);
+		message.setUsername("Username");
+		return message;
 	}
 
 }

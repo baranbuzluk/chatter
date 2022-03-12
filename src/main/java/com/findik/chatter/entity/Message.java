@@ -1,16 +1,11 @@
 package com.findik.chatter.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
-public class Message extends DateAudit {
+public class Message extends BaseEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private static final long serialVersionUID = 2971978872664554603L;
 
 	private String username;
 
@@ -22,10 +17,6 @@ public class Message extends DateAudit {
 	public Message(String username, String content) {
 		this.username = username;
 		this.content = content;
-	}
-
-	public Long getId() {
-		return id;
 	}
 
 	public String getUsername() {
@@ -42,6 +33,11 @@ public class Message extends DateAudit {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[%s] %s : %s", getCreatedAtStr(), getUsername(), getContent());
 	}
 
 }

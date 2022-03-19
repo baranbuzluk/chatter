@@ -22,6 +22,7 @@ module chatter {
 	requires transitive spring.boot.autoconfigure;
 	requires transitive spring.core;
 	requires transitive java.annotation;
+	requires transitive java.instrument;
 
 	opens com.findik.chatter.main;
 	opens com.findik.chatter.view;

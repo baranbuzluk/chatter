@@ -2,24 +2,28 @@ package com.findik.chatter.entity;
 
 import java.math.BigInteger;
 
-public class MessageEntity {
+public class Message {
 
-	private BigInteger messageID;
+	private BigInteger id;
 	private String username;
 	private String content;
 
-	public MessageEntity(BigInteger messageID, String username, String content) {
-		this.messageID = messageID;
+	public Message() {
+
+	}
+
+	public Message(String username, String content) {
 		this.username = username;
 		this.content = content;
+
 	}
 
-	public BigInteger getMessageID() {
-		return messageID;
+	public BigInteger getId() {
+		return id;
 	}
 
-	public void setMessageID(BigInteger messageID) {
-		this.messageID = messageID;
+	public void setId(BigInteger id) {
+		this.id = id;
 	}
 
 	public String getUsername() {

@@ -1,6 +1,6 @@
 package com.findik.chatter.service;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,32 +8,30 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.findik.chatter.database.ConnectDB;
-import com.findik.chatter.entity.MessageEntity;
+import com.findik.chatter.entity.Message;
 
-public class IMessageService implements IServices {
+public class MessageDatabaseOperation implements IMessageDatabaseOperation {
 
 	@Override
-	public void createMessage(MessageEntity message) {
+	public void create(Message message) {
 
 		PreparedStatement statement = null;
+		ConnectDB connection = ConnectDB.getConnection();
 		try {
-			ConnectDB.getConnection();
-			String sql = "insert into message (messageID, username, content) values(?, ?, ?)";
-			statement = ConnectDB.getConnection().prepareStatement(sql);
-			BigDecimal decimalMessageID = new BigDecimal(message.getMessageID());
-			statement.setBigDecimal(1, decimalMessageID);
-			statement.setString(2, message.getUsername());
-			statement.setString(3, message.getContent());
+			String sql = "insert into message (username, content) values(?, ?)";
+			statement = connection.executeSqlCommand(sql);
+			statement.setString(1, message.getUsername());
+			statement.setString(2, message.getContent());
 			statement.executeUpdate();
 
-		} catch (SQLException exception) {
-			System.err.println(ConnectDB.getConnection());
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				statement.close();
-				ConnectDB.closeConnection();
-			} catch (SQLException ex) {
-				System.err.println(ConnectDB.getConnection());
+				connection.close();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 
@@ -91,12 +89,12 @@ public class IMessageService implements IServices {
 	}
 
 	@Override
-	public void deleteMessage(MessageEntity message) {
+	public void deleteMessage(BigInteger id) {
 
 		PreparedStatement statement = null;
 		try {
 			ConnectDB.getConnection();
-			String sql = "DELETE FROM product WHERE messageID=" + message.getMessageID();
+			String sql = "DELETE FROM product WHERE messageID=" + id;
 			statement = ConnectDB.getConnection().prepareStatement(sql);
 			statement.executeUpdate();
 

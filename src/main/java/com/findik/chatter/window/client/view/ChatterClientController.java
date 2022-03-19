@@ -1,20 +1,20 @@
-package com.findik.chatter.view;
+package com.findik.chatter.window.client.view;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.findik.chatter.abstracts.window.AbstractWindowController;
 import com.findik.chatter.entity.Message;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 
-public class ChatterClientController {
+public class ChatterClientController extends AbstractWindowController<StackPane> {
 
 	@FXML
 	private Button btnSendMessage;
@@ -23,30 +23,17 @@ public class ChatterClientController {
 	private ListView<Message> listViewMessage;
 
 	@FXML
-	private StackPane rootPane;
-
-	@FXML
 	private TextArea txtAreaMessage;
 
 	private List<Consumer<Message>> messageAddListeners = new ArrayList<>();
 
 	public ChatterClientController() {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ChatterClient.fxml"));
-			loader.setController(this);
-			loader.load();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		super("ChatterClient.fxml");
 	}
 
-	@FXML
-	public void initialize() {
+	@Override
+	protected void initController() {
 		initSendMessageButtonEventHandler();
-	}
-
-	public StackPane getRootPane() {
-		return rootPane;
 	}
 
 	public void addMessageAddListener(Consumer<Message> value) {

@@ -39,6 +39,10 @@ public class ChatterApplicationContext {
 		return annotationConfigApplicationContext.getBean(type);
 	}
 
+	public static <T> T getBean(String name, Class<T> type) {
+		return annotationConfigApplicationContext.getBean(name, type);
+	}
+
 	@Bean
 	@Scope("prototype")
 	public Logger produceLogger(InjectionPoint injectionPoint) {

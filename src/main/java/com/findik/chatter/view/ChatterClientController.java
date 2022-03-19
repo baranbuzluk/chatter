@@ -1,10 +1,12 @@
 package com.findik.chatter.view;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import com.findik.chatter.entity.Message;
+import com.thoughtworks.xstream.XStream;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -29,6 +31,8 @@ public class ChatterClientController {
 	private TextArea txtAreaMessage;
 
 	private List<Consumer<Message>> messageAddListeners = new ArrayList<>();
+
+	private XStream xstream;
 
 	public ChatterClientController() {
 		try {
@@ -62,6 +66,17 @@ public class ChatterClientController {
 				listViewMessage.getItems().add(message);
 				listViewMessage.scrollTo(message);
 				messageAddListeners.parallelStream().forEach(listener -> listener.accept(message));
+				try {
+					File log = new File("log.xml");
+					if (!log.exists()) {
+						log.createNewFile();
+					}
+				} catch (Exception except) {
+					System.out.println(except.getMessage());
+				}
+				xstream = new XStream();
+				xstream.alias("Message", Message.class);
+				xstream.toXML(message);
 			}
 		});
 
@@ -89,6 +104,18 @@ public class ChatterClientController {
 			int lastItemIndex = listViewMessage.getItems().size() - 1;
 			listViewMessage.scrollTo(lastItemIndex);
 		});
+	}
+
+	private Message getMessageFromXml(File path) {
+		Message messageFromXml = null;
+		try {
+			if (path.exists()) {
+				messageFromXml = (Message) xstream.fromXML(path);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return messageFromXml;
 	}
 
 }

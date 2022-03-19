@@ -24,6 +24,7 @@ module chatter {
 	requires transitive java.annotation;
 	requires transitive org.hibernate.orm.core;
 	requires transitive java.instrument;
+	requires xstream;
 
 	opens com.findik.chatter.main;
 	opens com.findik.chatter.view;

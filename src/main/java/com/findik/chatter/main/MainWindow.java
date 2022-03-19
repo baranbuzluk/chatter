@@ -4,12 +4,12 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.abstracts.window.AbstractWindowController;
 import com.findik.chatter.abstracts.window.IWindow;
 import com.findik.chatter.enums.ApplicationConstant;
 import com.findik.chatter.main.view.MainController;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 @Component(value = ApplicationConstant.MAIN_WINDOW)
 public class MainWindow implements IWindow, IMainWindowService {
@@ -22,8 +22,8 @@ public class MainWindow implements IWindow, IMainWindowService {
 	}
 
 	@Override
-	public AbstractWindowController<?> getWindowController() {
-		return controller;
+	public StackPane getPane() {
+		return controller.getPane();
 	}
 
 	@Override

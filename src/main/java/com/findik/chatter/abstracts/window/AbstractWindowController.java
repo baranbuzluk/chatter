@@ -2,16 +2,16 @@ package com.findik.chatter.abstracts.window;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
 /**
  *
  * @param <T> FXML'deki root Pane'nin tipi. (Ornegin StackPane, VBox vb.)
  */
-public abstract class AbstractWindowController<T extends Pane> implements IWindowController<T> {
+public abstract class AbstractWindowController implements IWindowController {
 
 	@FXML
-	protected T rootPane;
+	protected StackPane rootPane;
 
 	protected AbstractWindowController(String fxmlName) {
 		try {
@@ -31,7 +31,7 @@ public abstract class AbstractWindowController<T extends Pane> implements IWindo
 	protected abstract void initController();
 
 	@Override
-	public T getPane() {
+	public StackPane getPane() {
 		return rootPane;
 	}
 

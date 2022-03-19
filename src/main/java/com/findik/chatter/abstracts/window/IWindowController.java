@@ -1,8 +1,8 @@
 package com.findik.chatter.abstracts.window;
 
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 
-public interface IWindowController<T extends Pane> {
+public interface IWindowController {
 
-	T getPane();
+	StackPane getPane();
 }

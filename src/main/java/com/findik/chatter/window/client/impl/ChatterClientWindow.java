@@ -7,14 +7,16 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.abstracts.window.AbstractWindowController;
 import com.findik.chatter.abstracts.window.IWindow;
 import com.findik.chatter.main.IMainWindowService;
 import com.findik.chatter.repository.IMessageRepository;
+import com.findik.chatter.window.client.api.IChatterClientWindow;
 import com.findik.chatter.window.client.view.ChatterClientController;
 
+import javafx.scene.layout.StackPane;
+
 @Component
-public class ChatterClientWindow implements IWindow {
+public class ChatterClientWindow implements IWindow, IChatterClientWindow {
 
 	@Autowired
 	private IMessageRepository messageRepository;
@@ -37,7 +39,7 @@ public class ChatterClientWindow implements IWindow {
 	}
 
 	@Override
-	public AbstractWindowController<?> getWindowController() {
-		return controller;
+	public StackPane getPane() {
+		return controller.getPane();
 	}
 }

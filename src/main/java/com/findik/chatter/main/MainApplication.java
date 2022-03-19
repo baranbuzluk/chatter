@@ -15,7 +15,7 @@ public class MainApplication extends Application {
 	public void start(Stage primaryStage) {
 		ChatterApplicationContext.start();
 		IWindow main = ChatterApplicationContext.getBean(ApplicationConstant.MAIN_WINDOW, IWindow.class);
-		Pane rootPane = main.getWindowController().getPane();
+		Pane rootPane = main.getPane();
 		Scene scene = new Scene(rootPane);
 		primaryStage.setScene(scene);
 		primaryStage.show();

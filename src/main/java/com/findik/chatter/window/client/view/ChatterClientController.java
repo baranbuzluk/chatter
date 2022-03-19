@@ -12,9 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.StackPane;
 
-public class ChatterClientController extends AbstractWindowController<StackPane> {
+public class ChatterClientController extends AbstractWindowController {
 
 	@FXML
 	private Button btnSendMessage;

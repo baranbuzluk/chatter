@@ -2,10 +2,10 @@ package com.findik.chatter.main.view;
 
 import com.findik.chatter.abstracts.window.AbstractWindowController;
 
+import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 
-public class MainController extends AbstractWindowController<StackPane> {
+public class MainController extends AbstractWindowController {
 
 	public MainController() {
 		super("Main.fxml");
@@ -21,8 +21,11 @@ public class MainController extends AbstractWindowController<StackPane> {
 			throw new IllegalArgumentException("Not null InnerPane");
 		}
 
-		removeInnerPane();
-		getPane().getChildren().add(innerPane);
+		Platform.runLater(() -> {
+			removeInnerPane();
+			getPane().getChildren().add(innerPane);
+		});
+
 	}
 
 	public void removeInnerPane() {

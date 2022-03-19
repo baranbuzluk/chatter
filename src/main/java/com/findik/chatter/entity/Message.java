@@ -1,22 +1,47 @@
 package com.findik.chatter.entity;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
-public class Message extends BaseEntity {
+public class Message implements Serializable {
 
-	private static final long serialVersionUID = 2971978872664554603L;
+	private static final long serialVersionUID = 3147221083926479873L;
 
+	@Id
+	@GeneratedValue
+	private Integer id;
+
+	@Column(updatable = false)
 	private String username;
 
+	@Column(updatable = false)
 	private String content;
 
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
 	public Message() {
+		createdAt = LocalDateTime.now();
 	}
 
 	public Message(String username, String content) {
+		this();
 		this.username = username;
 		this.content = content;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -35,9 +60,13 @@ public class Message extends BaseEntity {
 		this.content = content;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
 	@Override
 	public String toString() {
-		return String.format("[%s] %s : %s", getCreatedAtStr(), getUsername(), getContent());
+		return String.format("[%s] %s : %s", getCreatedAt(), getUsername(), getContent());
 	}
 
 }

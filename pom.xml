@@ -15,6 +15,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<postgresql.version>42.3.2</postgresql.version>
 		<javafx.version>17.0.0.1</javafx.version>
+		<xstream.version>1.4.17</xstream.version>
 
 	</properties>
 
@@ -66,6 +67,13 @@
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>${javafx.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>${xstream.version}</version>
 		</dependency>
 
 

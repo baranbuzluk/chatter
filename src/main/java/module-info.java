@@ -8,7 +8,6 @@ module chatter {
 	exports com.findik.chatter.window.client.view;
 	exports com.findik.chatter.window.login.impl;
 	exports com.findik.chatter.window.login.view;
-	exports com.findik.chatter.xmlparser;
 
 	requires transitive java.sql;
 	requires transitive javafx.base;
@@ -39,5 +38,4 @@ module chatter {
 	opens com.findik.chatter.window.client.view;
 	opens com.findik.chatter.window.login.impl;
 	opens com.findik.chatter.window.login.view;
-	opens com.findik.chatter.xmlparser;
 }

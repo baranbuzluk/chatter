@@ -12,7 +12,7 @@ public class MessageXMLConverter {
 
 	public void writeToXml(Message message) {
 
-		File xmlFile = new File("C:\\Users\\mehme\\OneDrive\\Masaüstü\\LOG\\log.xml");
+		File xmlFile = new File("C:\\Chatter\\messages.xml");
 		if (!xmlFile.exists()) {
 			try {
 				xmlFile.createNewFile();

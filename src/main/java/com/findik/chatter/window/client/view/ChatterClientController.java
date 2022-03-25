@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.findik.chatter.abstracts.window.AbstractWindowController;
 import com.findik.chatter.entity.Message;
+import com.findik.chatter.xml.MessageXMLConverter;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -42,12 +43,15 @@ public class ChatterClientController extends AbstractWindowController {
 	}
 
 	private void initSendMessageButtonEventHandler() {
+		
+		MessageXMLConverter xmlObject = new MessageXMLConverter();
 		btnSendMessage.setOnMouseClicked(e -> {
 			Message message = getMessageFromTxtArea();
 			if (message != null) {
 				listViewMessage.getItems().add(message);
 				listViewMessage.scrollTo(message);
 				messageAddListeners.parallelStream().forEach(listener -> listener.accept(message));
+				xmlObject.writeToXml(message);
 			}
 		});
 

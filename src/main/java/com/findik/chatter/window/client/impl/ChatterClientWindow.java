@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.findik.chatter.abstracts.window.IWindow;
-import com.findik.chatter.main.IMainWindowService;
+import com.findik.chatter.main.api.IMainWindowService;
 import com.findik.chatter.repository.IMessageRepository;
 import com.findik.chatter.window.client.api.IChatterClientWindow;
 import com.findik.chatter.window.client.view.ChatterClientController;

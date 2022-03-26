@@ -1,4 +1,4 @@
-package com.findik.chatter.main;
+package com.findik.chatter.main.impl;
 
 import javax.annotation.PostConstruct;
 
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.findik.chatter.abstracts.window.IWindow;
 import com.findik.chatter.enums.ApplicationConstant;
+import com.findik.chatter.main.api.IMainWindowService;
 import com.findik.chatter.main.view.MainController;
 
 import javafx.scene.layout.Pane;

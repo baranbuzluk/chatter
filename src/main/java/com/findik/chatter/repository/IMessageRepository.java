@@ -11,4 +11,5 @@ import com.findik.chatter.entity.Message;
 public interface IMessageRepository extends JpaRepository<Message, Integer> {
 
 	List<Message> findAllByOrderByCreatedAtAsc();
+
 }

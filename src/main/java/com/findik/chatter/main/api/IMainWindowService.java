@@ -1,4 +1,4 @@
-package com.findik.chatter.main;
+package com.findik.chatter.main.api;
 
 import javafx.scene.layout.Pane;
 

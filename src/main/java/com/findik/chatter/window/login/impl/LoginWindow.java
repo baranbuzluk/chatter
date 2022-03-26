@@ -5,9 +5,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.findik.chatter.abstracts.IMainWindowService;
 import com.findik.chatter.abstracts.IWindow;
 import com.findik.chatter.entity.Account;
-import com.findik.chatter.main.api.IMainWindowService;
+import com.findik.chatter.listener.IStartedApplicationEventListener;
 import com.findik.chatter.repository.IAccountRepository;
 import com.findik.chatter.window.client.api.IChatterClientWindow;
 import com.findik.chatter.window.login.view.LoginController;
@@ -15,7 +16,7 @@ import com.findik.chatter.window.login.view.LoginController;
 import javafx.scene.layout.StackPane;
 
 @Component
-public class LoginWindow implements IWindow {
+public class LoginWindow implements IWindow, IStartedApplicationEventListener {
 
 	@Autowired
 	private IAccountRepository accountRepository;
@@ -31,7 +32,6 @@ public class LoginWindow implements IWindow {
 	@PostConstruct
 	private void postConstruct() {
 		controller = new LoginController();
-		mainWindowService.setInnerPane(controller.getPane());
 		controller.setLoginButtonOnClickedEvent(this::executeLoginOperations);
 	}
 
@@ -47,5 +47,11 @@ public class LoginWindow implements IWindow {
 	@Override
 	public StackPane getPane() {
 		return controller.getPane();
+	}
+
+	@Override
+	public void startedApplicationEvent() {
+		StackPane pane = controller.getPane();
+		mainWindowService.setInnerPane(pane);
 	}
 }

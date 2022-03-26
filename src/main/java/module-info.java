@@ -3,7 +3,6 @@ module chatter {
 	exports com.findik.chatter.config;
 	exports com.findik.chatter.entity;
 	exports com.findik.chatter.main;
-	exports com.findik.chatter.main.api;
 	exports com.findik.chatter.main.impl;
 	exports com.findik.chatter.main.view;
 	exports com.findik.chatter.repository;
@@ -12,6 +11,7 @@ module chatter {
 	exports com.findik.chatter.window.login.impl;
 	exports com.findik.chatter.window.login.view;
 	exports com.findik.chatter.xml;
+	exports com.findik.chatter.listener;
 
 	requires transitive java.sql;
 	requires transitive javafx.base;
@@ -37,7 +37,6 @@ module chatter {
 	opens com.findik.chatter.config;
 	opens com.findik.chatter.entity;
 	opens com.findik.chatter.main;
-	opens com.findik.chatter.main.api;
 	opens com.findik.chatter.main.impl;
 	opens com.findik.chatter.main.view;
 	opens com.findik.chatter.repository;
@@ -46,5 +45,6 @@ module chatter {
 	opens com.findik.chatter.window.login.impl;
 	opens com.findik.chatter.window.login.view;
 	opens com.findik.chatter.xml;
+	opens com.findik.chatter.listener;
 
 }

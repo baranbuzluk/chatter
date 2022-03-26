@@ -7,16 +7,12 @@ import org.springframework.stereotype.Component;
 
 import com.findik.chatter.entity.Account;
 import com.findik.chatter.repository.IAccountRepository;
-import com.findik.chatter.repository.IMessageRepository;
 
 @Component
 public class InitializeApplication {
 
 	@Autowired
 	private IAccountRepository accountRepository;
-
-	@Autowired
-	private IMessageRepository messageRepository;
 
 	@PostConstruct
 	void postConstruct() {

@@ -1,6 +1,6 @@
 package com.findik.chatter.main.view;
 
-import com.findik.chatter.abstracts.window.AbstractWindowController;
+import com.findik.chatter.abstracts.AbstractWindowController;
 
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
@@ -9,11 +9,6 @@ public class MainController extends AbstractWindowController {
 
 	public MainController() {
 		super("Main.fxml");
-	}
-
-	@Override
-	protected void initController() {
-
 	}
 
 	public void setInnerPane(Pane innerPane) {

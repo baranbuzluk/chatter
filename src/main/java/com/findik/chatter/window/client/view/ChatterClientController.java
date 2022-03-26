@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.findik.chatter.abstracts.window.AbstractWindowController;
+import com.findik.chatter.abstracts.AbstractWindowController;
 import com.findik.chatter.entity.Message;
 
 import javafx.application.Platform;

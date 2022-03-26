@@ -1,4 +1,4 @@
-package com.findik.chatter.abstracts.window;
+package com.findik.chatter.abstracts;
 
 import javafx.scene.layout.StackPane;
 

@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import org.springframework.util.StringUtils;
 
-import com.findik.chatter.abstracts.window.AbstractWindowController;
+import com.findik.chatter.abstracts.AbstractWindowController;
 import com.findik.chatter.entity.Account;
 
 import javafx.fxml.FXML;
@@ -25,11 +25,6 @@ public class LoginController extends AbstractWindowController {
 
 	public LoginController() {
 		super("Login.fxml");
-	}
-
-	@Override
-	protected void initController() {
-
 	}
 
 	public void setLoginButtonOnClickedEvent(Consumer<Account> handle) {

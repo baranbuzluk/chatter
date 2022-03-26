@@ -1,4 +1,4 @@
-package com.findik.chatter.abstracts.window;
+package com.findik.chatter.abstracts;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,7 +28,9 @@ public abstract class AbstractWindowController implements IWindowController {
 		initController();
 	}
 
-	protected abstract void initController();
+	protected void initController() {
+
+	}
 
 	@Override
 	public StackPane getPane() {

@@ -1,5 +1,5 @@
 module chatter {
-	exports com.findik.chatter.abstracts.window;
+	exports com.findik.chatter.abstracts;
 	exports com.findik.chatter.config;
 	exports com.findik.chatter.entity;
 	exports com.findik.chatter.main;
@@ -11,6 +11,7 @@ module chatter {
 	exports com.findik.chatter.window.client.view;
 	exports com.findik.chatter.window.login.impl;
 	exports com.findik.chatter.window.login.view;
+	exports com.findik.chatter.xml;
 
 	requires transitive java.sql;
 	requires transitive javafx.base;
@@ -32,7 +33,7 @@ module chatter {
 	requires transitive java.instrument;
 	requires transitive xstream;
 
-	opens com.findik.chatter.abstracts.window;
+	opens com.findik.chatter.abstracts;
 	opens com.findik.chatter.config;
 	opens com.findik.chatter.entity;
 	opens com.findik.chatter.main;
@@ -44,5 +45,6 @@ module chatter {
 	opens com.findik.chatter.window.client.view;
 	opens com.findik.chatter.window.login.impl;
 	opens com.findik.chatter.window.login.view;
-	opens com.findik.chatter.xmlparser;
+	opens com.findik.chatter.xml;
+
 }

@@ -45,7 +45,7 @@ public class ChatterClientWindow implements IWindow, IChatterClientWindow {
 		}));
 		List<Message> messagesByCreatedAtAscending = messageRepository.findAllByOrderByCreatedAtAsc();
 		controller.setMessages(messagesByCreatedAtAscending);
-		mainWindowService.setInnerPane(controller.getPane());
+		mainWindowService.show(controller.getPane());
 	}
 
 	@Override

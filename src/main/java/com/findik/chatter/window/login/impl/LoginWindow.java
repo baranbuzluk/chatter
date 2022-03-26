@@ -40,7 +40,7 @@ public class LoginWindow implements IWindow, IStartedApplicationEventListener {
 		Account accountFromDb = accountRepository.getByUsername(username);
 		if (account.equals(accountFromDb)) {
 			StackPane chatterClientWindowPane = chatterClientWindow.getPane();
-			mainWindowService.setInnerPane(chatterClientWindowPane);
+			mainWindowService.show(chatterClientWindowPane);
 		}
 	}
 
@@ -52,6 +52,6 @@ public class LoginWindow implements IWindow, IStartedApplicationEventListener {
 	@Override
 	public void startedApplicationEvent() {
 		StackPane pane = controller.getPane();
-		mainWindowService.setInnerPane(pane);
+		mainWindowService.show(pane);
 	}
 }

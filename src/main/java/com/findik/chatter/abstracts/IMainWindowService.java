@@ -7,8 +7,8 @@ public interface IMainWindowService {
 
 	void setMainStage(Stage mainStage);
 
-	void setInnerPane(Pane pane);
+	void show(Pane pane);
 
-	void removeInnerPane();
+	void close();
 
 }

@@ -24,7 +24,7 @@ public class MainWindowService implements IMainWindowService {
 	private Scene mainScene;
 
 	@Override
-	public void setInnerPane(Pane pane) {
+	public void show(Pane pane) {
 		mainStageOptional.ifPresent(mainStage -> {
 			mainScene.setRoot(pane);
 			mainStage.sizeToScene();
@@ -35,26 +35,22 @@ public class MainWindowService implements IMainWindowService {
 	}
 
 	@Override
-	public void removeInnerPane() {
+	public void close() {
 		mainStageOptional.ifPresent(mainStage -> {
-
+			StackPane dummy = new StackPane();
+			mainScene.setRoot(dummy);
+			mainStage.close();
 		});
 	}
 
 	@Override
-	public void setMainStage(Stage mainStage) {
-		this.mainStageOptional = Optional.ofNullable(mainStage);
-		StackPane dummy = new StackPane();
-		this.mainScene = new Scene(dummy);
-		initStageAndScene();
-	}
+	public void setMainStage(Stage stage) {
+		mainStageOptional = Optional.ofNullable(stage);
 
-	private void initStageAndScene() {
 		mainStageOptional.ifPresent(mainStage -> {
-			mainStage.show();
+			StackPane dummy = new StackPane();
+			this.mainScene = new Scene(dummy);
 			mainStage.setScene(mainScene);
-			mainStage.centerOnScreen();
-			mainStage.toBack();
 			applicationEventListenerManager.notifyStartedApplicationEventListeners();
 		});
 	}

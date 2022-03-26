@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,10 +33,9 @@ public class MessageXMLFileService implements IMessageXMLFileService {
 
 	@Override
 	public void writeToXml(Message message) {
-		try {
-			String xmlFilename = createMessageXmlFileName();
-			File xmlFile = createXMLFileForMessage(xmlFilename);
-			FileOutputStream fos = new FileOutputStream(xmlFile);
+		String xmlFilename = createMessageXmlFileName();
+		File xmlFile = createXMLFileForMessage(xmlFilename);
+		try (FileOutputStream fos = new FileOutputStream(xmlFile)) {
 			xStream.toXML(message, fos);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,12 +49,13 @@ public class MessageXMLFileService implements IMessageXMLFileService {
 
 	private String createMessageXmlFileName() {
 		LocalDateTime now = LocalDateTime.now();
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
-		String dateTime = dateTimeFormatter.format(now);
+		int datetimeNano = now.getNano();
+		int datetimeSecond = now.getSecond();
 		StringBuilder fileNameBuilder = new StringBuilder();
 		fileNameBuilder.append(MESSAGE_NAME);
 		fileNameBuilder.append(SEPARATOR);
-		fileNameBuilder.append(dateTime);
+		fileNameBuilder.append(datetimeSecond);
+		fileNameBuilder.append(datetimeNano);
 		return fileNameBuilder.toString();
 	}
 

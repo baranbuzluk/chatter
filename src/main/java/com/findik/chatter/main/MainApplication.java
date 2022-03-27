@@ -8,16 +8,15 @@ import javafx.stage.Stage;
 
 public class MainApplication extends Application {
 
-	private static IMainWindowService mainWindowService;
-
 	@Override
 	public void start(Stage primaryStage) {
+		IMainWindowService mainWindowService = ChatterApplicationContext.getBean(IMainWindowService.class);
 		mainWindowService.setMainStage(primaryStage);
 	}
 
 	public static void main(String[] args) {
 		ChatterApplicationContext.start();
-		mainWindowService = ChatterApplicationContext.getBean(IMainWindowService.class);
 		launch(args);
+		ChatterApplicationContext.close();
 	}
 }

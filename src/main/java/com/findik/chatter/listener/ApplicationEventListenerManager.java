@@ -15,7 +15,8 @@ public class ApplicationEventListenerManager implements IApplicationEventListene
 
 	@Override
 	public void notifyStartedApplicationEventListeners() {
-		startedApplicationEventListeners.parallelStream().forEach(e -> e.startedApplicationEvent());
+		startedApplicationEventListeners.parallelStream()
+				.forEach(IStartedApplicationEventListener::startedApplicationEvent);
 	}
 
 }

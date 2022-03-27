@@ -1,4 +1,4 @@
-package com.findik.chatter.main.impl;
+package com.findik.chatter.main;
 
 import java.util.Optional;
 

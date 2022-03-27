@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import org.springframework.util.StringUtils;
 
-import com.findik.chatter.abstracts.AbstractWindowController;
+import com.findik.chatter.abstracts.AbstractJFXController;
 import com.findik.chatter.entity.Account;
 
 import javafx.fxml.FXML;
@@ -12,7 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController extends AbstractWindowController {
+public class LoginController extends AbstractJFXController {
 
 	@FXML
 	private Button btnLogin;

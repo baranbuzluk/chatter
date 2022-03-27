@@ -8,12 +8,12 @@ import javafx.scene.layout.StackPane;
  *
  * @param <T> FXML'deki root Pane'nin tipi. (Ornegin StackPane, VBox vb.)
  */
-public abstract class AbstractWindowController implements IWindowController {
+public abstract class AbstractJFXController implements IWindowController {
 
 	@FXML
 	protected StackPane rootPane;
 
-	protected AbstractWindowController(String fxmlName) {
+	protected AbstractJFXController(String fxmlName) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
 			loader.setController(this);

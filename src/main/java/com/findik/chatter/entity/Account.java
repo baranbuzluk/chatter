@@ -24,16 +24,13 @@ public class Account {
 	}
 
 	public Account(String username, String password) {
+		this();
 		setUsername(username);
 		setPassword(password);
 	}
 
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getUsername() {

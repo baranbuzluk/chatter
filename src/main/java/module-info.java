@@ -3,8 +3,6 @@ module chatter {
 	exports com.findik.chatter.config;
 	exports com.findik.chatter.entity;
 	exports com.findik.chatter.main;
-	exports com.findik.chatter.main.impl;
-	exports com.findik.chatter.main.view;
 	exports com.findik.chatter.repository;
 	exports com.findik.chatter.window.client.impl;
 	exports com.findik.chatter.window.client.view;
@@ -37,8 +35,6 @@ module chatter {
 	opens com.findik.chatter.config;
 	opens com.findik.chatter.entity;
 	opens com.findik.chatter.main;
-	opens com.findik.chatter.main.impl;
-	opens com.findik.chatter.main.view;
 	opens com.findik.chatter.repository;
 	opens com.findik.chatter.window.client.impl;
 	opens com.findik.chatter.window.client.view;

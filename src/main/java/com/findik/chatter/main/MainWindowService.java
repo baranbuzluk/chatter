@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.abstracts.IApplicationEventListenerManager;
 import com.findik.chatter.abstracts.IMainWindowService;
+import com.findik.chatter.listener.manager.ApplicationEventManager;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class MainWindowService implements IMainWindowService {
 
 	@Autowired
-	private IApplicationEventListenerManager applicationEventListenerManager;
+	private ApplicationEventManager applicationEventManager;
 
 	private Optional<Stage> mainStageOptional = Optional.empty();
 
@@ -35,15 +35,6 @@ public class MainWindowService implements IMainWindowService {
 	}
 
 	@Override
-	public void close() {
-		mainStageOptional.ifPresent(mainStage -> {
-			StackPane dummy = new StackPane();
-			mainScene.setRoot(dummy);
-			mainStage.close();
-		});
-	}
-
-	@Override
 	public void setMainStage(Stage stage) {
 		mainStageOptional = Optional.ofNullable(stage);
 
@@ -51,7 +42,7 @@ public class MainWindowService implements IMainWindowService {
 			StackPane dummy = new StackPane();
 			this.mainScene = new Scene(dummy);
 			mainStage.setScene(mainScene);
-			applicationEventListenerManager.notifyStartedApplicationEventListeners();
+			applicationEventManager.notifyStartedApplicationEventListeners();
 		});
 	}
 

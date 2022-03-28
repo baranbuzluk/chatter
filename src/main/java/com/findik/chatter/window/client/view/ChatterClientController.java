@@ -1,7 +1,7 @@
 package com.findik.chatter.window.client.view;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.findik.chatter.abstracts.AbstractJFXController;
@@ -25,14 +25,14 @@ public class ChatterClientController extends AbstractJFXController {
 	@FXML
 	private TextField txtMessage;
 
-	private List<Consumer<Message>> messageAddListeners = new ArrayList<>();
+	private Optional<Consumer<Message>> messageAddedEventHandler = Optional.empty();
 
 	public ChatterClientController() {
 		super("ChatterClient.fxml");
 	}
 
 	@Override
-	protected void initController() {
+	protected void afterControllerLoaded() {
 		initSendMessageButtonEventHandler();
 		initMessageTextFieldEnterButtonEventHandler();
 	}
@@ -46,12 +46,6 @@ public class ChatterClientController extends AbstractJFXController {
 
 	}
 
-	public void addMessageAddListener(Consumer<Message> value) {
-		if (!messageAddListeners.contains(value)) {
-			messageAddListeners.add(value);
-		}
-	}
-
 	private void initSendMessageButtonEventHandler() {
 		btnSendMessage.setOnMouseClicked(e -> sendMessageOperations());
 	}
@@ -61,7 +55,7 @@ public class ChatterClientController extends AbstractJFXController {
 		if (message != null) {
 			listViewMessage.getItems().add(message);
 			listViewMessage.scrollTo(message);
-			messageAddListeners.parallelStream().forEach(listener -> listener.accept(message));
+			messageAddedEventHandler.ifPresent(e -> e.accept(message));
 		}
 	}
 
@@ -87,6 +81,10 @@ public class ChatterClientController extends AbstractJFXController {
 			int lastItemIndex = listViewMessage.getItems().size() - 1;
 			listViewMessage.scrollTo(lastItemIndex);
 		});
+	}
+
+	public void setMessageAddedEventHandler(Consumer<Message> handler) {
+		messageAddedEventHandler = Optional.ofNullable(handler);
 	}
 
 }

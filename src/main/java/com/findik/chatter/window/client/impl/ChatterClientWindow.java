@@ -1,25 +1,24 @@
 package com.findik.chatter.window.client.impl;
 
 import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.findik.chatter.abstracts.AbstractGuiWindow;
 import com.findik.chatter.abstracts.IMainWindowService;
 import com.findik.chatter.abstracts.IMessageXMLFileService;
-import com.findik.chatter.abstracts.IWindow;
+import com.findik.chatter.entity.Account;
 import com.findik.chatter.entity.Message;
+import com.findik.chatter.listener.api.IMessageAddedEventListener;
+import com.findik.chatter.listener.api.IUserLoggedInEventListener;
+import com.findik.chatter.listener.manager.MessageActionEventManager;
 import com.findik.chatter.repository.IMessageRepository;
-import com.findik.chatter.window.client.api.IChatterClientWindow;
 import com.findik.chatter.window.client.view.ChatterClientController;
 
-import javafx.scene.layout.StackPane;
-
 @Component
-public class ChatterClientWindow implements IWindow, IChatterClientWindow {
+public class ChatterClientWindow extends AbstractGuiWindow<ChatterClientController>
+		implements IMessageAddedEventListener, IUserLoggedInEventListener {
 
 	@Autowired
 	private IMessageRepository messageRepository;
@@ -30,26 +29,28 @@ public class ChatterClientWindow implements IWindow, IChatterClientWindow {
 	@Autowired
 	private IMessageXMLFileService messageXMLFileService;
 
-	private ChatterClientController controller;
+	@Autowired
+	private MessageActionEventManager messageActionEventManager;
 
-	@PostConstruct
-	private void postConstruct() {
-		initController();
-	}
-
-	private void initController() {
-		controller = new ChatterClientController();
-		controller.addMessageAddListener(e -> Optional.ofNullable(e).ifPresent(t -> {
-			messageRepository.save(t);
-			messageXMLFileService.writeToXml(t);
-		}));
-		List<Message> messagesByCreatedAtAscending = messageRepository.findAllByOrderByCreatedAtAsc();
-		controller.setMessages(messagesByCreatedAtAscending);
-		mainWindowService.show(controller.getPane());
+	@Override
+	protected ChatterClientController createController() {
+		ChatterClientController chatterClientController = new ChatterClientController();
+		chatterClientController
+				.setMessageAddedEventHandler(e -> messageActionEventManager.notifyMessageAddedEventListeners(e));
+		return chatterClientController;
 	}
 
 	@Override
-	public StackPane getPane() {
-		return controller.getPane();
+	public void updateMessageAddedEvent(Message addedMessage) {
+		messageRepository.save(addedMessage);
+		messageXMLFileService.writeToXml(addedMessage);
 	}
+
+	@Override
+	public void updateUserLoggedInEvent(Account account) {
+		mainWindowService.show(getRootPane());
+		List<Message> messagesByCreatedAtAscending = messageRepository.findAllByOrderByCreatedAtAsc();
+		controller.setMessages(messagesByCreatedAtAscending);
+	}
+
 }

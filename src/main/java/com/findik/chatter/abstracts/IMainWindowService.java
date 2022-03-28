@@ -9,6 +9,4 @@ public interface IMainWindowService {
 
 	void show(Pane pane);
 
-	void close();
-
 }

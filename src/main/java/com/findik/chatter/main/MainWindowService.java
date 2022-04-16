@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.findik.chatter.abstracts.IMainWindowService;
-import com.findik.chatter.listener.manager.ApplicationEventManager;
+import com.findik.chatter.enums.ChatterEvent;
+import com.findik.chatter.listener.api.EventManager;
+import com.findik.chatter.listener.impl.EventInfo;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -17,7 +19,7 @@ import javafx.stage.Stage;
 public class MainWindowService implements IMainWindowService {
 
 	@Autowired
-	private ApplicationEventManager applicationEventManager;
+	private EventManager eventManager;
 
 	private Optional<Stage> mainStageOptional = Optional.empty();
 
@@ -42,7 +44,7 @@ public class MainWindowService implements IMainWindowService {
 			StackPane dummy = new StackPane();
 			this.mainScene = new Scene(dummy);
 			mainStage.setScene(mainScene);
-			applicationEventManager.notifyStartedApplicationEventListeners();
+			eventManager.sendEvent(new EventInfo(ChatterEvent.STARTED_APPLICATION));
 		});
 	}
 

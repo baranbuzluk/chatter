@@ -1,4 +1,4 @@
-package com.findik.chatter.listener.impl;
+package com.findik.chatter.listener;
 
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -9,14 +9,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.config.ChatterThreadFactory;
-import com.findik.chatter.listener.api.EventListener;
-import com.findik.chatter.listener.api.EventManager;
+import com.findik.chatter.factory.ChatterThreadFactory;
 
 @Component
 public class EventManagerImpl implements EventManager {
 
-	@Autowired
 	private List<EventListener> eventListeners;
 
 	private BlockingQueue<EventInfo> events;
@@ -25,7 +22,11 @@ public class EventManagerImpl implements EventManager {
 
 	private Thread eventListenerThread;
 
-	public EventManagerImpl() {
+	private boolean runLoop;
+
+	@Autowired
+	public EventManagerImpl(List<EventListener> eventListeners) {
+		this.eventListeners = eventListeners;
 		events = new LinkedBlockingQueue<>();
 		eventHandlerThread = Executors.newCachedThreadPool(ChatterThreadFactory.newEventHandlerThread());
 		startNotifyingListeners();
@@ -36,33 +37,32 @@ public class EventManagerImpl implements EventManager {
 		events.add(eventInfo);
 	}
 
-	private void notifyingEventListenersTask() {
+	private void runNotifyingEventListenersTask() {
 		try {
-			while (true) {
+			while (runLoop) {
 				EventInfo eventInfo = events.take();
-				eventListeners.forEach(t -> eventHandlerThread.execute(() -> t.handleEvent(eventInfo)));
+				eventListeners.forEach(e -> eventHandlerThread.execute(() -> e.handleEvent(eventInfo)));
 			}
-		} catch (InterruptedException e) {
-			System.err.println("Stopped Event Listener Thread..!");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void stopNotifyingListeners() {
 		if (eventListenerThread != null) {
-			eventListenerThread.interrupt();
+			runLoop = false;
 			eventListenerThread = null;
 		}
 	}
 
 	@Override
 	public void startNotifyingListeners() {
-		System.err.println("startNotifyingListeners()" + Thread.currentThread().getName());
 		if (eventListenerThread == null) {
-			eventListenerThread = new Thread(this::notifyingEventListenersTask, "Event Listener Thread");
-			eventListenerThread.setDaemon(true);
+			runLoop = true;
+			eventListenerThread = ChatterThreadFactory.newDaemonThread("Event Listener Thread",
+					this::runNotifyingEventListenersTask);
 			eventListenerThread.start();
-			System.err.println("Started Event Listener Thread..!");
 		}
 	}
 

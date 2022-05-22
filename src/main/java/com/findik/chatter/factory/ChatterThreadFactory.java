@@ -1,4 +1,4 @@
-package com.findik.chatter.config;
+package com.findik.chatter.factory;
 
 import java.util.concurrent.ThreadFactory;
 
@@ -22,4 +22,9 @@ public final class ChatterThreadFactory {
 		};
 	}
 
+	public static Thread newDaemonThread(String name, Runnable runnable) {
+		Thread thread = new Thread(runnable, name);
+		thread.setDaemon(true);
+		return thread;
+	}
 }

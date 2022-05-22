@@ -1,9 +1,9 @@
-package com.findik.chatter.abstracts;
+package com.findik.chatter.main;
 
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public interface IMainWindowService {
+public interface MainViewService {
 
 	void setMainStage(Stage mainStage);
 

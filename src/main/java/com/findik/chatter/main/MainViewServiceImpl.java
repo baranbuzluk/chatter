@@ -1,14 +1,14 @@
 package com.findik.chatter.main;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.abstracts.IMainWindowService;
 import com.findik.chatter.enums.ChatterEvent;
-import com.findik.chatter.listener.api.EventManager;
-import com.findik.chatter.listener.impl.EventInfo;
+import com.findik.chatter.listener.EventInfo;
+import com.findik.chatter.listener.EventManager;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -16,7 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 @Component
-public class MainWindowService implements IMainWindowService {
+public class MainViewServiceImpl implements MainViewService {
 
 	@Autowired
 	private EventManager eventManager;
@@ -27,6 +27,7 @@ public class MainWindowService implements IMainWindowService {
 
 	@Override
 	public void show(Pane pane) {
+		Objects.requireNonNull(pane);
 		mainStageOptional.ifPresent(mainStage -> {
 			mainScene.setRoot(pane);
 			mainStage.sizeToScene();
@@ -39,7 +40,6 @@ public class MainWindowService implements IMainWindowService {
 	@Override
 	public void setMainStage(Stage stage) {
 		mainStageOptional = Optional.ofNullable(stage);
-
 		mainStageOptional.ifPresent(mainStage -> {
 			StackPane dummy = new StackPane();
 			this.mainScene = new Scene(dummy);

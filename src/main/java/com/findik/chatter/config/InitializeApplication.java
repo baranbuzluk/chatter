@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.findik.chatter.entity.Account;
-import com.findik.chatter.repository.IAccountRepository;
+import com.findik.chatter.repository.AccountRepository;
 
 @Component
 public class InitializeApplication {
 
 	@Autowired
-	private IAccountRepository accountRepository;
+	private AccountRepository accountRepository;
 
 	@PostConstruct
 	void postConstruct() {

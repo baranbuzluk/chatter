@@ -1,18 +1,21 @@
-package com.findik.chatter.window.login.view;
+package com.findik.chatter.controller.login;
 
-import java.util.function.Consumer;
+import java.io.IOException;
 
 import org.springframework.util.StringUtils;
 
-import com.findik.chatter.abstracts.AbstractJFXController;
+import com.findik.chatter.core.AbstractController;
 import com.findik.chatter.entity.Account;
+import com.findik.chatter.enums.ChatterEvent;
+import com.findik.chatter.enums.ChatterEventProperties;
+import com.findik.chatter.listener.EventInfo;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController extends AbstractJFXController {
+public class LoginController extends AbstractController<LoginService> {
 
 	@FXML
 	private Button btnLogin;
@@ -23,17 +26,28 @@ public class LoginController extends AbstractJFXController {
 	@FXML
 	private TextField txtUsername;
 
-	public LoginController() {
-		super("Login.fxml");
+	public LoginController(LoginService service) throws IOException {
+		super("Login.fxml", service);
 	}
 
-	public void setLoginButtonOnClickedEvent(Consumer<Account> handle) {
+	@FXML
+	private void initialize() {
 		btnLogin.setOnMouseClicked(e -> {
 			Account account = getAccount();
 			if (validateAccount(account)) {
-				handle.accept(account);
+				executeLoginOperations(account);
 			}
 		});
+	}
+
+	private void executeLoginOperations(Account account) {
+		String username = account.getUsername();
+		Account accountFromDb = service.getByUsername(username);
+		if (account.equals(accountFromDb)) {
+			EventInfo event = new EventInfo(ChatterEvent.LOGGED_IN_ACCOUNT);
+			event.put(ChatterEventProperties.ACCOUNT, accountFromDb);
+			service.sendEvent(event);
+		}
 	}
 
 	private boolean validateAccount(Account account) {

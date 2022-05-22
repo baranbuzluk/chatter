@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.findik.chatter.entity.Message;
 
 @Repository
-public interface IMessageRepository extends JpaRepository<Message, Integer> {
+public interface MessageRepository extends JpaRepository<Message, Integer> {
 
 	List<Message> findAllByOrderByCreatedAtAsc();
 

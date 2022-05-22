@@ -1,11 +1,13 @@
-package com.findik.chatter.window.client.view;
+package com.findik.chatter.controller.chat;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
-import com.findik.chatter.abstracts.AbstractJFXController;
+import com.findik.chatter.core.AbstractController;
 import com.findik.chatter.entity.Message;
+import com.findik.chatter.enums.ChatterEvent;
+import com.findik.chatter.enums.ChatterEventProperties;
+import com.findik.chatter.listener.EventInfo;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -14,7 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-public class ChatterClientController extends AbstractJFXController {
+public class ChatClientController extends AbstractController<ChatClientService> {
 
 	@FXML
 	private Button btnSendMessage;
@@ -25,29 +27,19 @@ public class ChatterClientController extends AbstractJFXController {
 	@FXML
 	private TextField txtMessage;
 
-	private Optional<Consumer<Message>> messageAddedEventHandler = Optional.empty();
-
-	public ChatterClientController() {
-		super("ChatterClient.fxml");
+	public ChatClientController(ChatClientService service) throws IOException {
+		super("ChatterClient.fxml", service);
 	}
 
-	@Override
-	protected void afterControllerLoaded() {
-		initSendMessageButtonEventHandler();
-		initMessageTextFieldEnterButtonEventHandler();
-	}
+	@FXML
+	private void initialize() {
+		btnSendMessage.setOnMouseClicked(e -> sendMessageOperations());
 
-	private void initMessageTextFieldEnterButtonEventHandler() {
 		txtMessage.setOnKeyPressed(key -> {
 			if (key.getCode() == KeyCode.ENTER) {
 				sendMessageOperations();
 			}
 		});
-
-	}
-
-	private void initSendMessageButtonEventHandler() {
-		btnSendMessage.setOnMouseClicked(e -> sendMessageOperations());
 	}
 
 	private void sendMessageOperations() {
@@ -55,7 +47,10 @@ public class ChatterClientController extends AbstractJFXController {
 		if (message != null) {
 			listViewMessage.getItems().add(message);
 			listViewMessage.scrollTo(message);
-			messageAddedEventHandler.ifPresent(e -> e.accept(message));
+
+			EventInfo eventInfo = new EventInfo(ChatterEvent.ADDED_MESSAGE);
+			eventInfo.put(ChatterEventProperties.MESSAGE, message);
+			service.sendEvent(eventInfo);
 		}
 	}
 
@@ -81,10 +76,6 @@ public class ChatterClientController extends AbstractJFXController {
 			int lastItemIndex = listViewMessage.getItems().size() - 1;
 			listViewMessage.scrollTo(lastItemIndex);
 		});
-	}
-
-	public void setMessageAddedEventHandler(Consumer<Message> handler) {
-		messageAddedEventHandler = Optional.ofNullable(handler);
 	}
 
 }

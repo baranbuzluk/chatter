@@ -1,5 +1,7 @@
 package com.findik.chatter.entity;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +26,6 @@ public class Account {
 	}
 
 	public Account(String username, String password) {
-		this();
 		setUsername(username);
 		setPassword(password);
 	}
@@ -38,7 +39,7 @@ public class Account {
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.username = Objects.requireNonNull(username);
 	}
 
 	public String getPassword() {
@@ -46,7 +47,7 @@ public class Account {
 	}
 
 	public void setPassword(String password) {
-		this.password = convertMD5(password);
+		this.password = convertMD5(Objects.requireNonNull(password));
 	}
 
 	private String convertMD5(String text) {
@@ -70,15 +71,7 @@ public class Account {
 
 	@Override
 	public int hashCode() {
-		int result = 17;
-		if (this.username != null) {
-			result = 31 * result + this.username.hashCode();
-		}
-		if (this.password != null) {
-			result = 31 * result + this.password.hashCode();
-		}
-		return result;
-
+		return Objects.hash(username, password, id);
 	}
 
 }

@@ -1,12 +1,10 @@
-package com.findik.chatter.listener.impl;
+package com.findik.chatter.listener;
 
 import java.util.AbstractMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
-
-import com.findik.chatter.listener.api.Event;
-import com.findik.chatter.listener.api.EventProperties;
 
 public class EventInfo extends AbstractMap<EventProperties, Object> {
 
@@ -43,7 +41,7 @@ public class EventInfo extends AbstractMap<EventProperties, Object> {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return Objects.hash(event, entrySet);
 	}
 
 }

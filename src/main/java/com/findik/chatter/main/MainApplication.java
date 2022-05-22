@@ -1,6 +1,5 @@
 package com.findik.chatter.main;
 
-import com.findik.chatter.abstracts.IMainWindowService;
 import com.findik.chatter.config.ChatterApplicationContext;
 
 import javafx.application.Application;
@@ -10,7 +9,7 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		IMainWindowService mainWindowService = ChatterApplicationContext.getBean(IMainWindowService.class);
+		MainViewService mainWindowService = ChatterApplicationContext.getBean(MainViewService.class);
 		mainWindowService.setMainStage(primaryStage);
 	}
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.findik.chatter.core.ConfigPropertiesService;
+import com.findik.chatter.core.ChatterConfiguration;
 import com.findik.chatter.entity.Message;
 import com.thoughtworks.xstream.XStream;
 
@@ -21,12 +21,12 @@ public class MessageXMLFileServiceImpl implements MessageXMLFileService {
 
 	private static final String SEPARATOR = "_";
 
-	private ConfigPropertiesService applicationSettingService;
+	private ChatterConfiguration applicationSettingService;
 
 	private XStream xStream = null;
 
 	@Autowired
-	public MessageXMLFileServiceImpl(ConfigPropertiesService applicationSettingService) {
+	public MessageXMLFileServiceImpl(ChatterConfiguration applicationSettingService) {
 		this.applicationSettingService = applicationSettingService;
 		xStream = createXstream();
 	}

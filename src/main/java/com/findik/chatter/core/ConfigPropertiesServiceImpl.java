@@ -6,20 +6,17 @@ import java.util.Properties;
 
 import org.springframework.stereotype.Component;
 
+import com.findik.chatter.enums.ConfigPropertiesKey;
+
 @Component
 public class ConfigPropertiesServiceImpl implements ConfigPropertiesService {
 
-	private static final String MESSAGE_OUTPUT_PATH_KEY = "message.output.path";
-
 	private static final String RESOURCES_CONFIG_PROPERTIES = "./resources/config.properties";
 
-	private Properties properties = new Properties();
+	private final Properties properties;
 
 	public ConfigPropertiesServiceImpl() {
-		setPropertiesInputStream();
-	}
-
-	private void setPropertiesInputStream() {
+		properties = new Properties();
 		try (FileInputStream fis = new FileInputStream(RESOURCES_CONFIG_PROPERTIES)) {
 			properties.load(fis);
 		} catch (Exception e) {
@@ -29,7 +26,17 @@ public class ConfigPropertiesServiceImpl implements ConfigPropertiesService {
 
 	@Override
 	public Path getMessageOutputDirectory() {
-		String messageOutputPath = properties.getProperty(MESSAGE_OUTPUT_PATH_KEY);
+		String messageOutputPath = properties.getProperty(ConfigPropertiesKey.MESSAGE_OUTPUT_PATH.getKey());
 		return Path.of(messageOutputPath);
+	}
+
+	@Override
+	public String getClientIp() {
+		return properties.getProperty(ConfigPropertiesKey.CLIENT_IP.getKey());
+	}
+
+	@Override
+	public String getClientPort() {
+		return properties.getProperty(ConfigPropertiesKey.CLIENT_PORT.getKey());
 	}
 }

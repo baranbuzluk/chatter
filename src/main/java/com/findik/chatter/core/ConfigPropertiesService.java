@@ -6,4 +6,8 @@ public interface ConfigPropertiesService {
 
 	Path getMessageOutputDirectory();
 
+	String getClientPort();
+
+	String getClientIp();
+
 }

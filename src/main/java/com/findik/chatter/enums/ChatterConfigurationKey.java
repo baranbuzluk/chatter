@@ -2,7 +2,7 @@ package com.findik.chatter.enums;
 
 public enum ChatterConfigurationKey {
 
-	MESSAGE_OUTPUT_PATH("message.output.key"), CLIENT_PORT("client.port"), CLIENT_IP("client.ip"),
+	MESSAGE_OUTPUT_PATH("message.output.path"), CLIENT_PORT("client.port"), CLIENT_IP("client.ip"),
 	CONNECT_TIMEOUT("connect_timeout");
 
 	private String key;

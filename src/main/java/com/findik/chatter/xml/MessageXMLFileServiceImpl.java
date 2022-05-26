@@ -2,6 +2,7 @@ package com.findik.chatter.xml;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 
@@ -45,6 +46,11 @@ public class MessageXMLFileServiceImpl implements MessageXMLFileService {
 	@Override
 	public Message readFromXml(File xml) {
 		return (Message) xStream.fromXML(xml);
+	}
+
+	@Override
+	public Message readFromXml(InputStream inputStream) {
+		return (Message) xStream.fromXML(inputStream);
 	}
 
 	private String createMessageXmlFileName() {

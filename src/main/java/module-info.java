@@ -8,6 +8,7 @@ module chatter {
 	exports com.findik.chatter.repository;
 	exports com.findik.chatter.controller.chat;
 	exports com.findik.chatter.controller.login;
+	exports com.findik.chatter.socket;
 	exports com.findik.chatter.xml;
 
 	requires transitive java.sql;
@@ -37,6 +38,7 @@ module chatter {
 	opens com.findik.chatter.repository;
 	opens com.findik.chatter.controller.chat;
 	opens com.findik.chatter.controller.login;
+	opens com.findik.chatter.socket;
 	opens com.findik.chatter.xml;
 	opens com.findik.chatter.listener;
 	opens com.findik.chatter.enums;

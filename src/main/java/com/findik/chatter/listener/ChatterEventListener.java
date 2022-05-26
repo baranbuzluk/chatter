@@ -1,6 +1,8 @@
 package com.findik.chatter.listener;
 
-public interface EventListener {
+import java.util.EventListener;
+
+public interface ChatterEventListener extends EventListener {
 
 	void handleEvent(EventInfo eventInfo);
 }

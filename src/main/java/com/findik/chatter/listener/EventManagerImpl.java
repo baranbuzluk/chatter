@@ -1,12 +1,13 @@
 package com.findik.chatter.listener;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.findik.chatter.factory.ChatterThreadFactory;
@@ -14,7 +15,7 @@ import com.findik.chatter.factory.ChatterThreadFactory;
 @Component
 public class EventManagerImpl implements EventManager {
 
-	private List<EventListener> eventListeners;
+	private List<ChatterEventListener> chatterEventListeners;
 
 	private BlockingQueue<EventInfo> events;
 
@@ -24,9 +25,7 @@ public class EventManagerImpl implements EventManager {
 
 	private boolean runLoop;
 
-	@Autowired
-	public EventManagerImpl(List<EventListener> eventListeners) {
-		this.eventListeners = eventListeners;
+	public EventManagerImpl() {
 		events = new LinkedBlockingQueue<>();
 		eventHandlerThread = Executors.newCachedThreadPool(ChatterThreadFactory.newEventHandlerThread());
 		startNotifyingListeners();
@@ -41,7 +40,7 @@ public class EventManagerImpl implements EventManager {
 		try {
 			while (runLoop) {
 				EventInfo eventInfo = events.take();
-				eventListeners.forEach(e -> eventHandlerThread.execute(() -> e.handleEvent(eventInfo)));
+				chatterEventListeners.forEach(e -> eventHandlerThread.execute(() -> e.handleEvent(eventInfo)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,7 +49,7 @@ public class EventManagerImpl implements EventManager {
 
 	@Override
 	public void stopNotifyingListeners() {
-		if (eventListenerThread != null) {
+		if (eventListenerThread != null && runLoop) {
 			runLoop = false;
 			eventListenerThread = null;
 		}
@@ -58,12 +57,30 @@ public class EventManagerImpl implements EventManager {
 
 	@Override
 	public void startNotifyingListeners() {
-		if (eventListenerThread == null) {
+		if (eventListenerThread == null && !runLoop) {
 			runLoop = true;
 			eventListenerThread = ChatterThreadFactory.newDaemonThread("Event Listener Thread",
 					this::runNotifyingEventListenersTask);
 			eventListenerThread.start();
 		}
+	}
+
+	@Override
+	public synchronized void registerListener(ChatterEventListener listener) {
+		if (chatterEventListeners == null)
+			chatterEventListeners = new ArrayList<>();
+
+		ChatterEventListener o = Objects.requireNonNull(listener, "ChatterEventListener can not be null!");
+		if (!chatterEventListeners.contains(o))
+			chatterEventListeners.add(o);
+	}
+
+	@Override
+	public synchronized void unregisterListener(ChatterEventListener listener) {
+		if (chatterEventListeners == null || chatterEventListeners.isEmpty())
+			return;
+		ChatterEventListener o = Objects.requireNonNull(listener, "ChatterEventListener can not be null!");
+		chatterEventListeners.remove(o);
 	}
 
 }

@@ -8,14 +8,16 @@ import com.findik.chatter.core.AbstractController;
 import com.findik.chatter.entity.Account;
 import com.findik.chatter.enums.ChatterEvent;
 import com.findik.chatter.enums.ChatterEventProperties;
+import com.findik.chatter.listener.ChatterEventListener;
 import com.findik.chatter.listener.EventInfo;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController extends AbstractController<LoginService> {
+public class LoginController extends AbstractController<LoginService> implements ChatterEventListener {
 
 	@FXML
 	private Button btnLogin;
@@ -69,6 +71,13 @@ public class LoginController extends AbstractController<LoginService> {
 			return text;
 		}
 		return null;
+	}
+
+	@Override
+	public void handleEvent(EventInfo eventInfo) {
+		if (eventInfo.getEvent() == ChatterEvent.STARTED_APPLICATION) {
+			Platform.runLater(() -> service.showInMainWindow(rootPane));
+		}
 	}
 
 }

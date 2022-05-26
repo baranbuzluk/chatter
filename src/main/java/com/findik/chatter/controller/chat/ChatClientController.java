@@ -7,6 +7,7 @@ import com.findik.chatter.core.AbstractController;
 import com.findik.chatter.entity.Message;
 import com.findik.chatter.enums.ChatterEvent;
 import com.findik.chatter.enums.ChatterEventProperties;
+import com.findik.chatter.listener.ChatterEventListener;
 import com.findik.chatter.listener.EventInfo;
 
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-public class ChatClientController extends AbstractController<ChatClientService> {
+public class ChatClientController extends AbstractController<ChatClientService> implements ChatterEventListener {
 
 	@FXML
 	private Button btnSendMessage;
@@ -28,7 +29,7 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	private TextField txtMessage;
 
 	public ChatClientController(ChatClientService service) throws IOException {
-		super("ChatterClient.fxml", service);
+		super("ChatClient.fxml", service);
 	}
 
 	@FXML
@@ -76,6 +77,19 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 			int lastItemIndex = listViewMessage.getItems().size() - 1;
 			listViewMessage.scrollTo(lastItemIndex);
 		});
+	}
+
+	@Override
+	public void handleEvent(EventInfo eventInfo) {
+		if (eventInfo.getEvent() == ChatterEvent.ADDED_MESSAGE) {
+			Message object = (Message) eventInfo.get(ChatterEventProperties.MESSAGE);
+			service.saveToDatabase(object);
+			service.writeToXml(object);
+		} else if (eventInfo.getEvent() == ChatterEvent.LOGGED_IN_ACCOUNT) {
+			Platform.runLater(() -> service.showMainWindow(getPane()));
+			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
+			setMessages(messagesByCreatedAtAscending);
+		}
 	}
 
 }

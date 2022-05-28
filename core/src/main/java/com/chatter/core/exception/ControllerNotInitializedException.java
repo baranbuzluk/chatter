@@ -1,4 +1,4 @@
-package com.chatter.core;
+package com.chatter.core.exception;
 
 public class ControllerNotInitializedException extends RuntimeException {
 

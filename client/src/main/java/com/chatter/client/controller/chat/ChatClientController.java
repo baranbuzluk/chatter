@@ -82,9 +82,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	@Override
 	public void handleEvent(EventInfo eventInfo) {
 		if (eventInfo.getEvent() == ClientEvent.ADDED_MESSAGE) {
-			Message object = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
-			service.saveToDatabase(object);
-			service.writeToXml(object);
+			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
+			service.sendMessage(message);
 		} else if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
 			Platform.runLater(() -> service.showMainWindow(getPane()));
 			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();

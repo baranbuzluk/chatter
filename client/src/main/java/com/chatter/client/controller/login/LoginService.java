@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.ChatterService;
-import com.chatter.core.ControllerNotInitializedException;
+import com.chatter.core.exception.ControllerNotInitializedException;
 import com.chatter.data.entity.Account;
 import com.chatter.data.repository.AccountRepository;
 import com.chatter.listener.api.EventInfo;

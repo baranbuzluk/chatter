@@ -1,15 +1,15 @@
 module chatter {
-	exports com.findik.chatter.core;
-	exports com.findik.chatter.config;
-	exports com.findik.chatter.entity;
-	exports com.findik.chatter.enums;
-	exports com.findik.chatter.listener;
-	exports com.findik.chatter.main;
-	exports com.findik.chatter.repository;
-	exports com.findik.chatter.controller.chat;
-	exports com.findik.chatter.controller.login;
-	exports com.findik.chatter.socket;
-	exports com.findik.chatter.xml;
+	exports com.chatter.core;
+	exports com.chatter.config;
+	exports com.chatter.entity;
+	exports com.chatter.enums;
+	exports com.chatter.listener;
+	exports com.chatter.main;
+	exports com.chatter.repository;
+	exports com.chatter.controller.chat;
+	exports com.chatter.controller.login;
+	exports com.chatter.socket;
+	exports com.chatter.xml;
 
 	requires transitive java.sql;
 	requires transitive javafx.base;
@@ -31,16 +31,16 @@ module chatter {
 	requires transitive java.instrument;
 	requires transitive xstream;
 
-	opens com.findik.chatter.core;
-	opens com.findik.chatter.config;
-	opens com.findik.chatter.entity;
-	opens com.findik.chatter.main;
-	opens com.findik.chatter.repository;
-	opens com.findik.chatter.controller.chat;
-	opens com.findik.chatter.controller.login;
-	opens com.findik.chatter.socket;
-	opens com.findik.chatter.xml;
-	opens com.findik.chatter.listener;
-	opens com.findik.chatter.enums;
+	opens com.chatter.core;
+	opens com.chatter.config;
+	opens com.chatter.entity;
+	opens com.chatter.main;
+	opens com.chatter.repository;
+	opens com.chatter.controller.chat;
+	opens com.chatter.controller.login;
+	opens com.chatter.socket;
+	opens com.chatter.xml;
+	opens com.chatter.listener;
+	opens com.chatter.enums;
 
 }

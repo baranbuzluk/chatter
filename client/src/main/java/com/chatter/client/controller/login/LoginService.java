@@ -1,6 +1,5 @@
 package com.chatter.client.controller.login;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.ChatterService;
-import com.chatter.core.exception.ControllerNotInitializedException;
 import com.chatter.data.entity.Account;
 import com.chatter.data.repository.AccountRepository;
 import com.chatter.listener.api.EventInfo;
@@ -33,13 +31,8 @@ public class LoginService implements ChatterService {
 		this.accountRepository = accountRepository;
 		this.mainWindowService = mainWindowService;
 		this.eventManager = eventManager;
-		try {
-			this.controller = new LoginController(this);
-			eventManager.registerListener(controller);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new ControllerNotInitializedException();
-		}
+		this.controller = new LoginController(this);
+		eventManager.registerListener(controller);
 	}
 
 	public Account getByUsername(String username) {

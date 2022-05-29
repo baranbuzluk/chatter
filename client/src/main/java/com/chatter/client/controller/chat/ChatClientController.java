@@ -1,6 +1,5 @@
 package com.chatter.client.controller.chat;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.chatter.client.enums.ClientEvent;
@@ -28,7 +27,7 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	@FXML
 	private TextField txtMessage;
 
-	public ChatClientController(ChatClientService service) throws IOException {
+	public ChatClientController(ChatClientService service) {
 		super("ChatClient.fxml", service);
 	}
 
@@ -68,7 +67,7 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	}
 
 	public void setMessages(List<Message> messages) {
-		if (messages == null || messages.isEmpty()) {
+		if (messages == null || messages.isEmpty() || listViewMessage == null) {
 			return;
 		}
 		Platform.runLater(() -> {

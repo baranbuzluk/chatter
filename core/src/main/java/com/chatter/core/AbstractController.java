@@ -1,6 +1,5 @@
 package com.chatter.core;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import javafx.fxml.FXML;
@@ -14,11 +13,15 @@ public abstract class AbstractController<T extends ChatterService> {
 
 	protected T service;
 
-	protected AbstractController(String fxmlName, T service) throws IOException {
-		this.service = Objects.requireNonNull(service);
-		FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
-		loader.setController(this);
-		loader.load();
+	protected AbstractController(String fxmlName, T service) {
+		try {
+			this.service = Objects.requireNonNull(service, "service can not be null!");
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
+			loader.setController(this);
+			loader.load();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Pane getPane() {

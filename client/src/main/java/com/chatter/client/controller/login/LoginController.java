@@ -1,7 +1,5 @@
 package com.chatter.client.controller.login;
 
-import java.io.IOException;
-
 import org.springframework.util.StringUtils;
 
 import com.chatter.client.enums.ClientEvent;
@@ -28,7 +26,7 @@ public class LoginController extends AbstractController<LoginService> implements
 	@FXML
 	private TextField txtUsername;
 
-	public LoginController(LoginService service) throws IOException {
+	public LoginController(LoginService service) {
 		super("Login.fxml", service);
 	}
 

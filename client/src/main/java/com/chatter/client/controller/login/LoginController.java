@@ -1,7 +1,5 @@
 package com.chatter.client.controller.login;
 
-import org.springframework.util.StringUtils;
-
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.core.AbstractController;
@@ -32,43 +30,25 @@ public class LoginController extends AbstractController<LoginService> implements
 
 	@FXML
 	private void initialize() {
-		btnLogin.setOnMouseClicked(e -> {
-			Account account = getAccount();
-			if (validateAccount(account)) {
-				executeLoginOperations(account);
-			}
-		});
+		btnLogin.setOnMouseClicked(e -> executeLoginOperations());
 	}
 
-	private void executeLoginOperations(Account account) {
+	private void executeLoginOperations() {
+		Account account = LoginHelper.getAccountFromFields(txtUsername, txtPassword);
+		if (!LoginHelper.validateAccount(account))
+			return;
+
 		String username = account.getUsername();
 		Account accountFromDb = service.getByUsername(username);
 		if (account.equals(accountFromDb)) {
-			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
-			event.put(ClientEventProperties.ACCOUNT, accountFromDb);
-			service.sendEvent(event);
+			sendLoginInEvent(accountFromDb);
 		}
 	}
 
-	private boolean validateAccount(Account account) {
-		String username = account.getUsername();
-		String password = account.getPassword();
-		boolean hasUsername = username != null && StringUtils.hasText(username);
-		boolean hasPassword = password != null && StringUtils.hasText(password);
-		return hasUsername && hasPassword;
-	}
-
-	public Account getAccount() {
-		String username = getOnlyText(txtUsername.getText());
-		String password = getOnlyText(txtPassword.getText());
-		return new Account(username, password);
-	}
-
-	private String getOnlyText(String text) {
-		if (StringUtils.hasText(text)) {
-			return text;
-		}
-		return null;
+	private void sendLoginInEvent(Account accountFromDb) {
+		EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
+		event.put(ClientEventProperties.ACCOUNT, accountFromDb);
+		service.sendEvent(event);
 	}
 
 	@Override

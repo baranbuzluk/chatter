@@ -60,12 +60,12 @@ public class Account {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof Account)) {
+		if (!(obj instanceof Account o)) {
 			return false;
 		} else if (obj == this) {
 			return true;
 		}
-		Account o = (Account) obj;
+//		Account o = (Account) obj;
 		return this.username.equals(o.username) && this.password.equals(o.password);
 	}
 

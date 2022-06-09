@@ -9,9 +9,13 @@ import com.chatter.listener.api.EventListener;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class LoginController extends AbstractController<LoginService> implements EventListener {
 
@@ -31,9 +35,12 @@ public class LoginController extends AbstractController<LoginService> implements
 	@FXML
 	private void initialize() {
 		btnLogin.setOnMouseClicked(e -> executeLoginOperations());
+		txtPassword.setOnKeyPressed(e -> txtPasswordKeyPressed(e));
+		txtUsername.setOnKeyPressed(e -> txtUsernameKeyPressed(e));
 	}
 
 	private void executeLoginOperations() {
+		alertMessage();
 		Account account = LoginHelper.getAccountFromFields(txtUsername, txtPassword);
 		if (!LoginHelper.validateAccount(account))
 			return;
@@ -55,6 +62,38 @@ public class LoginController extends AbstractController<LoginService> implements
 	public void handleEvent(EventInfo eventInfo) {
 		if (eventInfo.getEvent() == ClientEvent.STARTED_APPLICATION) {
 			Platform.runLater(() -> service.showInMainWindow(rootPane));
+		}
+	}
+
+	public void alertMessage() {
+		String username = txtUsername.getText();
+		String password = txtPassword.getText();
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("INFORMATION");
+		if (username.isEmpty() && password.isEmpty()) {
+			alert.setHeaderText("USERNAME and PASSWORD cannot be empty");
+			alert.setContentText("Please enter your USERNAME and PASSWORD !");
+			alert.show();
+		} else if (username.isEmpty()) {
+			alert.setHeaderText("USERNAME cannot be empty");
+			alert.setContentText("Please enter your USERNAME !");
+			alert.showAndWait();
+		} else if (password.isEmpty()) {
+			alert.setHeaderText("PASSWORD cannot be empty");
+			alert.setContentText("Please enter your PASSWORD !");
+			alert.showAndWait();
+		}
+	}
+
+	private void txtPasswordKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			executeLoginOperations();
+		}
+	}
+
+	private void txtUsernameKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			executeLoginOperations();
 		}
 	}
 

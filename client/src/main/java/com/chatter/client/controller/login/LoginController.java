@@ -49,6 +49,8 @@ public class LoginController extends AbstractController<LoginService> implements
 		Account accountFromDb = service.getByUsername(username);
 		if (account.equals(accountFromDb)) {
 			sendLoginInEvent(accountFromDb);
+		} else {
+			errorLogin();
 		}
 	}
 
@@ -95,6 +97,15 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (event.getCode() == KeyCode.ENTER) {
 			executeLoginOperations();
 		}
+	}
+
+	private void errorLogin() {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("ERROR");
+		alert.setHeaderText("Username or password is incorrect ");
+		alert.setContentText("Please enter correct username or password");
+		alert.showAndWait();
+
 	}
 
 }

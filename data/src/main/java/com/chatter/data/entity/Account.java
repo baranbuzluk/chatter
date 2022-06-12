@@ -22,9 +22,6 @@ public class Account {
 	@Column(nullable = false)
 	private String password;
 
-	public Account() {
-	}
-
 	public Account(String username, String password) {
 		setUsername(username);
 		setPassword(password);

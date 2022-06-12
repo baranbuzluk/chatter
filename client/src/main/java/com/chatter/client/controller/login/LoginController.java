@@ -35,16 +35,13 @@ public class LoginController extends AbstractController<LoginService> implements
 	@FXML
 	private void initialize() {
 		btnLogin.setOnMouseClicked(e -> executeLoginOperations());
-		txtPassword.setOnKeyPressed(e -> txtPasswordKeyPressed(e));
-		txtUsername.setOnKeyPressed(e -> txtUsernameKeyPressed(e));
+		btnLogin.setOnKeyPressed(e -> doLoginOperations(e));
+		txtPassword.setOnKeyPressed(e -> doLoginOperations(e));
+		txtUsername.setOnKeyPressed(e -> doLoginOperations(e));
 	}
 
 	private void executeLoginOperations() {
-		alertMessage();
 		Account account = LoginHelper.getAccountFromFields(txtUsername, txtPassword);
-		if (!LoginHelper.validateAccount(account))
-			return;
-
 		String username = account.getUsername();
 		Account accountFromDb = service.getByUsername(username);
 		if (account.equals(accountFromDb)) {
@@ -70,35 +67,9 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
-	public void alertMessage() {
-		String username = txtUsername.getText();
-		String password = txtPassword.getText();
-		String title = "Incorrect Value";
-		if (username.isEmpty() && password.isEmpty()) {
-			String header = "Username and password cannot be empty";
-			String content = "Please enter your username and password";
-			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
-		} else if (username.isEmpty()) {
-			String header = "Username can not be empty";
-			String content = "Please enter your username";
-			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
-		} else if (password.isEmpty()) {
-			String header = "Password can not be empty";
-			String content = "Please enter your password";
-			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
-		}
-	}
-
-	private void txtPasswordKeyPressed(KeyEvent event) {
+	private void doLoginOperations(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
 			executeLoginOperations();
 		}
 	}
-
-	private void txtUsernameKeyPressed(KeyEvent event) {
-		if (event.getCode() == KeyCode.ENTER) {
-			executeLoginOperations();
-		}
-	}
-
 }

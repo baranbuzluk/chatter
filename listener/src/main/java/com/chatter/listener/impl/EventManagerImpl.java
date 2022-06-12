@@ -42,7 +42,10 @@ public class EventManagerImpl implements EventManager {
 		try {
 			while (runLoop) {
 				EventInfo eventInfo = events.take();
-				chatterEventListeners.forEach(e -> eventHandlerThread.execute(() -> e.handleEvent(eventInfo)));
+				for (EventListener eventListener : chatterEventListeners) {
+					Runnable runnable = () -> eventListener.handleEvent(eventInfo);
+					eventHandlerThread.execute(runnable);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

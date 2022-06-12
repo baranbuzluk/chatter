@@ -2,6 +2,7 @@ package com.chatter.client.controller.login;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
+import com.chatter.client.utils.JavaFXUtils;
 import com.chatter.core.AbstractController;
 import com.chatter.data.entity.Account;
 import com.chatter.listener.api.EventInfo;
@@ -9,7 +10,6 @@ import com.chatter.listener.api.EventListener;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -50,7 +50,10 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (account.equals(accountFromDb)) {
 			sendLoginInEvent(accountFromDb);
 		} else {
-			errorLogin();
+			String header = "Username or password is incorrect ";
+			String content = "Please enter correct username or password";
+			String title = "Failed login";
+			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 		}
 	}
 
@@ -70,20 +73,19 @@ public class LoginController extends AbstractController<LoginService> implements
 	public void alertMessage() {
 		String username = txtUsername.getText();
 		String password = txtPassword.getText();
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("INFORMATION");
+		String title = "Incorrect Value";
 		if (username.isEmpty() && password.isEmpty()) {
-			alert.setHeaderText("USERNAME and PASSWORD cannot be empty");
-			alert.setContentText("Please enter your USERNAME and PASSWORD !");
-			alert.show();
+			String header = "Username and password cannot be empty";
+			String content = "Please enter your username and password";
+			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
 		} else if (username.isEmpty()) {
-			alert.setHeaderText("USERNAME cannot be empty");
-			alert.setContentText("Please enter your USERNAME !");
-			alert.showAndWait();
+			String header = "Username can not be empty";
+			String content = "Please enter your username";
+			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
 		} else if (password.isEmpty()) {
-			alert.setHeaderText("PASSWORD cannot be empty");
-			alert.setContentText("Please enter your PASSWORD !");
-			alert.showAndWait();
+			String header = "Password can not be empty";
+			String content = "Please enter your password";
+			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
 		}
 	}
 
@@ -97,15 +99,6 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (event.getCode() == KeyCode.ENTER) {
 			executeLoginOperations();
 		}
-	}
-
-	private void errorLogin() {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("ERROR");
-		alert.setHeaderText("Username or password is incorrect ");
-		alert.setContentText("Please enter correct username or password");
-		alert.showAndWait();
-
 	}
 
 }

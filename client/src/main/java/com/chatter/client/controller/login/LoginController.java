@@ -2,6 +2,7 @@ package com.chatter.client.controller.login;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
+import com.chatter.client.utils.JavaFXUtils;
 import com.chatter.core.AbstractController;
 import com.chatter.data.entity.Account;
 import com.chatter.listener.api.EventInfo;
@@ -9,9 +10,12 @@ import com.chatter.listener.api.EventListener;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class LoginController extends AbstractController<LoginService> implements EventListener {
 
@@ -31,17 +35,22 @@ public class LoginController extends AbstractController<LoginService> implements
 	@FXML
 	private void initialize() {
 		btnLogin.setOnMouseClicked(e -> executeLoginOperations());
+		btnLogin.setOnKeyPressed(e -> doLoginOperations(e));
+		txtPassword.setOnKeyPressed(e -> doLoginOperations(e));
+		txtUsername.setOnKeyPressed(e -> doLoginOperations(e));
 	}
 
 	private void executeLoginOperations() {
 		Account account = LoginHelper.getAccountFromFields(txtUsername, txtPassword);
-		if (!LoginHelper.validateAccount(account))
-			return;
-
 		String username = account.getUsername();
 		Account accountFromDb = service.getByUsername(username);
 		if (account.equals(accountFromDb)) {
 			sendLoginInEvent(accountFromDb);
+		} else {
+			String header = "Username or password is incorrect ";
+			String content = "Please enter correct username or password";
+			String title = "Failed login";
+			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 		}
 	}
 
@@ -58,4 +67,9 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
+	private void doLoginOperations(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			executeLoginOperations();
+		}
+	}
 }

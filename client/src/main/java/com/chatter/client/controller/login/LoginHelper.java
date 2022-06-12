@@ -11,14 +11,6 @@ public final class LoginHelper {
 	private LoginHelper() {
 	}
 
-	public static boolean validateAccount(Account account) {
-		String username = account.getUsername();
-		String password = account.getPassword();
-		boolean hasUsername = username != null && StringUtils.hasText(username);
-		boolean hasPassword = password != null && StringUtils.hasText(password);
-		return hasUsername && hasPassword;
-	}
-
 	public static Account getAccountFromFields(TextField usernameTextField, TextField passwordTextField) {
 		String username = getOnlyText(usernameTextField.getText());
 		String password = getOnlyText(passwordTextField.getText());
@@ -29,6 +21,6 @@ public final class LoginHelper {
 		if (StringUtils.hasText(text)) {
 			return text;
 		}
-		return null;
+		return "";
 	}
 }

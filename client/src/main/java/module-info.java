@@ -5,7 +5,6 @@ module chatter {
 	exports com.chatter.client.controller.login;
 	exports com.chatter.client.config;
 	exports com.chatter.client.connect;
-	exports com.chatter.client.utils;
 
 	requires transitive java.sql;
 	requires transitive spring.data.jpa;
@@ -32,6 +31,5 @@ module chatter {
 	opens com.chatter.client.enums;
 	opens com.chatter.client.config;
 	opens com.chatter.client.connect;
-	opens com.chatter.client.utils;
 
 }

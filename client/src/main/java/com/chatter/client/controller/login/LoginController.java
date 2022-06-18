@@ -2,8 +2,8 @@ package com.chatter.client.controller.login;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
-import com.chatter.client.utils.JavaFXUtils;
 import com.chatter.core.AbstractController;
+import com.chatter.core.util.JavaFXUtils;
 import com.chatter.data.entity.Account;
 import com.chatter.listener.api.EventInfo;
 import com.chatter.listener.api.EventListener;

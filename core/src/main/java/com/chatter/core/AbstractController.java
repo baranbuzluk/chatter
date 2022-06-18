@@ -2,8 +2,9 @@ package com.chatter.core;
 
 import java.util.Objects;
 
+import com.chatter.core.util.JavaFXUtils;
+
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 
 public abstract class AbstractController<T extends ChatterService> {
@@ -16,9 +17,7 @@ public abstract class AbstractController<T extends ChatterService> {
 	protected AbstractController(String fxmlName, T service) {
 		try {
 			this.service = Objects.requireNonNull(service, "service can not be null!");
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlName));
-			loader.setController(this);
-			loader.load();
+			JavaFXUtils.loadFXML(this, fxmlName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

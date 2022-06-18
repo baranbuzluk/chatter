@@ -84,9 +84,10 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
 			service.sendMessage(message);
 		} else if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
-			Platform.runLater(() -> service.showMainWindow(getPane()));
-			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
-			setMessages(messagesByCreatedAtAscending);
+			// FIXME: burakcantemur tarafından düzeltilecektir.
+//			Platform.runLater(() -> service.showMainWindow(getPane()));
+//			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
+//			setMessages(messagesByCreatedAtAscending);
 		}
 	}
 

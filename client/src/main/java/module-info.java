@@ -3,6 +3,7 @@ module chatter {
 	exports com.chatter.client.main;
 	exports com.chatter.client.controller.chat;
 	exports com.chatter.client.controller.login;
+	exports com.chatter.client.controller.registration;
 	exports com.chatter.client.config;
 	exports com.chatter.client.connect;
 
@@ -24,10 +25,12 @@ module chatter {
 	requires transitive data;
 	requires transitive javafx.graphics;
 	requires transitive core;
+	requires javafx.controls;
 
 	opens com.chatter.client.main;
 	opens com.chatter.client.controller.chat;
 	opens com.chatter.client.controller.login;
+	opens com.chatter.client.controller.registration;
 	opens com.chatter.client.enums;
 	opens com.chatter.client.config;
 	opens com.chatter.client.connect;

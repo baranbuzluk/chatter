@@ -27,6 +27,8 @@ public class LoginController extends AbstractController<LoginService> implements
 
 	@FXML
 	private TextField txtUsername;
+	@FXML
+	private Button btnSignUp;
 
 	public LoginController(LoginService service) {
 		super("Login.fxml", service);
@@ -38,6 +40,12 @@ public class LoginController extends AbstractController<LoginService> implements
 		btnLogin.setOnKeyPressed(e -> doLoginOperations(e));
 		txtPassword.setOnKeyPressed(e -> doLoginOperations(e));
 		txtUsername.setOnKeyPressed(e -> doLoginOperations(e));
+		btnSignUp.setOnMouseClicked(e -> doSignUpOperations());
+	}
+
+	private void doSignUpOperations() {
+		EventInfo event = new EventInfo(ClientEvent.REGISTER);
+		service.sendEvent(event);
 	}
 
 	private void executeLoginOperations() {

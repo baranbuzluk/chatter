@@ -19,13 +19,13 @@ import javafx.scene.input.KeyCode;
 public class ChatClientController extends AbstractController<ChatClientService> implements EventListener {
 
 	@FXML
-	private Button btnSendMessage;
+	private ListView<Message> messageListView;
 
 	@FXML
-	private ListView<Message> listViewMessage;
+	private TextField messageTextField;
 
 	@FXML
-	private TextField txtMessage;
+	private Button sendMessageButton;
 
 	public ChatClientController(ChatClientService service) {
 		super("ChatClient.fxml", service);
@@ -33,9 +33,9 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 
 	@FXML
 	private void initialize() {
-		btnSendMessage.setOnMouseClicked(e -> sendMessageOperations());
+		sendMessageButton.setOnMouseClicked(e -> sendMessageOperations());
 
-		txtMessage.setOnKeyPressed(key -> {
+		messageTextField.setOnKeyPressed(key -> {
 			if (key.getCode() == KeyCode.ENTER) {
 				sendMessageOperations();
 			}
@@ -45,8 +45,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	private void sendMessageOperations() {
 		Message message = getMessageFromTxtArea();
 		if (message != null) {
-			listViewMessage.getItems().add(message);
-			listViewMessage.scrollTo(message);
+			messageListView.getItems().add(message);
+			messageListView.scrollTo(message);
 
 			EventInfo eventInfo = new EventInfo(ClientEvent.ADDED_MESSAGE);
 			eventInfo.put(ClientEventProperties.MESSAGE, message);
@@ -55,8 +55,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	}
 
 	private Message getMessageFromTxtArea() {
-		String text = txtMessage.getText().trim();
-		txtMessage.setText("");
+		String text = messageTextField.getText().trim();
+		messageTextField.setText("");
 		if (text == null || text.isBlank()) {
 			return null;
 		}
@@ -67,14 +67,14 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	}
 
 	public void setMessages(List<Message> messages) {
-		if (messages == null || messages.isEmpty() || listViewMessage == null) {
+		if (messages == null || messages.isEmpty() || messageListView == null) {
 			return;
 		}
 		Platform.runLater(() -> {
-			listViewMessage.getItems().clear();
-			listViewMessage.getItems().addAll(messages);
-			int lastItemIndex = listViewMessage.getItems().size() - 1;
-			listViewMessage.scrollTo(lastItemIndex);
+			messageListView.getItems().clear();
+			messageListView.getItems().addAll(messages);
+			int lastItemIndex = messageListView.getItems().size() - 1;
+			messageListView.scrollTo(lastItemIndex);
 		});
 	}
 
@@ -84,9 +84,10 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
 			service.sendMessage(message);
 		} else if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
-			Platform.runLater(() -> service.showMainWindow(getPane()));
-			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
-			setMessages(messagesByCreatedAtAscending);
+			// FIXME: burakcantemur tarafından düzeltilecektir.
+//			Platform.runLater(() -> service.showMainWindow(getPane()));
+//			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
+//			setMessages(messagesByCreatedAtAscending);
 		}
 	}
 

@@ -40,6 +40,14 @@ public class LoginController extends AbstractController<LoginService> implements
 		btnLogin.setOnKeyPressed(e -> doLoginOperations(e));
 		txtPassword.setOnKeyPressed(e -> doLoginOperations(e));
 		txtUsername.setOnKeyPressed(e -> doLoginOperations(e));
+		btnSignUp.setOnKeyPressed(e -> doLoginOperations(e));
+		btnSignUp.setOnKeyPressed(e -> doSignUpOperations(e));
+
+	}
+
+	private void executeSignUpOperations() {
+		EventInfo event = new EventInfo(ClientEvent.REGISTER);
+		service.sendEvent(event);
 
 	}
 
@@ -74,5 +82,13 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (event.getCode() == KeyCode.ENTER) {
 			executeLoginOperations();
 		}
+
+	}
+
+	private void doSignUpOperations(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			executeSignUpOperations();
+		}
+
 	}
 }

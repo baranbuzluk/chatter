@@ -1,46 +1,61 @@
 package com.chatter.client.connect;
 
-import java.io.IOException;
-import java.util.Random;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.client.enums.ClientEvent;
+import com.chatter.client.enums.ClientEventProperties;
+import com.chatter.core.socket.ChatterSocket;
+import com.chatter.core.socket.MessageListener;
+import com.chatter.data.entity.Message;
+import com.chatter.data.util.MessageUtil;
 import com.chatter.listener.api.EventInfo;
 import com.chatter.listener.api.EventListener;
+import com.chatter.listener.api.EventManager;
 
 @Component
-public class ClientConnect implements EventListener {
+public class ClientConnect implements EventListener, MessageListener {
 
-	private String ip;
+	private static final String IP = "127.0.0.1";
 
-	private int port;
+	private static final int PORT = 9999;
 
-	private DataClientSocket dataClientSocket;
+	private ChatterSocket socket;
 
-	private CommunicationClientSocket communicationClientSocket;
+	private EventManager eventManager;
 
-	public ClientConnect() {
-		this.ip = "127.0.0.1";
-		this.port = 9999;
-		dataClientSocket = new DataClientSocket(ip, port);
-		communicationClientSocket = new CommunicationClientSocket(ip, port);
-	}
-
-	public void connect() throws IOException {
-		if (!communicationClientSocket.isConnected()) {
-			communicationClientSocket.connect();
-		}
-		byte[] started = new byte[10];
-		Random random = new Random();
-		random.nextBytes(started);
-		communicationClientSocket.getOutputStream().write(started);
-		communicationClientSocket.getOutputStream().flush();
-
+	@Autowired
+	public ClientConnect(EventManager eventManager) {
+		this.eventManager = eventManager;
+		eventManager.registerListener(this);
+		socket = new ChatterSocket(this);
 	}
 
 	@Override
 	public void handleEvent(EventInfo eventInfo) {
+		if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
+			connectToServer();
+		} else if (eventInfo.getEvent() == ClientEvent.OUTGOING_MESSAGE) {
+			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
+			String parseMessage = MessageUtil.parseMessage(message);
+			socket.sendMessage(parseMessage);
+		}
 
+	}
+
+	private void connectToServer() {
+		socket.disconnect();
+		socket.connect(IP, PORT);
+	}
+
+	@Override
+	public void receivedMessage(String message) {
+		Message incomingMessage = MessageUtil.convertToMessage(message);
+		if (incomingMessage != null) {
+			EventInfo event = new EventInfo(ClientEvent.INCOMING_MESSAGE);
+			event.put(ClientEventProperties.MESSAGE, incomingMessage);
+			eventManager.sendEvent(event);
+		}
 	}
 
 }

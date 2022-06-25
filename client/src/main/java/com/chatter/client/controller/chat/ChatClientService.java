@@ -46,13 +46,13 @@ public class ChatClientService implements ChatterService {
 		eventManager.sendEvent(Objects.requireNonNull(eventInfo, "Can not be null EventInfo!"));
 	}
 
-	private Message saveToDatabase(Message message) {
+	public Message saveToDatabase(Message message) {
 		return messageRepository.saveAndFlush(message);
 	}
 
-	private File writeToXmlFile(Message message) {
+	public File writeToXmlFile(Message message) {
 		Message msg = Objects.requireNonNull(message, "Message can not  be null!");
-		String fileName = generateFileNameForMessage(msg);
+		String fileName = generateFileName(msg);
 		File xmlFile = Paths.get("C:", "CHATTER", fileName).toFile();
 		XmlUtils.writeObjectToFile(msg, xmlFile);
 		return xmlFile;
@@ -66,7 +66,7 @@ public class ChatClientService implements ChatterService {
 		return messageRepository.findAllByOrderByCreatedAtAsc();
 	}
 
-	private String generateFileNameForMessage(Message message) {
+	private String generateFileName(Message message) {
 		Message msg = Objects.requireNonNull(message, "message can not  be null!");
 		StringBuilder fileNameBuilder = new StringBuilder();
 		fileNameBuilder.append("Message");
@@ -76,12 +76,6 @@ public class ChatClientService implements ChatterService {
 		fileNameBuilder.append(msg.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss")));
 		fileNameBuilder.append(".xml");
 		return fileNameBuilder.toString();
-	}
-
-	public void sendMessage(Message message) {
-		Message msg = Objects.requireNonNull(message, "Message can not  be null!");
-		saveToDatabase(msg);
-		writeToXmlFile(msg);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.chatter.client.controller.chat;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
@@ -45,19 +46,21 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 	private void sendMessageOperations() {
 		Message message = getMessageFromTxtArea();
 		if (message != null) {
-			messageListView.getItems().add(message);
-			messageListView.scrollTo(message);
-
-			EventInfo eventInfo = new EventInfo(ClientEvent.ADDED_MESSAGE);
+			saveMessage(message);
+			EventInfo eventInfo = new EventInfo(ClientEvent.OUTGOING_MESSAGE);
 			eventInfo.put(ClientEventProperties.MESSAGE, message);
 			service.sendEvent(eventInfo);
 		}
+		clearMessageTextField();
+	}
+
+	private void clearMessageTextField() {
+		messageTextField.setText("");
 	}
 
 	private Message getMessageFromTxtArea() {
 		String text = messageTextField.getText().trim();
-		messageTextField.setText("");
-		if (text == null || text.isBlank()) {
+		if (text.isEmpty()) {
 			return null;
 		}
 		Message message = new Message();
@@ -70,24 +73,33 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 		if (messages == null || messages.isEmpty() || messageListView == null) {
 			return;
 		}
-		Platform.runLater(() -> {
-			messageListView.getItems().clear();
-			messageListView.getItems().addAll(messages);
-			int lastItemIndex = messageListView.getItems().size() - 1;
-			messageListView.scrollTo(lastItemIndex);
-		});
+
+		messageListView.getItems().clear();
+		messageListView.getItems().addAll(messages);
+		int lastItemIndex = messageListView.getItems().size() - 1;
+		messageListView.scrollTo(lastItemIndex);
 	}
 
 	@Override
 	public void handleEvent(EventInfo eventInfo) {
-		if (eventInfo.getEvent() == ClientEvent.ADDED_MESSAGE) {
+		if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
+			Platform.runLater(() -> {
+				service.showMainWindow(getPane());
+				setMessages(service.findAllByOrderByCreatedAtAsc());
+			});
+		} else if (eventInfo.getEvent() == ClientEvent.INCOMING_MESSAGE) {
 			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
-			service.sendMessage(message);
-		} else if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
-			Platform.runLater(() -> service.showMainWindow(getPane()));
-			List<Message> messagesByCreatedAtAscending = service.findAllByOrderByCreatedAtAsc();
-			setMessages(messagesByCreatedAtAscending);
+			Platform.runLater(() -> saveMessage(message));
 		}
+	}
+
+	public void saveMessage(Message message) {
+		Objects.requireNonNull(message, "Message can not  be null!");
+
+		messageListView.getItems().add(message);
+		messageListView.scrollTo(message);
+		service.saveToDatabase(message);
+		service.writeToXmlFile(message);
 	}
 
 }

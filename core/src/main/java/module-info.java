@@ -1,9 +1,11 @@
 module core {
 	exports com.chatter.core;
 	exports com.chatter.core.util;
+	exports com.chatter.core.socket;
 
 	opens com.chatter.core;
 	opens com.chatter.core.util;
+	opens com.chatter.core.socket;
 
 	requires transitive javafx.base;
 	requires transitive javafx.controls;

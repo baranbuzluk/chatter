@@ -40,7 +40,7 @@ public class LoginController extends AbstractController<LoginService> implements
 		btnLogin.setOnKeyPressed(e -> doLoginOperations(e));
 		txtPassword.setOnKeyPressed(e -> doLoginOperations(e));
 		txtUsername.setOnKeyPressed(e -> doLoginOperations(e));
-		btnSignUp.setOnKeyPressed(e -> doLoginOperations(e));
+		btnSignUp.setOnMouseClicked(e -> executeSignUpOperations());
 		btnSignUp.setOnKeyPressed(e -> doSignUpOperations(e));
 
 	}

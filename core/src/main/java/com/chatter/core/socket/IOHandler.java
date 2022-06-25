@@ -56,6 +56,7 @@ public abstract class IOHandler {
 			}
 			runLoop = false;
 			bufferedReader = null;
+			receivedMessage("STOP");
 		}
 	}
 }

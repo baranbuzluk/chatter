@@ -1,10 +1,14 @@
 package com.chatter.client.controller.registration;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.ChatterService;
+import com.chatter.data.entity.Account;
+import com.chatter.data.repository.AccountRepository;
 import com.chatter.listener.api.EventInfo;
 import com.chatter.listener.api.EventManager;
 
@@ -12,6 +16,8 @@ import javafx.scene.layout.Pane;
 
 @Component
 public class RegistrationService implements ChatterService {
+	@Autowired
+	private AccountRepository accountRepository;
 
 	private EventManager eventManager;
 
@@ -25,6 +31,10 @@ public class RegistrationService implements ChatterService {
 		eventManager.registerListener(controller);
 	}
 
+	public Account getByUsername(String username) {
+		return accountRepository.getByUsername(Objects.requireNonNull(username));
+	}
+
 	public void showPaneInMainScene(Pane pane) {
 		mainViewService.show(pane);
 	}
@@ -32,4 +42,9 @@ public class RegistrationService implements ChatterService {
 	public void sendEvent(EventInfo eventInfo) {
 		eventManager.sendEvent(eventInfo);
 	}
+
+	public void registerAccount(Account account) {
+		accountRepository.save(account);
+	}
+
 }

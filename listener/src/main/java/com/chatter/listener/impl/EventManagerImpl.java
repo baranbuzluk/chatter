@@ -10,14 +10,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.springframework.stereotype.Component;
 
+import com.chatter.listener.api.ChatterEventListener;
 import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventListener;
 import com.chatter.listener.api.EventManager;
 
 @Component
 public class EventManagerImpl implements EventManager {
 
-	private List<EventListener> chatterEventListeners;
+	private List<ChatterEventListener> chatterEventListeners;
 
 	private BlockingQueue<EventInfo> events;
 
@@ -28,6 +28,7 @@ public class EventManagerImpl implements EventManager {
 	private boolean runLoop;
 
 	public EventManagerImpl() {
+		chatterEventListeners = new ArrayList<>();
 		events = new LinkedBlockingQueue<>();
 		eventHandlerThread = Executors.newCachedThreadPool(ListenerThreadFactory.newEventHandlerThread());
 		startNotifyingListeners();
@@ -51,7 +52,7 @@ public class EventManagerImpl implements EventManager {
 	}
 
 	private void notifyEventListeners(EventInfo eventInfo) {
-		for (EventListener eventListener : chatterEventListeners) {
+		for (ChatterEventListener eventListener : chatterEventListeners) {
 			Runnable runnable = () -> eventListener.handleEvent(eventInfo);
 			eventHandlerThread.execute(runnable);
 		}
@@ -76,20 +77,17 @@ public class EventManagerImpl implements EventManager {
 	}
 
 	@Override
-	public synchronized void registerListener(EventListener listener) {
-		if (chatterEventListeners == null)
-			chatterEventListeners = new ArrayList<>();
-
-		EventListener o = Objects.requireNonNull(listener, "ChatterEventListener can not be null!");
+	public synchronized void registerListener(ChatterEventListener listener) {
+		ChatterEventListener o = Objects.requireNonNull(listener, "listener must not be null!");
 		if (!chatterEventListeners.contains(o))
 			chatterEventListeners.add(o);
 	}
 
 	@Override
-	public synchronized void unregisterListener(EventListener listener) {
-		if (chatterEventListeners == null || chatterEventListeners.isEmpty())
+	public synchronized void unregisterListener(ChatterEventListener listener) {
+		if (chatterEventListeners.isEmpty())
 			return;
-		EventListener o = Objects.requireNonNull(listener, "ChatterEventListener can not be null!");
+		ChatterEventListener o = Objects.requireNonNull(listener, "listener must not be null!");
 		chatterEventListeners.remove(o);
 	}
 

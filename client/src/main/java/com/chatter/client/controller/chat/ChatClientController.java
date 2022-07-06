@@ -8,7 +8,7 @@ import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.core.AbstractController;
 import com.chatter.data.entity.Message;
 import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventListener;
+import com.chatter.listener.api.ChatterEventListener;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -17,7 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-public class ChatClientController extends AbstractController<ChatClientService> implements EventListener {
+public class ChatClientController extends AbstractController<ChatClientService> implements ChatterEventListener {
 
 	@FXML
 	private ListView<Message> messageListView;

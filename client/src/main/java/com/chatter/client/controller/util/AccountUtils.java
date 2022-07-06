@@ -1,4 +1,4 @@
-package com.chatter.client.controller.login;
+package com.chatter.client.controller.util;
 
 import org.springframework.util.StringUtils;
 
@@ -6,9 +6,9 @@ import com.chatter.data.entity.Account;
 
 import javafx.scene.control.TextField;
 
-public final class LoginHelper {
+public final class AccountUtils {
 
-	private LoginHelper() {
+	private AccountUtils() {
 	}
 
 	public static Account createAccountFromFields(TextField usernameTextField, TextField passwordTextField) {
@@ -17,7 +17,7 @@ public final class LoginHelper {
 		return new Account(username, password);
 	}
 
-	public static String getOnlyText(String text) {
+	private static String getOnlyText(String text) {
 		if (StringUtils.hasText(text)) {
 			return text;
 		}

@@ -1,12 +1,13 @@
 package com.chatter.client.controller.login;
 
+import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.core.AbstractController;
 import com.chatter.core.util.JavaFXUtils;
 import com.chatter.data.entity.Account;
 import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventListener;
+import com.chatter.listener.api.ChatterEventListener;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -18,7 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class LoginController extends AbstractController<LoginService> implements EventListener {
+public class LoginController extends AbstractController<LoginService> implements ChatterEventListener {
 
 	@FXML
 	private Button loginButton;
@@ -65,7 +66,7 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	private void executeLoginOperations() {
-		Account accountFromFields = LoginHelper.createAccountFromFields(usernameTextField, passwordTextField);
+		Account accountFromFields = AccountUtils.createAccountFromFields(usernameTextField, passwordTextField);
 		if (service.checkAccount(accountFromFields)) {
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);

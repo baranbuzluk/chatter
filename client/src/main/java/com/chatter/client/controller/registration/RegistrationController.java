@@ -1,11 +1,12 @@
 package com.chatter.client.controller.registration;
 
+import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.AbstractController;
 import com.chatter.core.util.JavaFXUtils;
 import com.chatter.data.entity.Account;
 import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventListener;
+import com.chatter.listener.api.ChatterEventListener;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -16,7 +17,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class RegistrationController extends AbstractController<RegistrationService> implements EventListener {
+public class RegistrationController extends AbstractController<RegistrationService> implements ChatterEventListener {
 	@FXML
 	private TextField usernameTextField;
 
@@ -86,8 +87,14 @@ public class RegistrationController extends AbstractController<RegistrationServi
 
 	}
 
-	private void registerAccount() {
-		Account account = RegistrationHelper.getAccountFromFields(usernameTextField, passwordTextField);
-		service.registerAccount(account);
+	private boolean registerAccount() {
+		try {
+			Account account = AccountUtils.createAccountFromFields(usernameTextField, passwordTextField);
+			service.registerAccount(account);
+			return true;
+		} catch (Exception e) {
+			// Exception will not be handled
+		}
+		return false;
 	}
 }

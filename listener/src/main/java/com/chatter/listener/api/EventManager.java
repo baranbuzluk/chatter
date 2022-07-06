@@ -8,7 +8,7 @@ public interface EventManager {
 
 	void startNotifyingListeners();
 
-	void registerListener(EventListener listener);
+	void registerListener(ChatterEventListener listener);
 
-	void unregisterListener(EventListener listener);
+	void unregisterListener(ChatterEventListener listener);
 }

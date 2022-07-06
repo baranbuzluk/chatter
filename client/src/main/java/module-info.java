@@ -4,6 +4,7 @@ module chatter {
 	exports com.chatter.client.controller.chat;
 	exports com.chatter.client.controller.login;
 	exports com.chatter.client.controller.registration;
+	exports com.chatter.client.controller.util;
 	exports com.chatter.client.config;
 	exports com.chatter.client.connect;
 
@@ -31,6 +32,7 @@ module chatter {
 	opens com.chatter.client.controller.chat;
 	opens com.chatter.client.controller.login;
 	opens com.chatter.client.controller.registration;
+	opens com.chatter.client.controller.util;
 	opens com.chatter.client.enums;
 	opens com.chatter.client.config;
 	opens com.chatter.client.connect;

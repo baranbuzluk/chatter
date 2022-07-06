@@ -10,11 +10,11 @@ import com.chatter.core.socket.MessageListener;
 import com.chatter.data.entity.Message;
 import com.chatter.data.util.MessageUtil;
 import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventListener;
+import com.chatter.listener.api.ChatterEventListener;
 import com.chatter.listener.api.EventManager;
 
 @Component
-public class ClientConnect implements EventListener, MessageListener {
+public class ClientConnect implements ChatterEventListener, MessageListener {
 
 	private static final String IP = "127.0.0.1";
 

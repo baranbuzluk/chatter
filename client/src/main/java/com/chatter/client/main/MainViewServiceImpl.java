@@ -21,8 +21,6 @@ public class MainViewServiceImpl implements MainViewService {
 
 	private Stage mainStage;
 
-	private Scene mainScene;
-
 	@Autowired
 	public MainViewServiceImpl(EventManager eventManager) {
 		this.eventManager = eventManager;
@@ -30,25 +28,28 @@ public class MainViewServiceImpl implements MainViewService {
 
 	@Override
 	public void show(Pane pane) {
+		if (this.mainStage == null)
+			return;
+
 		Objects.requireNonNull(pane, "pane can not be null!");
-		if (mainStage != null) {
-			mainScene.setRoot(pane);
-			mainStage.sizeToScene();
-			mainStage.show();
-			mainStage.centerOnScreen();
-			mainStage.toFront();
-		}
+		Scene scene = this.mainStage.getScene();
+		scene.setRoot(pane);
+		this.mainStage.sizeToScene();
+		this.mainStage.show();
+		this.mainStage.centerOnScreen();
+		this.mainStage.toFront();
+
 	}
 
 	@Override
 	public void setMainStage(Stage stage) {
-		mainStage = Objects.requireNonNull(stage, "stage can not be null!");
+		this.mainStage = Objects.requireNonNull(stage, "stage must not be null!");
 		StackPane dummy = new StackPane();
-		this.mainScene = new Scene(dummy);
-		mainStage.setScene(mainScene);
-		EventInfo startedApplicationEvent = new EventInfo(ClientEvent.STARTED_APPLICATION);
-		eventManager.sendEvent(startedApplicationEvent);
+		Scene scene = new Scene(dummy);
+		this.mainStage.setScene(scene);
 
+		EventInfo startedApplicationEvent = new EventInfo(ClientEvent.STARTED_APPLICATION);
+		this.eventManager.sendEvent(startedApplicationEvent);
 	}
 
 }

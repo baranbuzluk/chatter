@@ -35,20 +35,25 @@ public class EventManagerImpl implements EventManager {
 
 	@Override
 	public void sendEvent(EventInfo eventInfo) {
-		events.add(eventInfo);
+		EventInfo event = Objects.requireNonNull(eventInfo, "eventInfo must not be null!");
+		events.add(event);
 	}
 
 	private void runNotifyingEventListenersTask() {
 		try {
 			while (runLoop) {
 				EventInfo eventInfo = events.take();
-				for (EventListener eventListener : chatterEventListeners) {
-					Runnable runnable = () -> eventListener.handleEvent(eventInfo);
-					eventHandlerThread.execute(runnable);
-				}
+				notifyEventListeners(eventInfo);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void notifyEventListeners(EventInfo eventInfo) {
+		for (EventListener eventListener : chatterEventListeners) {
+			Runnable runnable = () -> eventListener.handleEvent(eventInfo);
+			eventHandlerThread.execute(runnable);
 		}
 	}
 

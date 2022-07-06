@@ -1,7 +1,5 @@
 package com.chatter.client.controller.login;
 
-import java.util.Objects;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,15 +33,21 @@ public class LoginService implements ChatterService {
 		eventManager.registerListener(controller);
 	}
 
-	public Account getByUsername(String username) {
-		return accountRepository.getByUsername(Objects.requireNonNull(username));
-	}
-
 	public void sendEvent(EventInfo event) {
-		eventManager.sendEvent(Objects.requireNonNull(event));
+		eventManager.sendEvent(event);
 	}
 
 	public void showInMainWindow(Pane rootPane) {
-		mainWindowService.show(Objects.requireNonNull(rootPane, "Pane can not be null!"));
+		mainWindowService.show(rootPane);
+	}
+
+	public boolean checkAccount(Account account) {
+		if (account == null) {
+			return false;
+		}
+		String username = account.getUsername();
+		Account fromDB = accountRepository.getByUsername(username);
+		return account.equals(fromDB);
+
 	}
 }

@@ -66,7 +66,6 @@ public class Account {
 		} else if (obj == this) {
 			return true;
 		}
-//		Account o = (Account) obj;
 		return this.username.equals(o.username) && this.password.equals(o.password);
 	}
 

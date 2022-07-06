@@ -11,7 +11,7 @@ public final class LoginHelper {
 	private LoginHelper() {
 	}
 
-	public static Account getAccountFromFields(TextField usernameTextField, TextField passwordTextField) {
+	public static Account createAccountFromFields(TextField usernameTextField, TextField passwordTextField) {
 		String username = getOnlyText(usernameTextField.getText());
 		String password = getOnlyText(passwordTextField.getText());
 		return new Account(username, password);

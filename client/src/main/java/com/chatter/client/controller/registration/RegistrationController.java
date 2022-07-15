@@ -3,14 +3,12 @@ package com.chatter.client.controller.registration;
 import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.AbstractController;
-import com.chatter.core.util.JavaFXUtils;
 import com.chatter.data.entity.Account;
-import com.chatter.listener.api.EventInfo;
 import com.chatter.listener.api.ChatterEventListener;
+import com.chatter.listener.api.EventInfo;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -41,41 +39,43 @@ public class RegistrationController extends AbstractController<RegistrationServi
 		passwordTextField.setOnKeyPressed(e -> doRegistrationOperations(e));
 		retypePasswordTextField.setOnKeyPressed(e -> doRegistrationOperations(e));
 		registerButton.setOnKeyPressed(e -> doRegistrationOperations(e));
-		registerButton
-				.setOnMouseClicked(e -> executeregistrationOperations(passwordTextField, retypePasswordTextField));
+		registerButton.setOnMouseClicked(e -> executeregistrationOperations());
 
 	}
 
-	private void executeregistrationOperations(PasswordField passwordTextField, PasswordField retypePasswordTextField) {
+	private void executeregistrationOperations() {
 		String password = passwordTextField.getText();
 		String retypePassword = retypePasswordTextField.getText();
-		if (usernameTextField.getText().isEmpty() || passwordTextField.getText().isEmpty()) {
-			String title = "Failed Sign Up";
-			String header = "Your  username or password cannot be empty";
-			String content = "Please enter username or password";
-			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 
-		} else if (!password.equals(retypePassword)) {
+		boolean isEmptyUsernameOrPassword = usernameTextField.getText().isEmpty()
+				|| passwordTextField.getText().isEmpty();
 
-			String title = "Failed Sign Up";
-			String header = "Your passwords do not match";
-			String content = "Please re-enter passwords";
-			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
+		boolean isAccountWithTheSameUsername = service.getByUsername(usernameTextField.getText()) != null;
+
+//		boolean isPasswordValidation = !password.equals(retypePassword);
+
+		boolean isPasswordMatching = password.equals(retypePassword);
+
+		if (isEmptyUsernameOrPassword) {
+			RegistrationControllerUtils.showAlertMessageRequestUsernameOrPasswordEntry();
+
+		} else if (!isPasswordMatching) {
+			RegistrationControllerUtils.showAlertMessageReEnterPasswords();
+
+		} else if (isAccountWithTheSameUsername) {
+
+			RegistrationControllerUtils.showAlertMessageUsernameAlreadyExists();
 		} else {
 			registerAccount();
-			String title = "Successful Sign Up";
-			String header = "You have successfully registered";
-			String content = "";
-			JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
+			RegistrationControllerUtils.showAlertMessageSuccessfulSignUp();
 			EventInfo event = new EventInfo(ClientEvent.STARTED_APPLICATION);
 			service.sendEvent(event);
 		}
-
 	}
 
 	private void doRegistrationOperations(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
-			executeregistrationOperations(passwordTextField, retypePasswordTextField);
+			executeregistrationOperations();
 		}
 	}
 

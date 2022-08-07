@@ -6,7 +6,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public final class RegistrationControllerUtils {
 
-	public static void showAlertMessageRequestUsernameOrPasswordEntry() {
+	public static void showUsernameOrPasswordEmptyAlertMessage() {
 
 		String title = "Failed Sign Up";
 		String header = "Your  username or password cannot be empty";
@@ -14,25 +14,32 @@ public final class RegistrationControllerUtils {
 		JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 	}
 
-	public static void showAlertMessageReEnterPasswords() {
+	public static void showReEnterPasswordsAlertMessage() {
 		String title = "Failed Sign Up";
 		String header = "Your passwords do not match";
 		String content = "Please re-enter passwords";
 		JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 	}
 
-	public static void showAlertMessageSuccessfulSignUp() {
+	public static void showSuccessfulSignUpAlertMessage() {
 		String title = "Successful Sign Up";
 		String header = "You have successfully registered";
 		String content = "";
 		JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
 	}
 
-	public static void showAlertMessageUsernameAlreadyExists() {
+	public static void showUsernameAlreadyExistsAlertMessage() {
 		String title = "Failed Sign Up";
 		String header = "Username already exists";
 		String content = "";
 		JavaFXUtils.showAlertMessage(AlertType.INFORMATION, title, header, content);
 
+	}
+
+	public static void showRegistrationFailedAlertMessage() {
+		String title = "Failed Sign Up";
+		String header = "Registration Failed";
+		String content = " ";
+		JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 	}
 }

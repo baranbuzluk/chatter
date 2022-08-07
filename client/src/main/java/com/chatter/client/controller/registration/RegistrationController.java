@@ -39,43 +39,48 @@ public class RegistrationController extends AbstractController<RegistrationServi
 		passwordTextField.setOnKeyPressed(e -> doRegistrationOperations(e));
 		retypePasswordTextField.setOnKeyPressed(e -> doRegistrationOperations(e));
 		registerButton.setOnKeyPressed(e -> doRegistrationOperations(e));
-		registerButton.setOnMouseClicked(e -> executeregistrationOperations());
+		registerButton.setOnMouseClicked(e -> executeRegistrationOperations());
 
 	}
 
-	private void executeregistrationOperations() {
+	private void executeRegistrationOperations() {
+
+		String username = usernameTextField.getText();
 		String password = passwordTextField.getText();
-		String retypePassword = retypePasswordTextField.getText();
-
-		boolean isEmptyUsernameOrPassword = usernameTextField.getText().isEmpty()
-				|| passwordTextField.getText().isEmpty();
-
-		boolean isAccountWithTheSameUsername = service.getByUsername(usernameTextField.getText()) != null;
-
-//		boolean isPasswordValidation = !password.equals(retypePassword);
-
-		boolean isPasswordMatching = password.equals(retypePassword);
+		boolean isEmptyUsernameOrPassword = username.isEmpty() || password.isEmpty();
 
 		if (isEmptyUsernameOrPassword) {
-			RegistrationControllerUtils.showAlertMessageRequestUsernameOrPasswordEntry();
+			RegistrationControllerUtils.showUsernameOrPasswordEmptyAlertMessage();
+			return;
+		}
 
-		} else if (!isPasswordMatching) {
-			RegistrationControllerUtils.showAlertMessageReEnterPasswords();
+		boolean hasUsername = service.existsByUsername(username);
+		if (hasUsername) {
+			RegistrationControllerUtils.showUsernameAlreadyExistsAlertMessage();
+			return;
+		}
 
-		} else if (isAccountWithTheSameUsername) {
+		String retypePassword = retypePasswordTextField.getText();
+		boolean isEqualsPassword = password.equals(retypePassword);
+		if (!isEqualsPassword) {
+			RegistrationControllerUtils.showReEnterPasswordsAlertMessage();
+			return;
+		}
 
-			RegistrationControllerUtils.showAlertMessageUsernameAlreadyExists();
-		} else {
-			registerAccount();
-			RegistrationControllerUtils.showAlertMessageSuccessfulSignUp();
+		boolean isRegistered = registerAccount();
+		if (isRegistered) {
+			RegistrationControllerUtils.showSuccessfulSignUpAlertMessage();
 			EventInfo event = new EventInfo(ClientEvent.STARTED_APPLICATION);
 			service.sendEvent(event);
+		} else {
+			RegistrationControllerUtils.showRegistrationFailedAlertMessage();
 		}
+
 	}
 
 	private void doRegistrationOperations(KeyEvent event) {
 		if (event.getCode() == KeyCode.ENTER) {
-			executeregistrationOperations();
+			executeRegistrationOperations();
 		}
 	}
 

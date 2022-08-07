@@ -31,8 +31,8 @@ public class RegistrationService implements ChatterService {
 		eventManager.registerListener(controller);
 	}
 
-	public Account getByUsername(String username) {
-		return accountRepository.getByUsername(Objects.requireNonNull(username));
+	public boolean existsByUsername(String username) {
+		return accountRepository.existsByUsername(Objects.requireNonNull(username));
 	}
 
 	public void showPaneInMainScene(Pane pane) {

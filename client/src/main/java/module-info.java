@@ -5,7 +5,6 @@ module chatter {
 	exports com.chatter.client.controller.login;
 	exports com.chatter.client.controller.registration;
 	exports com.chatter.client.controller.util;
-	exports com.chatter.client.config;
 	exports com.chatter.client.connect;
 
 	requires transitive java.sql;
@@ -22,11 +21,9 @@ module chatter {
 	requires transitive java.annotation;
 	requires transitive org.hibernate.orm.core;
 	requires transitive java.instrument;
-	requires transitive listener;
-	requires transitive data;
 	requires transitive javafx.graphics;
 	requires transitive core;
-	requires javafx.controls;
+	requires transitive javafx.controls;
 
 	opens com.chatter.client.main;
 	opens com.chatter.client.controller.chat;
@@ -34,7 +31,6 @@ module chatter {
 	opens com.chatter.client.controller.registration;
 	opens com.chatter.client.controller.util;
 	opens com.chatter.client.enums;
-	opens com.chatter.client.config;
 	opens com.chatter.client.connect;
 
 }

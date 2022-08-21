@@ -1,6 +1,6 @@
 package com.chatter.client.main;
 
-import com.chatter.client.config.ChatterApplicationContext;
+import com.chatter.configuration.ChatterApplicationContext;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

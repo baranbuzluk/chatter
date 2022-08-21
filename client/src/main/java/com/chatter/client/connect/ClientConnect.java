@@ -5,13 +5,13 @@ import org.springframework.stereotype.Component;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
-import com.chatter.core.socket.ChatterSocket;
-import com.chatter.core.socket.MessageListener;
-import com.chatter.data.entity.Message;
-import com.chatter.data.util.MessageUtil;
-import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.ChatterEventListener;
-import com.chatter.listener.api.EventManager;
+import com.chatter.entity.Message;
+import com.chatter.event.listener.ChatterEventListener;
+import com.chatter.event.listener.EventInfo;
+import com.chatter.event.listener.EventManager;
+import com.chatter.socket.ChatterSocket;
+import com.chatter.socket.MessageListener;
+import com.chatter.util.MessageUtil;
 
 @Component
 public class ClientConnect implements ChatterEventListener, MessageListener {

@@ -2,7 +2,7 @@ package com.chatter.client.controller.util;
 
 import org.springframework.util.StringUtils;
 
-import com.chatter.data.entity.Account;
+import com.chatter.entity.Account;
 
 import javafx.scene.control.TextField;
 

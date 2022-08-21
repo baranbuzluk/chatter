@@ -1,11 +1,11 @@
 package com.chatter.client.controller.registration;
 
+import com.chatter.abstracts.AbstractController;
 import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
-import com.chatter.core.AbstractController;
-import com.chatter.data.entity.Account;
-import com.chatter.listener.api.ChatterEventListener;
-import com.chatter.listener.api.EventInfo;
+import com.chatter.entity.Account;
+import com.chatter.event.listener.ChatterEventListener;
+import com.chatter.event.listener.EventInfo;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

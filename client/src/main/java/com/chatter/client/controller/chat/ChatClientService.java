@@ -9,13 +9,13 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.abstracts.ChatterService;
 import com.chatter.client.main.MainViewService;
-import com.chatter.core.ChatterService;
-import com.chatter.core.util.XmlUtils;
-import com.chatter.data.entity.Message;
-import com.chatter.data.repository.MessageRepository;
-import com.chatter.listener.api.EventInfo;
-import com.chatter.listener.api.EventManager;
+import com.chatter.entity.Message;
+import com.chatter.event.listener.EventInfo;
+import com.chatter.event.listener.EventManager;
+import com.chatter.repository.MessageRepository;
+import com.chatter.util.XmlUtils;
 
 import javafx.scene.layout.Pane;
 

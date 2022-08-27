@@ -1,5 +1,7 @@
 package com.chatter.client.controller.login;
 
+import java.text.MessageFormat;
+
 import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
@@ -10,7 +12,7 @@ import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.util.JavaFXUtils;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -38,36 +40,34 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	@FXML
-	private void initialize() {
-		initLoginEventHandler();
-		initSignUpEventHandler();
+	void loginButtonOnAction(ActionEvent event) {
+		executeLoginOperations();
 	}
 
-	private void initSignUpEventHandler() {
-		signUpButton.setOnMouseClicked(e -> service.sendEvent(new EventInfo(ClientEvent.REGISTER)));
-
-		signUpButton.setOnKeyPressed(e -> {
-			if (e.getCode() == KeyCode.ENTER)
-				service.sendEvent(new EventInfo(ClientEvent.REGISTER));
-		});
+	@FXML
+	void rootPaneOnKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			loginButtonOnAction(null);
+		}
 	}
 
-	private void initLoginEventHandler() {
-		loginButton.setOnMouseClicked(e -> executeLoginOperations());
+	@FXML
+	void signUpButtonOnAction(ActionEvent event) {
+		service.sendEvent(new EventInfo(ClientEvent.REGISTER));
+	}
 
-		EventHandler<KeyEvent> loginEnterKeyEventHandler = e -> {
-			if (e.getCode() == KeyCode.ENTER)
-				executeLoginOperations();
-		};
-
-		loginButton.setOnKeyPressed(loginEnterKeyEventHandler);
-		passwordTextField.setOnKeyPressed(loginEnterKeyEventHandler);
-		usernameTextField.setOnKeyPressed(loginEnterKeyEventHandler);
+	@FXML
+	void signUpButtonOnKeyPressed(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER) {
+			signUpButtonOnAction(null);
+		}
 	}
 
 	private void executeLoginOperations() {
 		Account accountFromFields = AccountUtils.createAccountFromFields(usernameTextField, passwordTextField);
 		if (service.checkAccount(accountFromFields)) {
+			String log = MessageFormat.format("{0} logged-in.", accountFromFields.getUsername());
+			logger.info(log);
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
 			service.sendEvent(event);

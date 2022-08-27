@@ -27,6 +27,7 @@ module chatter {
 	requires transitive javafx.fxml;
 	requires transitive org.hibernate.orm.core;
 	requires transitive java.activation;
+	requires transitive org.slf4j;
 
 	opens com.chatter.client.main;
 	opens com.chatter.client.controller.chat;

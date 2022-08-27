@@ -37,5 +37,6 @@ module core {
 	requires transitive spring.jdbc;
 	requires transitive spring.tx;
 	requires transitive spring.beans;
+	requires transitive org.slf4j;
 
 }

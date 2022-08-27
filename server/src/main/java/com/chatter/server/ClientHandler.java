@@ -3,7 +3,7 @@ package com.chatter.server;
 import java.net.Socket;
 import java.util.List;
 
-import com.chatter.socket.IOHandler;
+import com.chatter.core.socket.IOHandler;
 
 public class ClientHandler extends IOHandler {
 

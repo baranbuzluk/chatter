@@ -3,12 +3,12 @@ package com.chatter.client.controller.chat;
 import java.util.List;
 import java.util.Objects;
 
-import com.chatter.abstracts.AbstractController;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
-import com.chatter.entity.Message;
-import com.chatter.event.listener.ChatterEventListener;
-import com.chatter.event.listener.EventInfo;
+import com.chatter.core.abstracts.AbstractController;
+import com.chatter.core.entity.Message;
+import com.chatter.core.event.listener.ChatterEventListener;
+import com.chatter.core.event.listener.EventInfo;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

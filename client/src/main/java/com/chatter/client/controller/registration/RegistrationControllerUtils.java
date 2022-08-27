@@ -1,6 +1,6 @@
 package com.chatter.client.controller.registration;
 
-import com.chatter.util.JavaFXUtils;
+import com.chatter.core.util.JavaFXUtils;
 
 import javafx.scene.control.Alert.AlertType;
 

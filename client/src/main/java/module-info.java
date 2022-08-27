@@ -1,4 +1,6 @@
 module chatter {
+
+	exports com.chatter;
 	exports com.chatter.client.enums;
 	exports com.chatter.client.main;
 	exports com.chatter.client.controller.chat;
@@ -16,14 +18,15 @@ module chatter {
 	requires transitive java.persistence;
 	requires transitive spring.beans;
 	requires transitive spring.data.commons;
-	requires transitive spring.boot.autoconfigure;
+
 	requires transitive spring.core;
-	requires transitive java.annotation;
-	requires transitive org.hibernate.orm.core;
 	requires transitive java.instrument;
 	requires transitive javafx.graphics;
 	requires transitive core;
 	requires transitive javafx.controls;
+	requires transitive javafx.fxml;
+	requires transitive org.hibernate.orm.core;
+	requires transitive java.activation;
 
 	opens com.chatter.client.main;
 	opens com.chatter.client.controller.chat;
@@ -32,5 +35,5 @@ module chatter {
 	opens com.chatter.client.controller.util;
 	opens com.chatter.client.enums;
 	opens com.chatter.client.connect;
-
+	opens com.chatter;
 }

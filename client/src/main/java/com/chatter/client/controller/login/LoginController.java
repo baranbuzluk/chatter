@@ -1,13 +1,13 @@
 package com.chatter.client.controller.login;
 
-import com.chatter.abstracts.AbstractController;
 import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
-import com.chatter.entity.Account;
-import com.chatter.event.listener.ChatterEventListener;
-import com.chatter.event.listener.EventInfo;
-import com.chatter.util.JavaFXUtils;
+import com.chatter.core.abstracts.AbstractController;
+import com.chatter.core.entity.Account;
+import com.chatter.core.event.listener.ChatterEventListener;
+import com.chatter.core.event.listener.EventInfo;
+import com.chatter.core.util.JavaFXUtils;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;

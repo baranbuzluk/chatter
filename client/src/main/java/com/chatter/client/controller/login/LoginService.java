@@ -3,12 +3,12 @@ package com.chatter.client.controller.login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.chatter.abstracts.ChatterService;
 import com.chatter.client.main.MainViewService;
-import com.chatter.entity.Account;
-import com.chatter.event.listener.EventInfo;
-import com.chatter.event.listener.EventManager;
-import com.chatter.repository.AccountRepository;
+import com.chatter.core.abstracts.ChatterService;
+import com.chatter.core.entity.Account;
+import com.chatter.core.event.listener.EventInfo;
+import com.chatter.core.event.listener.EventManager;
+import com.chatter.core.repository.AccountRepository;
 
 import javafx.scene.layout.Pane;
 

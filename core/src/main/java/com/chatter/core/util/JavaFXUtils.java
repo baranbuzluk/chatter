@@ -1,13 +1,18 @@
 package com.chatter.core.util;
 
-import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public final class JavaFXUtils {
+	private static Logger LOGGER = LoggerFactory.getLogger(JavaFXUtils.class);
+
 	private JavaFXUtils() {
 	}
 
@@ -19,13 +24,22 @@ public final class JavaFXUtils {
 		alert.showAndWait();
 	}
 
-	public static void loadFXML(Object controller, String fxmlName) throws IOException {
-		if (controller == null)
+	public static void loadFXML(Object controller, String fxmlName) {
+		if (controller == null || fxmlName == null || fxmlName.isBlank()) {
 			return;
+		}
 
-		URL resource = controller.getClass().getResource(fxmlName);
-		FXMLLoader loader = new FXMLLoader(resource);
-		loader.setController(controller);
-		loader.load();
+		Class<?> clazz = controller.getClass();
+		try {
+			URL resource = clazz.getResource(fxmlName);
+			FXMLLoader loader = new FXMLLoader(resource);
+			loader.setController(controller);
+			loader.load();
+			String message = MessageFormat.format("Loaded {0} to {1}", fxmlName, clazz);
+			LOGGER.info(message);
+		} catch (Exception e) {
+			String message = MessageFormat.format("{0} could not be loaded to {1}", fxmlName, clazz);
+			LOGGER.error(message, e);
+		}
 	}
 }

@@ -8,6 +8,7 @@
 	<name>Chatter Application</name>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<package-name>com.chatter</package-name>
 		<main-class>MainClass</main-class>
 		<maven.compiler.release>17</maven.compiler.release>
@@ -20,9 +21,16 @@
 		<spring.jpa.version>2.7.2</spring.jpa.version>
 		<spring.context.version>5.3.22</spring.context.version>
 		<postgresql.version>42.2.13</postgresql.version>
+		<apache.commons>3.12.0</apache.commons>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${apache.commons}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

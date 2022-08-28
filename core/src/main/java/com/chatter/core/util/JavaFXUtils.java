@@ -31,7 +31,7 @@ public final class JavaFXUtils {
 
 		Class<?> clazz = controller.getClass();
 		try {
-			URL resource = clazz.getResource(fxmlName);
+			URL resource = clazz.getClassLoader().getResource(fxmlName);
 			FXMLLoader loader = new FXMLLoader(resource);
 			loader.setController(controller);
 			loader.load();

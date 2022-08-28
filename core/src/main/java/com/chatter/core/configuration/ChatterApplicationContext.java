@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 
+import javafx.embed.swing.JFXPanel;
+
 @Configuration
 @ComponentScan(basePackages = "com.chatter")
 @Import({ DatabaseConfig.class })
@@ -26,6 +28,7 @@ public class ChatterApplicationContext {
 
 	public static void start() {
 		if (APPLICATION_CONTEXT == null) {
+			new JFXPanel();
 			APPLICATION_CONTEXT = new AnnotationConfigApplicationContext(ChatterApplicationContext.class);
 		}
 	}

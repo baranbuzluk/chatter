@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.abstracts.ChatterService;
+import com.chatter.core.abstracts.FileMapper;
 import com.chatter.core.entity.Message;
 import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.event.listener.EventManager;
 import com.chatter.core.repository.MessageRepository;
-import com.chatter.core.util.XmlUtils;
 
 import javafx.scene.layout.Pane;
 
@@ -30,14 +30,17 @@ public class ChatClientService implements ChatterService {
 
 	private EventManager eventManager;
 
+	private FileMapper<Message> messageFileMapper;
+
 	private ChatClientController controller;
 
 	@Autowired
 	public ChatClientService(MessageRepository messageRepository, MainViewService mainWindowService,
-			EventManager eventManager) {
+			EventManager eventManager, FileMapper<Message> messageFileMapper) {
 		this.messageRepository = messageRepository;
 		this.mainWindowService = mainWindowService;
 		this.eventManager = eventManager;
+		this.messageFileMapper = messageFileMapper;
 		controller = new ChatClientController(this);
 		eventManager.registerListener(controller);
 	}
@@ -54,7 +57,7 @@ public class ChatClientService implements ChatterService {
 		Message msg = Objects.requireNonNull(message, "Message can not  be null!");
 		String fileName = generateFileName(msg);
 		File xmlFile = Paths.get("C:", "CHATTER", fileName).toFile();
-		XmlUtils.writeObjectToFile(msg, xmlFile);
+		messageFileMapper.writeToFile(msg, xmlFile);
 		return xmlFile;
 	}
 

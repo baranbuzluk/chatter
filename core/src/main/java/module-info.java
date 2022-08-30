@@ -4,6 +4,7 @@ module core {
 	exports com.chatter.core.configuration;
 	exports com.chatter.core.entity;
 	exports com.chatter.core.event.listener;
+	exports com.chatter.core.mapper;
 	exports com.chatter.core.repository;
 	exports com.chatter.core.socket;
 	exports com.chatter.core.util;
@@ -12,6 +13,7 @@ module core {
 	opens com.chatter.core.configuration;
 	opens com.chatter.core.entity;
 	opens com.chatter.core.event.listener;
+	opens com.chatter.core.mapper;
 	opens com.chatter.core.repository;
 	opens com.chatter.core.socket;
 	opens com.chatter.core.util;

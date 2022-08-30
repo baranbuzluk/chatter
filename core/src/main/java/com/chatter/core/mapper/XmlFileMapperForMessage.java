@@ -2,6 +2,8 @@ package com.chatter.core.mapper;
 
 import java.io.File;
 
+import org.springframework.stereotype.Component;
+
 import com.chatter.core.abstracts.FileMapper;
 import com.chatter.core.entity.Message;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+@Component
 public class XmlFileMapperForMessage implements FileMapper<Message> {
 
 	private XmlMapper xmlMapper;

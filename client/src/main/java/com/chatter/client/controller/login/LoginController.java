@@ -5,6 +5,7 @@ import java.text.MessageFormat;
 import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
+import com.chatter.client.session.AccountSessionHolder;
 import com.chatter.core.abstracts.AbstractController;
 import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
@@ -71,6 +72,7 @@ public class LoginController extends AbstractController<LoginService> implements
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
 			service.sendEvent(event);
+			AccountSessionHolder.createSession(accountFromFields);
 		} else {
 			String header = "Username or password is incorrect ";
 			String content = "Please enter correct username or password";

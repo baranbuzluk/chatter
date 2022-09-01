@@ -1,5 +1,6 @@
 package com.chatter.client.controller.login;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 
 import com.chatter.client.controller.util.AccountUtils;
@@ -43,6 +44,14 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	@FXML
+	private void initialize() {
+
+		rememberMeBox.setSelected(true);
+
+		readDataFile();
+	}
+
+	@FXML
 	void loginButtonOnAction(ActionEvent event) {
 		executeLoginOperations();
 	}
@@ -71,6 +80,7 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (service.checkAccount(accountFromFields)) {
 			String log = MessageFormat.format("{0} logged-in.", accountFromFields.getUsername());
 			logger.info(log);
+			executeRememberMeOperations();
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
 			service.sendEvent(event);
@@ -89,4 +99,32 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
+	private void executeRememberMeOperations() {
+		boolean isSelected = rememberMeBox.isSelected();
+		if (isSelected) {
+			try {
+				LoginControllerUtils.writeDataFile(usernameTextField.getText(), passwordTextField.getText());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				LoginControllerUtils.deleteFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void readDataFile() {
+		boolean isfile = LoginControllerUtils.file.isFile();
+		if (isfile) {
+
+			try {
+				LoginControllerUtils.readDataFile(usernameTextField, passwordTextField);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

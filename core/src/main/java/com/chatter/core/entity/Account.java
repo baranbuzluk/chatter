@@ -1,11 +1,14 @@
 package com.chatter.core.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.springframework.util.DigestUtils;
 
@@ -21,6 +24,9 @@ public class Account {
 
 	@Column(nullable = false)
 	private String password;
+	
+	@OneToMany(mappedBy = "account")
+	private List<Message> messages;
 
 	public Account() {
 		this("", "");
@@ -72,6 +78,21 @@ public class Account {
 	@Override
 	public int hashCode() {
 		return Objects.hash(username, password, id);
+	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<Message> messages) {
+		this.messages = messages;
+	}
+	
+	public void addMessage(Message message) {
+		if(messages == null ) {
+			messages = new ArrayList<Message>();
+		}
+		this.messages.add(message);			
 	}
 
 }

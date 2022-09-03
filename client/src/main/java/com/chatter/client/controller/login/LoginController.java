@@ -35,7 +35,9 @@ public class LoginController extends AbstractController<LoginService> implements
 
 	@FXML
 	private TextField usernameTextField;
-
+	
+	ChatterSession session= ChatterSession.getInstance();
+	
 	public LoginController(LoginService service) {
 		super("Login.fxml", service);
 	}
@@ -72,7 +74,7 @@ public class LoginController extends AbstractController<LoginService> implements
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
 			service.sendEvent(event);
-			ChatterSession.createSession(accountFromFields);
+			session.createSession(accountFromFields);
 		} else {
 			String header = "Username or password is incorrect ";
 			String content = "Please enter correct username or password";

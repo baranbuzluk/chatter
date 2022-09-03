@@ -37,9 +37,8 @@ public class Message implements Serializable {
 	}
 
 	public Message(String username, String content) {
-		this();
-		this.username = username;
-		this.content = content;
+		setUsername(username);
+		setContent(content);
 	}
 
 	public Integer getId() {

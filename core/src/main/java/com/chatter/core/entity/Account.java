@@ -1,6 +1,8 @@
 package com.chatter.core.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -80,19 +82,26 @@ public class Account {
 		return Objects.hash(username, password, id);
 	}
 
-	public List<Message> getMessages() {
-		return messages;
+	public Collection<Message> getMessages() {
+		return Collections.unmodifiableList(this.messages);
 	}
 
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
 	
 	public void addMessage(Message message) {
 		if(messages == null ) {
 			messages = new ArrayList<Message>();
 		}
-		this.messages.add(message);			
+		if(message != null) {
+			this.messages.add(message);						
+		}
+	}
+	
+	public boolean removeMessage(Message message) {
+		if(message != null && !messages.isEmpty()) {
+			addMessage(message);
+			return true;
+		}
+		return false;
 	}
 
 }

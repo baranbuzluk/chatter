@@ -95,11 +95,10 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 
 	public void saveMessage(Message message) {
 		Objects.requireNonNull(message, "Message can not  be null!");
-
 		messageListView.getItems().add(message);
 		messageListView.scrollTo(message);
-		service.saveToDatabase(message);
-		service.writeToXmlFile(message);
+		service.saveMessage(message);
+
 	}
 
 }

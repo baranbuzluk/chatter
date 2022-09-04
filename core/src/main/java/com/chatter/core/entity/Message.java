@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Message implements Serializable {
@@ -25,15 +27,18 @@ public class Message implements Serializable {
 
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
-
+	
+	@ManyToOne
+	@JoinColumn(name = "account_id",nullable = false)
+	private Account account;
+	
 	public Message() {
 		createdAt = LocalDateTime.now();
 	}
 
 	public Message(String username, String content) {
-		this();
-		this.username = username;
-		this.content = content;
+		setUsername(username);
+		setContent(content);
 	}
 
 	public Integer getId() {
@@ -58,6 +63,16 @@ public class Message implements Serializable {
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
+	}
+	
+	
+	
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	@Override

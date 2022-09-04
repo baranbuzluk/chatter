@@ -5,7 +5,9 @@ import java.util.Objects;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.enums.ClientEventProperties;
+import com.chatter.client.session.ChatterSession;
 import com.chatter.core.abstracts.AbstractController;
+import com.chatter.core.entity.Account;
 import com.chatter.core.entity.Message;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
@@ -63,10 +65,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 		if (text.isEmpty()) {
 			return null;
 		}
-		Message message = new Message();
-		message.setContent(text);
-		message.setUsername("Username");
-		return message;
+		Account activeAccount = ChatterSession.getInstance().getActiveAccount();
+		return new Message(activeAccount, text);
 	}
 
 	public void setMessages(List<Message> messages) {

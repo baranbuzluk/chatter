@@ -20,8 +20,6 @@ import javafx.scene.layout.Pane;
 @Component
 public class ChatClientService implements ChatterService {
 
-	private static final String UNDERSCORE = "_";
-
 	private MessageRepository messageRepository;
 
 	private MainViewService mainWindowService;
@@ -48,8 +46,8 @@ public class ChatClientService implements ChatterService {
 	}
 
 	public void saveMessage(Message message) {
-		messageRepository.saveAndFlush(message);
 		messageWriter.write(message);
+		messageRepository.saveAndFlush(message);
 	}
 
 	public void showMainWindow(Pane pane) {

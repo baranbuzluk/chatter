@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.chatter.core.abstracts.MessageWriter;
 import com.chatter.core.entity.Message;
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
@@ -30,6 +31,7 @@ public class XmlFileMessageWriter implements MessageWriter<File> {
 		xmlMapper.registerModule(new JavaTimeModule());
 		xmlMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		xmlMapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+		xmlMapper.configure(Feature.IGNORE_UNKNOWN, true);
 	}
 
 	@Override

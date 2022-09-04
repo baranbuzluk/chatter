@@ -7,11 +7,11 @@ import static org.junit.Assert.assertNull;
 import java.io.File;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.chatter.core.abstracts.MessageWriter;
+import com.chatter.core.entity.Account;
 import com.chatter.core.entity.Message;
 import com.chatter.core.mapper.XmlFileMessageWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -22,8 +22,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 class XmlFileMessageWriterTests {
 
 	static MessageWriter<File> messageWriter;
-
-	File file;
 
 	static XmlMapper xmlMapper;
 
@@ -38,14 +36,6 @@ class XmlFileMessageWriterTests {
 		messageWriter = new XmlFileMessageWriter(messageFolder);
 	}
 
-	@AfterEach
-	void tearDown() throws Exception {
-		if (file != null) {
-			file.delete();
-			file = null;
-		}
-	}
-
 	@AfterAll
 	static void tearDownAll() {
 		messageWriter = null;
@@ -53,11 +43,11 @@ class XmlFileMessageWriterTests {
 	}
 
 	@Test
-	void When_MessageAndFileNotNull_Expect_isMessageToBeWrittenToFileAndResultAsTrue() throws Exception {
-		Message actualMessage = new Message("user", "Hello Word");
+	void When_MessageNotNull_Expect_isToWriteFile() throws Exception {
+		Account account = new Account("testUsername", "testPassword");
+		Message actualMessage = new Message(account, "Hello Word");
 		File file = messageWriter.write(actualMessage);
 		assertNotNull(file);
-		System.err.println(file);
 
 		Message expectedMessage = xmlMapper.readValue(file, Message.class);
 		assertEquals(expectedMessage.getUsername(), actualMessage.getUsername());

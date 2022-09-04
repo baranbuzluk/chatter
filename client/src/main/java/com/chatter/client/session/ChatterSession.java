@@ -1,14 +1,16 @@
 package com.chatter.client.session;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
+
 import com.chatter.core.entity.Account;
 
-public final class ChatterSession {
 
-	@Autowired
-	private  Logger logger;
+
+public final class ChatterSession {
 	
+	private Logger logger = LoggerFactory.getLogger(getClass());
+
 	private static ChatterSession session;
 	
 	private Account activeAccount;

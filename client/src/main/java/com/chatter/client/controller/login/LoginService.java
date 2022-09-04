@@ -3,7 +3,10 @@ package com.chatter.client.controller.login;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.client.enums.ClientEvent;
+import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.client.main.MainViewService;
+import com.chatter.client.session.ChatterSession;
 import com.chatter.core.abstracts.ChatterService;
 import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.EventInfo;
@@ -41,13 +44,24 @@ public class LoginService implements ChatterService {
 		mainWindowService.show(rootPane);
 	}
 
-	public boolean checkAccount(Account account) {
-		if (account == null) {
+	public boolean login(String username, String password) {
+		if (username == null || password == null || !accountRepository.existsByUsername(username)) {
 			return false;
 		}
-		String username = account.getUsername();
-		Account fromDB = accountRepository.getByUsername(username);
-		return account.equals(fromDB);
+
+		Account accountFromController = new Account(username, password);
+		Account accountFromDB = accountRepository.getByUsername(username);
+		boolean checkLoginInfo = accountFromDB.equals(accountFromController);
+
+		if (checkLoginInfo) {
+			ChatterSession.getInstance().openSession(accountFromDB);
+			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
+			event.put(ClientEventProperties.ACCOUNT, accountFromDB);
+			sendEvent(event);
+		}
+
+		return checkLoginInfo;
 
 	}
+
 }

@@ -9,9 +9,9 @@ import com.chatter.core.entity.Account;
 
 public final class ChatterSession {
 
-	private static final ChatterSession INSTANCE = new ChatterSession();
-
 	private static final Logger LOG = LoggerFactory.getLogger(ChatterSession.class);
+
+	private static final ChatterSession INSTANCE = new ChatterSession();
 
 	private Account activeAccount;
 

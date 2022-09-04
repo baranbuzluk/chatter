@@ -92,16 +92,18 @@ public class Account {
 			messages = new ArrayList<Message>();
 		}
 		if(message != null) {
+			message.setAccount(this);
 			this.messages.add(message);						
 		}
 	}
 	
 	public boolean removeMessage(Message message) {
-		if(message != null && !messages.isEmpty()) {
-			addMessage(message);
-			return true;
+		boolean result = false;
+		if( messages != null) {
+			result = this.messages.remove(message);
+			return result;
 		}
-		return false;
+		return result;
 	}
 
 }

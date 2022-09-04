@@ -1,5 +1,10 @@
 package com.chatter.client.controller.login;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 
@@ -38,18 +43,10 @@ public class LoginController extends AbstractController<LoginService> implements
 	private TextField testFieldUsername;
 	@FXML
 	private CheckBox checkBoxRememberMe;
+	File file = new File("account_Information.txt");
 
 	public LoginController(LoginService service) {
 		super("Login.fxml", service);
-
-	}
-
-	@FXML
-	private void initialize() {
-
-		checkBoxRememberMe.setSelected(true);
-
-		readDataFile();
 
 	}
 
@@ -79,10 +76,12 @@ public class LoginController extends AbstractController<LoginService> implements
 
 	private void executeLoginOperations() {
 		Account accountFromFields = AccountUtils.createAccountFromFields(testFieldUsername, textFieldPassword);
+
 		if (service.checkAccount(accountFromFields)) {
 			String log = MessageFormat.format("{0} logged-in.", accountFromFields.getUsername());
 			logger.info(log);
-			executeRememberMeOperations();
+
+			executeRememberMeOperations(accountFromFields);
 			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
 			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
 			service.sendEvent(event);
@@ -94,36 +93,37 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
-	@Override
-	public void handleEvent(EventInfo eventInfo) {
-		if (eventInfo.getEvent() == ClientEvent.STARTED_APPLICATION) {
-			Platform.runLater(() -> service.showInMainWindow(rootPane));
-		}
-	}
-
-	private void executeRememberMeOperations() {
+	private void executeRememberMeOperations(Account account) {
 		boolean isSelected = checkBoxRememberMe.isSelected();
 		if (isSelected) {
-			try {
-				LoginControllerUtils.writeDataFile(testFieldUsername.getText(), textFieldPassword.getText());
+
+			try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+				bufferedWriter.write(account.getUsername());
+				bufferedWriter.write("\n" + account.getPassword());
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			try {
-				LoginControllerUtils.deleteFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			file.delete();
+
 		}
 	}
 
-	private void readDataFile() {
-		boolean isfile = LoginControllerUtils.file.isFile();
-		if (isfile) {
+	@Override
+	public void handleEvent(EventInfo eventInfo) {
+		if (eventInfo.getEvent() == ClientEvent.STARTED_APPLICATION) {
+			Platform.runLater(() -> service.showInMainWindow(rootPane));
 
-			try {
-				LoginControllerUtils.readDataFile(testFieldUsername, textFieldPassword);
+		}
+		if (file.isFile()) {
+			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+				String username = bufferedReader.readLine().toString();
+				String password = bufferedReader.readLine().toString();
+
+				testFieldUsername.setText(username);
+				textFieldPassword.setText(password);
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -103,7 +103,7 @@ public class Account implements Serializable {
 		if (messages == null) {
 			messages = new ArrayList<Message>();
 		}
-		if (message != null) {
+		if (message != null && !messages.contains(message)) {
 			message.setAccount(this);
 			this.messages.add(message);
 		}

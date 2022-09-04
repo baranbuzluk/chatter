@@ -6,11 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.MessageFormat;
 
-import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
-import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.core.abstracts.AbstractController;
 import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
@@ -40,7 +37,7 @@ public class LoginController extends AbstractController<LoginService> implements
 	private Button buttonSignUp;
 
 	@FXML
-	private TextField testFieldUsername;
+	private TextField textFieldUsername;
 	@FXML
 	private CheckBox checkBoxRememberMe;
 	File file = new File("account_Information.txt");
@@ -75,17 +72,10 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	private void executeLoginOperations() {
-		Account accountFromFields = AccountUtils.createAccountFromFields(testFieldUsername, textFieldPassword);
-
-		if (service.checkAccount(accountFromFields)) {
-			String log = MessageFormat.format("{0} logged-in.", accountFromFields.getUsername());
-			logger.info(log);
-
-			executeRememberMeOperations(accountFromFields);
-			EventInfo event = new EventInfo(ClientEvent.LOGGED_IN_ACCOUNT);
-			event.put(ClientEventProperties.ACCOUNT, accountFromFields);
-			service.sendEvent(event);
-		} else {
+		String username = textFieldUsername.getText();
+		String password = textFieldPassword.getText();
+		boolean checkUsernameAndPassword = service.login(username, password);
+		if (!checkUsernameAndPassword) {
 			String header = "Username or password is incorrect ";
 			String content = "Please enter correct username or password";
 			String title = "Failed login";
@@ -118,10 +108,10 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 		if (file.isFile()) {
 			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-				String username = bufferedReader.readLine().toString();
-				String password = bufferedReader.readLine().toString();
+				String username = bufferedReader.readLine();
+				String password = bufferedReader.readLine();
 
-				testFieldUsername.setText(username);
+				textFieldUsername.setText(username);
 				textFieldPassword.setText(password);
 
 			} catch (IOException e) {

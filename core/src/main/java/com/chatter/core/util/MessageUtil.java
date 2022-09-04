@@ -2,8 +2,10 @@ package com.chatter.core.util;
 
 import java.util.Objects;
 
+import com.chatter.core.entity.Account;
 import com.chatter.core.entity.Message;
 
+@Deprecated
 public final class MessageUtil {
 
 	private static final String SPLITTER = "X:X";
@@ -28,10 +30,9 @@ public final class MessageUtil {
 		}
 		String username = split[0];
 		String content = split[1];
-		Message toMsg = new Message();
-		toMsg.setUsername(username);
-		toMsg.setContent(content);
-		return toMsg;
+		Account account = new Account();
+		account.setUsername(username);
+		return new Message(account, content);
 	}
 
 }

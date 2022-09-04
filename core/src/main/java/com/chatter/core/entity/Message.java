@@ -2,6 +2,7 @@ package com.chatter.core.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -79,5 +80,7 @@ public class Message implements Serializable {
 	public String toString() {
 		return String.format("[%s] %s : %s", getCreatedAt(), getUsername(), getContent());
 	}
-
+	
+	
+	
 }

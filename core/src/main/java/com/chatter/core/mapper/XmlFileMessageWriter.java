@@ -1,8 +1,6 @@
 package com.chatter.core.mapper;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,17 +50,10 @@ public class XmlFileMessageWriter implements MessageWriter<File> {
 	}
 
 	private String generateFileName(Message message) {
-		Integer id = message.getId();
-		LocalDateTime createdAt = message.getCreatedAt();
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-		String formattedCreatedAt = dateTimeFormatter.format(createdAt);
-
 		StringBuilder fileNameBuilder = new StringBuilder();
 		fileNameBuilder.append("Message");
 		fileNameBuilder.append(SEPARATOR);
-		fileNameBuilder.append(id);
-		fileNameBuilder.append(SEPARATOR);
-		fileNameBuilder.append(formattedCreatedAt);
+		fileNameBuilder.append(System.nanoTime());
 		fileNameBuilder.append(".xml");
 		return fileNameBuilder.toString();
 	}

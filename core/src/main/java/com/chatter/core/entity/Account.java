@@ -1,5 +1,6 @@
 package com.chatter.core.entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,24 +15,32 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.DigestUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity(name = "account")
-public class Account {
+public class Account implements Serializable {
+
+	private static final long serialVersionUID = 5451791209544938318L;
 
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private Integer id;
 
 	@Column(nullable = false, unique = true)
 	private String username;
 
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
-	
+
 	@OneToMany(mappedBy = "account")
+	@JsonIgnore
 	private List<Message> messages;
 
 	public Account() {
 		this("", "");
+
 	}
 
 	public Account(String username, String password) {
@@ -86,20 +95,19 @@ public class Account {
 		return Collections.unmodifiableList(this.messages);
 	}
 
-	
 	public void addMessage(Message message) {
-		if(messages == null ) {
+		if (messages == null) {
 			messages = new ArrayList<Message>();
 		}
-		if(message != null) {
+		if (message != null) {
 			message.setAccount(this);
-			this.messages.add(message);						
+			this.messages.add(message);
 		}
 	}
-	
+
 	public boolean removeMessage(Message message) {
 		boolean result = false;
-		if( messages != null) {
+		if (messages != null) {
 			result = this.messages.remove(message);
 			return result;
 		}

@@ -2,7 +2,7 @@ package com.chatter.core.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,34 +11,35 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity(name = "message")
 public class Message implements Serializable {
 
 	private static final long serialVersionUID = 3147221083926479873L;
 
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private Integer id;
-
-	@Column(updatable = false)
-	private String username;
 
 	@Column(updatable = false)
 	private String content;
 
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
-	
+
 	@ManyToOne
-	@JoinColumn(name = "account_id",nullable = false)
+	@JoinColumn(name = "account_id", nullable = false)
 	private Account account;
-	
-	public Message() {
+
+	Message() {
 		createdAt = LocalDateTime.now();
 	}
 
-	public Message(String username, String content) {
-		setUsername(username);
+	public Message(Account account, String content) {
+		this();
+		setAccount(account);
 		setContent(content);
 	}
 
@@ -46,12 +47,12 @@ public class Message implements Serializable {
 		return id;
 	}
 
+	@JsonIgnore
 	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
+		if (account != null) {
+			return account.getUsername();
+		}
+		return "";
 	}
 
 	public String getContent() {
@@ -65,22 +66,18 @@ public class Message implements Serializable {
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
-	
-	
-	
+
 	public Account getAccount() {
 		return account;
 	}
 
 	public void setAccount(Account account) {
-		this.account = account;
+		this.account = Objects.requireNonNull(account, "account must not be null!");
 	}
 
 	@Override
 	public String toString() {
 		return String.format("[%s] %s : %s", getCreatedAt(), getUsername(), getContent());
 	}
-	
-	
-	
+
 }

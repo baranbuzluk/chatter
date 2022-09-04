@@ -26,29 +26,31 @@ import javafx.scene.input.KeyEvent;
 public class LoginController extends AbstractController<LoginService> implements ChatterEventListener {
 
 	@FXML
-	private Button loginButton;
+	private Button buttonLogin;
 
 	@FXML
-	private PasswordField passwordTextField;
+	private PasswordField textFieldPassword;
 
 	@FXML
-	private Button signUpButton;
+	private Button buttonSignUp;
 
 	@FXML
-	private TextField usernameTextField;
+	private TextField testFieldUsername;
 	@FXML
-	private CheckBox rememberMeBox;
+	private CheckBox checkBoxRememberMe;
 
 	public LoginController(LoginService service) {
 		super("Login.fxml", service);
+
 	}
 
 	@FXML
 	private void initialize() {
 
-		rememberMeBox.setSelected(true);
+		checkBoxRememberMe.setSelected(true);
 
 		readDataFile();
+
 	}
 
 	@FXML
@@ -76,7 +78,7 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	private void executeLoginOperations() {
-		Account accountFromFields = AccountUtils.createAccountFromFields(usernameTextField, passwordTextField);
+		Account accountFromFields = AccountUtils.createAccountFromFields(testFieldUsername, textFieldPassword);
 		if (service.checkAccount(accountFromFields)) {
 			String log = MessageFormat.format("{0} logged-in.", accountFromFields.getUsername());
 			logger.info(log);
@@ -100,10 +102,10 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	private void executeRememberMeOperations() {
-		boolean isSelected = rememberMeBox.isSelected();
+		boolean isSelected = checkBoxRememberMe.isSelected();
 		if (isSelected) {
 			try {
-				LoginControllerUtils.writeDataFile(usernameTextField.getText(), passwordTextField.getText());
+				LoginControllerUtils.writeDataFile(testFieldUsername.getText(), textFieldPassword.getText());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -121,7 +123,7 @@ public class LoginController extends AbstractController<LoginService> implements
 		if (isfile) {
 
 			try {
-				LoginControllerUtils.readDataFile(usernameTextField, passwordTextField);
+				LoginControllerUtils.readDataFile(testFieldUsername, textFieldPassword);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

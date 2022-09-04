@@ -19,17 +19,16 @@ public class LoginControllerUtils {
 
 	static File file = new File("account_Information.txt");
 
-	public static void readDataFile(TextField usernameTextField, PasswordField passwordTextField) throws IOException {
+	public static void readDataFile(TextField testFieldUsername, PasswordField textFieldPassword) throws IOException {
 		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
 			String username = bufferedReader.readLine().toString();
 			String passWord = bufferedReader.readLine().toString();
-			usernameTextField.setText(username);
-			passwordTextField.setText(passWord);
+			testFieldUsername.setText(username);
+			textFieldPassword.setText(passWord);
 		}
 	}
 
 	public static void writeDataFile(String username, String password) throws IOException {
-
 		BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
 		bufferedWriter.write(username);
 		bufferedWriter.write("\n" + password);

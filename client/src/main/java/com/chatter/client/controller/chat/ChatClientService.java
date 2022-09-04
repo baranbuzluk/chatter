@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.client.enums.ClientEvent;
+import com.chatter.client.enums.ClientEventProperties;
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.abstracts.ChatterService;
 import com.chatter.core.abstracts.MessageWriter;
@@ -45,9 +47,12 @@ public class ChatClientService implements ChatterService {
 		eventManager.sendEvent(Objects.requireNonNull(eventInfo, "Can not be null EventInfo!"));
 	}
 
-	public void saveMessage(Message message) {
+	public void saveOutgoingMessage(Message message) {
 		messageWriter.write(message);
 		messageRepository.saveAndFlush(message);
+		EventInfo eventInfo = new EventInfo(ClientEvent.OUTGOING_MESSAGE);
+		eventInfo.put(ClientEventProperties.MESSAGE, message);
+		sendEvent(eventInfo);
 	}
 
 	public void showMainWindow(Pane pane) {

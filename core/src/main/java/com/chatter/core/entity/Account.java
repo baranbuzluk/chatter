@@ -7,12 +7,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.util.DigestUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,7 +37,8 @@ public class Account implements Serializable {
 	@JsonIgnore
 	private String password;
 
-	@OneToMany(mappedBy = "account")
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@Fetch(FetchMode.JOIN)
 	@JsonIgnore
 	private List<Message> messages;
 
@@ -99,7 +103,7 @@ public class Account implements Serializable {
 		if (messages == null) {
 			messages = new ArrayList<Message>();
 		}
-		if (message != null) {
+		if (message != null && !messages.contains(message)) {
 			message.setAccount(this);
 			this.messages.add(message);
 		}

@@ -1,9 +1,7 @@
 package com.chatter.client.controller.registration;
 
-import com.chatter.client.controller.util.AccountUtils;
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.abstracts.AbstractController;
-import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 
@@ -67,11 +65,9 @@ public class RegistrationController extends AbstractController<RegistrationServi
 			return;
 		}
 
-		boolean isRegistered = registerAccount();
+		boolean isRegistered = service.registerAccount(username, password);
 		if (isRegistered) {
 			RegistrationControllerUtils.showSuccessfulSignUpAlertMessage();
-			EventInfo event = new EventInfo(ClientEvent.STARTED_APPLICATION);
-			service.sendEvent(event);
 		} else {
 			RegistrationControllerUtils.showRegistrationFailedAlertMessage();
 		}
@@ -92,14 +88,4 @@ public class RegistrationController extends AbstractController<RegistrationServi
 
 	}
 
-	private boolean registerAccount() {
-		try {
-			Account account = AccountUtils.createAccountFromFields(usernameTextField, passwordTextField);
-			service.registerAccount(account);
-			return true;
-		} catch (Exception e) {
-			// Exception will not be handled
-		}
-		return false;
-	}
 }

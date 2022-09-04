@@ -41,5 +41,6 @@ module core {
 	requires transitive spring.beans;
 	requires transitive org.slf4j;
 	requires transitive javafx.swing;
+	requires org.hibernate.orm.core;
 
 }

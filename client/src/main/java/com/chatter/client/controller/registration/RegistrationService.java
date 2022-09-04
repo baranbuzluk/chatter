@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.abstracts.ChatterService;
 import com.chatter.core.entity.Account;
@@ -16,7 +17,7 @@ import javafx.scene.layout.Pane;
 
 @Component
 public class RegistrationService implements ChatterService {
-	@Autowired
+
 	private AccountRepository accountRepository;
 
 	private EventManager eventManager;
@@ -24,9 +25,11 @@ public class RegistrationService implements ChatterService {
 	private MainViewService mainViewService;
 
 	@Autowired
-	public RegistrationService(EventManager eventManager, MainViewService mainViewService) {
-		this.mainViewService = mainViewService;
+	public RegistrationService(AccountRepository accountRepository, EventManager eventManager,
+			MainViewService mainViewService) {
+		this.accountRepository = accountRepository;
 		this.eventManager = eventManager;
+		this.mainViewService = mainViewService;
 		RegistrationController controller = new RegistrationController(this);
 		eventManager.registerListener(controller);
 	}
@@ -43,8 +46,22 @@ public class RegistrationService implements ChatterService {
 		eventManager.sendEvent(eventInfo);
 	}
 
-	public void registerAccount(Account account) {
-		accountRepository.save(account);
+	public boolean registerAccount(String username, String password) {
+		Account savedAccount = null;
+		try {
+			Account accountToRegister = new Account(username, password);
+			savedAccount = accountRepository.save(accountToRegister);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		boolean isRegistered = savedAccount != null;
+		if (isRegistered) {
+			EventInfo event = new EventInfo(ClientEvent.STARTED_APPLICATION);
+			sendEvent(event);
+		}
+		return isRegistered;
+
 	}
 
 }

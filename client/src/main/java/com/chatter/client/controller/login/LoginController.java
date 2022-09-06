@@ -1,7 +1,15 @@
 package com.chatter.client.controller.login;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.abstracts.AbstractController;
+import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.util.JavaFXUtils;
@@ -11,6 +19,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -19,19 +28,23 @@ import javafx.scene.input.KeyEvent;
 public class LoginController extends AbstractController<LoginService> implements ChatterEventListener {
 
 	@FXML
-	private Button loginButton;
+	private Button buttonLogin;
 
 	@FXML
-	private PasswordField passwordTextField;
+	private PasswordField textFieldPassword;
 
 	@FXML
-	private Button signUpButton;
+	private Button buttonSignUp;
 
 	@FXML
-	private TextField usernameTextField;
+	private TextField textFieldUsername;
+	@FXML
+	private CheckBox checkBoxRememberMe;
+	File file = new File("account_Information.txt");
 
 	public LoginController(LoginService service) {
 		super("Login.fxml", service);
+
 	}
 
 	@FXML
@@ -59,8 +72,8 @@ public class LoginController extends AbstractController<LoginService> implements
 	}
 
 	private void executeLoginOperations() {
-		String username = usernameTextField.getText();
-		String password = passwordTextField.getText();
+		String username = textFieldUsername.getText();
+		String password = textFieldPassword.getText();
 		boolean checkUsernameAndPassword = service.login(username, password);
 		if (!checkUsernameAndPassword) {
 			String header = "Username or password is incorrect ";
@@ -70,11 +83,40 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
+	private void executeRememberMeOperations(Account account) {
+		boolean isSelected = checkBoxRememberMe.isSelected();
+		if (isSelected) {
+
+			try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+				bufferedWriter.write(account.getUsername());
+				bufferedWriter.write("\n" + account.getPassword());
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			file.delete();
+
+		}
+	}
+
 	@Override
 	public void handleEvent(EventInfo eventInfo) {
 		if (eventInfo.getEvent() == ClientEvent.STARTED_APPLICATION) {
 			Platform.runLater(() -> service.showInMainWindow(rootPane));
+
+		}
+		if (file.isFile()) {
+			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
+				String username = bufferedReader.readLine();
+				String password = bufferedReader.readLine();
+
+				textFieldUsername.setText(username);
+				textFieldPassword.setText(password);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
 }

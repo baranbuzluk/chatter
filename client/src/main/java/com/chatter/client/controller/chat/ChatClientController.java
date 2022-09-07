@@ -16,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -30,6 +31,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 
 	@FXML
 	private TextField textFieldMessage;
+	@FXML
+	private MenuItem menuItemLogOut;
 
 	public ChatClientController(ChatClientService service) {
 		super("ChatClient.fxml", service);
@@ -86,4 +89,8 @@ public class ChatClientController extends AbstractController<ChatClientService> 
 		});
 	}
 
+	@FXML
+	void menuItemLogOutOnAction(ActionEvent event) {
+		service.sendEvent(new EventInfo(ClientEvent.STARTED_APPLICATION));
+	}
 }

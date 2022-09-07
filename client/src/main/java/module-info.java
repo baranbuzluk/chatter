@@ -25,6 +25,7 @@ module chatter {
 	requires transitive core;
 	requires transitive javafx.controls;
 	requires transitive javafx.fxml;
+	requires transitive javafx.base;
 	requires transitive org.hibernate.orm.core;
 	requires transitive java.activation;
 	requires transitive org.slf4j;

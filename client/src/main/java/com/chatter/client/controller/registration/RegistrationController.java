@@ -6,6 +6,7 @@ import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -25,6 +26,8 @@ public class RegistrationController extends AbstractController<RegistrationServi
 
 	@FXML
 	private Button registerButton;
+	@FXML
+	private Button buttonBack;
 
 	public RegistrationController(RegistrationService service) {
 		super("Registration.fxml", service);
@@ -84,6 +87,11 @@ public class RegistrationController extends AbstractController<RegistrationServi
 			Platform.runLater(() -> service.showPaneInMainScene(getPane()));
 		}
 
+	}
+
+	@FXML
+	void buttonBackOnAction(ActionEvent event) {
+		service.sendEvent(new EventInfo(ClientEvent.STARTED_APPLICATION));
 	}
 
 }

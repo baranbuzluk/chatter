@@ -57,6 +57,7 @@ public class RegistrationService implements ChatterService {
 
 		boolean isRegistered = savedAccount != null;
 		if (isRegistered) {
+			RegistrationControllerUtils.showSuccessfulSignUpAlertMessage();
 			EventInfo event = new EventInfo(ClientEvent.STARTED_APPLICATION);
 			sendEvent(event);
 		}

@@ -66,9 +66,7 @@ public class RegistrationController extends AbstractController<RegistrationServi
 		}
 
 		boolean isRegistered = service.registerAccount(username, password);
-		if (isRegistered) {
-			RegistrationControllerUtils.showSuccessfulSignUpAlertMessage();
-		} else {
+		if (!isRegistered) {
 			RegistrationControllerUtils.showRegistrationFailedAlertMessage();
 		}
 

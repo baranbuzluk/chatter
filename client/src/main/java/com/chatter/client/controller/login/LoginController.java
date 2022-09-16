@@ -1,15 +1,10 @@
 package com.chatter.client.controller.login;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.prefs.Preferences;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.abstracts.AbstractController;
-import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.util.JavaFXUtils;
@@ -40,6 +35,7 @@ public class LoginController extends AbstractController<LoginService> implements
 	private TextField textFieldUsername;
 	@FXML
 	private CheckBox checkBoxRememberMe;
+	private Preferences preferences;
 	File file = new File("account_Information.txt");
 
 	public LoginController(LoginService service) {
@@ -75,7 +71,9 @@ public class LoginController extends AbstractController<LoginService> implements
 		String username = textFieldUsername.getText();
 		String password = textFieldPassword.getText();
 		boolean checkUsernameAndPassword = service.login(username, password);
-		if (!checkUsernameAndPassword) {
+		if (checkUsernameAndPassword) {
+			replaceUsernameAndPassword(username, password);
+		} else {
 			String header = "Username or password is incorrect ";
 			String content = "Please enter correct username or password";
 			String title = "Failed login";
@@ -83,20 +81,14 @@ public class LoginController extends AbstractController<LoginService> implements
 		}
 	}
 
-	private void executeRememberMeOperations(Account account) {
+	private void replaceUsernameAndPassword(String username, String password) {
 		boolean isSelected = checkBoxRememberMe.isSelected();
 		if (isSelected) {
-
-			try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
-				bufferedWriter.write(account.getUsername());
-				bufferedWriter.write("\n" + account.getPassword());
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			preferences.put("textFieldUsername", username);
+			preferences.put("textFieldPassword", password);
 		} else {
-			file.delete();
-
+			preferences.put("textFieldUsername", "");
+			preferences.put("textFieldPassword", "");
 		}
 	}
 
@@ -106,17 +98,13 @@ public class LoginController extends AbstractController<LoginService> implements
 			Platform.runLater(() -> service.showInMainWindow(rootPane));
 
 		}
-		if (file.isFile()) {
-			try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
-				String username = bufferedReader.readLine();
-				String password = bufferedReader.readLine();
+		preferences = Preferences.userNodeForPackage(LoginController.class);
+		if (preferences.get("textFieldUsername", null) != null
+				&& (preferences.get("textFieldPassword", null) != null)) {
+			textFieldUsername.setText(preferences.get("textFieldUsername", null));
+			textFieldPassword.setText(preferences.get("textFieldPassword", null));
 
-				textFieldUsername.setText(username);
-				textFieldPassword.setText(password);
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
+
 	}
 }

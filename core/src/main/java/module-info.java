@@ -6,7 +6,7 @@ module core {
 	exports com.chatter.core.event.listener;
 	exports com.chatter.core.mapper;
 	exports com.chatter.core.repository;
-	exports com.chatter.core.socket;
+	exports com.chatter.core.io;
 	exports com.chatter.core.util;
 
 	opens com.chatter.core.abstracts;
@@ -15,7 +15,7 @@ module core {
 	opens com.chatter.core.event.listener;
 	opens com.chatter.core.mapper;
 	opens com.chatter.core.repository;
-	opens com.chatter.core.socket;
+	opens com.chatter.core.io;
 	opens com.chatter.core.util;
 
 	requires transitive javafx.base;

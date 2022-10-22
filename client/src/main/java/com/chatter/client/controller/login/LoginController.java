@@ -1,15 +1,12 @@
 package com.chatter.client.controller.login;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.abstracts.AbstractController;
-import com.chatter.core.entity.Account;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.util.JavaFXUtils;
@@ -38,8 +35,10 @@ public class LoginController extends AbstractController<LoginService> implements
 
 	@FXML
 	private TextField textFieldUsername;
+
 	@FXML
 	private CheckBox checkBoxRememberMe;
+
 	File file = new File("account_Information.txt");
 
 	public LoginController(LoginService service) {
@@ -80,23 +79,6 @@ public class LoginController extends AbstractController<LoginService> implements
 			String content = "Please enter correct username or password";
 			String title = "Failed login";
 			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
-		}
-	}
-
-	private void executeRememberMeOperations(Account account) {
-		boolean isSelected = checkBoxRememberMe.isSelected();
-		if (isSelected) {
-
-			try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
-				bufferedWriter.write(account.getUsername());
-				bufferedWriter.write("\n" + account.getPassword());
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			file.delete();
-
 		}
 	}
 

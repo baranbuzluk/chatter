@@ -11,10 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.chatter.core.io.IOData;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "message")
-public class Message implements Serializable {
+public class Message implements Serializable, IOData {
 
 	private static final long serialVersionUID = 3147221083926479873L;
 
@@ -78,6 +79,11 @@ public class Message implements Serializable {
 	@Override
 	public String toString() {
 		return String.format("[%s] %s : %s", getCreatedAt(), getUsername(), getContent());
+	}
+
+	@Override
+	public String getIOData() {
+		return this.toString();
 	}
 
 }

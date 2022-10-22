@@ -1,5 +1,12 @@
 package com.chatter.client.connect;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.text.MessageFormat;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,53 +16,61 @@ import com.chatter.core.entity.Message;
 import com.chatter.core.event.listener.ChatterEventListener;
 import com.chatter.core.event.listener.EventInfo;
 import com.chatter.core.event.listener.EventManager;
-import com.chatter.core.socket.ChatterSocket;
-import com.chatter.core.socket.MessageListener;
-import com.chatter.core.util.MessageUtil;
+import com.chatter.core.io.ChatterIOHandler;
+import com.chatter.core.io.ChatterIoListener;
 
 @Component
-public class ClientConnect implements ChatterEventListener, MessageListener {
+public class ClientConnect implements ChatterEventListener, ChatterIoListener {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ClientConnect.class);
 
 	private static final String IP = "127.0.0.1";
 
 	private static final int PORT = 9999;
 
-	private ChatterSocket socket;
+	private ChatterIOHandler ioHandler;
 
-	private EventManager eventManager;
+	private Socket socket;
 
 	@Autowired
 	public ClientConnect(EventManager eventManager) {
-		this.eventManager = eventManager;
 		eventManager.registerListener(this);
-		socket = new ChatterSocket(this);
 	}
 
 	@Override
 	public void handleEvent(EventInfo eventInfo) {
 		if (eventInfo.getEvent() == ClientEvent.LOGGED_IN_ACCOUNT) {
-			connectToServer();
+			try {
+				if (socket == null && ioHandler == null) {
+					socket = new Socket(IP, PORT);
+					ioHandler = new ChatterIOHandler(socket.getInputStream(), socket.getOutputStream());
+					ioHandler.registerListener(this);
+					LOG.info(MessageFormat.format("Connection to {0}  has been established.!", IP));
+
+				} else {
+					LOG.info("the connection cannot be established because 'socket' and 'ioHandler' are not null!");
+				}
+			} catch (IOException e) {
+				LOG.info(MessageFormat.format("{0} could not be connected!", IP), e.getMessage());
+			}
 		} else if (eventInfo.getEvent() == ClientEvent.OUTGOING_MESSAGE) {
 			Message message = (Message) eventInfo.get(ClientEventProperties.MESSAGE);
-			String parseMessage = MessageUtil.parseMessage(message);
-			socket.sendMessage(parseMessage);
+			if (ioHandler != null) {
+				try {
+					LOG.info("Message is being sended to server...");
+					ioHandler.writeData(message);
+					LOG.info("Message was sended to server!");
+				} catch (IOException e) {
+					LOG.info("While Being sended message, error occured!", e);
+				}
+			}
 		}
 
-	}
-
-	private void connectToServer() {
-		socket.disconnect();
-		socket.connect(IP, PORT);
 	}
 
 	@Override
-	public void receivedMessage(String message) {
-		Message incomingMessage = MessageUtil.convertToMessage(message);
-		if (incomingMessage != null) {
-			EventInfo event = new EventInfo(ClientEvent.INCOMING_MESSAGE);
-			event.put(ClientEventProperties.MESSAGE, incomingMessage);
-			eventManager.sendEvent(event);
-		}
+	public void messageReceived(List<String> messages) {
+		// TODO need to implement message parser
 	}
 
 }

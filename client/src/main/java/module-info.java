@@ -29,6 +29,7 @@ module chatter {
 	requires transitive org.hibernate.orm.core;
 	requires transitive java.activation;
 	requires transitive org.slf4j;
+	requires event.api;
 
 	opens com.chatter.client.main;
 	opens com.chatter.client.controller.chat;

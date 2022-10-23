@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.chatter.client.enums.ClientEvent;
-import com.chatter.core.event.listener.EventInfo;
-import com.chatter.core.event.listener.EventManager;
+import com.chatter.event.api.EventInfo;
+import com.chatter.event.api.EventManager;
 
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;

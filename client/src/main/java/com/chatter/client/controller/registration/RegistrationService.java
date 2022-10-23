@@ -9,9 +9,9 @@ import com.chatter.client.enums.ClientEvent;
 import com.chatter.client.main.MainViewService;
 import com.chatter.core.abstracts.ChatterService;
 import com.chatter.core.entity.Account;
-import com.chatter.core.event.listener.EventInfo;
-import com.chatter.core.event.listener.EventManager;
 import com.chatter.core.repository.AccountRepository;
+import com.chatter.event.api.EventInfo;
+import com.chatter.event.api.EventManager;
 
 import javafx.scene.layout.Pane;
 

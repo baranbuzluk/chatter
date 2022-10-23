@@ -8,8 +8,8 @@ import com.chatter.client.session.ChatterSession;
 import com.chatter.core.abstracts.AbstractController;
 import com.chatter.core.entity.Account;
 import com.chatter.core.entity.Message;
-import com.chatter.core.event.listener.ChatterEventListener;
-import com.chatter.core.event.listener.EventInfo;
+import com.chatter.event.api.ChatterEventListener;
+import com.chatter.event.api.EventInfo;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

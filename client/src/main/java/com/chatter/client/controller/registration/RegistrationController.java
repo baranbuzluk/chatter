@@ -2,8 +2,8 @@ package com.chatter.client.controller.registration;
 
 import com.chatter.client.enums.ClientEvent;
 import com.chatter.core.abstracts.AbstractController;
-import com.chatter.core.event.listener.ChatterEventListener;
-import com.chatter.core.event.listener.EventInfo;
+import com.chatter.event.api.ChatterEventListener;
+import com.chatter.event.api.EventInfo;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

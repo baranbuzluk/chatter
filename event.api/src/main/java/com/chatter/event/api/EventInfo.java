@@ -1,4 +1,4 @@
-package com.chatter.core.event.listener;
+package com.chatter.event.api;
 
 import java.util.AbstractMap;
 import java.util.HashSet;

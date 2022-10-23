@@ -1,4 +1,4 @@
-package com.chatter.core.event.listener;
+package com.chatter.event.api;
 
 public interface EventManager {
 

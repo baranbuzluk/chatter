@@ -1,8 +1,11 @@
 package com.chatter.controller.login;
 
+import static com.chatter.event.data.ChatterEvent.LOGGED_IN_ACCOUNT;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.controller.session.ChatterSession;
 import com.chatter.data.entity.Account;
 import com.chatter.event.data.ChatterEvent;
 import com.chatter.event.data.ChatterEventProperties;
@@ -76,6 +79,7 @@ public class LoginController extends AbstractController {
 			JavaFXUtils.showAlertMessage(AlertType.ERROR, title, header, content);
 		} else {
 			EventInfo event = new EventInfo(ChatterEvent.LOGGED_IN_ACCOUNT);
+			ChatterSession.getInstance().openSession(account);
 			event.put(ChatterEventProperties.ACCOUNT, account);
 			commonService.sendEvent(event);
 		}

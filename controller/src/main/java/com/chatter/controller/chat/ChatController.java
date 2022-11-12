@@ -28,7 +28,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 @Component
-public class ChatClientController extends AbstractController {
+public class ChatController extends AbstractController {
 
 	@FXML
 	private Button buttonSendMessage;
@@ -43,8 +43,8 @@ public class ChatClientController extends AbstractController {
 	private MenuItem menuItemLogOut;
 
 	@Autowired
-	public ChatClientController(CommonService commonService) {
-		super("ChatClient.fxml", commonService);
+	public ChatController(CommonService commonService) {
+		super("Chat.fxml", commonService);
 	}
 
 	@FXML

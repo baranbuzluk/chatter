@@ -1,14 +1,15 @@
-module application {
-
-	opens com.chatter.application.configuration;
-	opens com.chatter;
-
+module chatter {
 	exports com.chatter.application.configuration;
 	exports com.chatter;
+
+	opens com.chatter.application.configuration;
+
+	opens com.chatter;
 
 	requires transitive java.desktop;
 	requires transitive java.persistence;
 	requires transitive java.sql;
+	requires transitive javafx.base;
 	requires transitive javafx.graphics;
 	requires transitive javafx.swing;
 	requires transitive org.slf4j;

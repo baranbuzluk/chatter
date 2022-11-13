@@ -98,7 +98,6 @@ public class Account implements Serializable {
 		}
 
 		if (message != null && !messages.contains(message)) {
-			message.setAccount(this);
 			this.messages.add(message);
 		}
 	}

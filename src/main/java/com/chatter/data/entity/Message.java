@@ -2,14 +2,11 @@ package com.chatter.data.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,18 +26,25 @@ public class Message implements Serializable {
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
-	@ManyToOne
-	@JoinColumn(name = "account_id", nullable = false)
-	private Account account;
+	@Column(name = "recipient_host_address", nullable = false)
+	private String recipientHostAddress;
+
+	@Column(name = "sender_host_address", nullable = false)
+	private String senderHostAdress;
 
 	Message() {
 		createdAt = LocalDateTime.now();
 	}
 
-	public Message(Account account, String content) {
+	public Message(String content, String recipientHostAddress, String senderHostAdress) {
 		this();
-		setAccount(account);
-		setContent(content);
+		this.content = content;
+		this.recipientHostAddress = recipientHostAddress;
+		this.senderHostAdress = senderHostAdress;
+	}
+
+	public String getRecipientHostAddress() {
+		return recipientHostAddress;
 	}
 
 	public Integer getId() {
@@ -48,9 +52,9 @@ public class Message implements Serializable {
 	}
 
 	@JsonIgnore
-	public String getUsername() {
-		if (account != null) {
-			return account.getUsername();
+	public String getSenderHostAdress() {
+		if (senderHostAdress != null) {
+			return senderHostAdress;
 		}
 		return "";
 	}
@@ -67,17 +71,9 @@ public class Message implements Serializable {
 		return createdAt;
 	}
 
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = Objects.requireNonNull(account, "account must not be null!");
-	}
-
 	@Override
 	public String toString() {
-		return String.format("[%s] %s : %s", getCreatedAt(), getUsername(), getContent());
+		return String.format("[%s] %s : %s : %s", getCreatedAt(), recipientHostAddress, getContent(), senderHostAdress);
 	}
 
 }

@@ -3,7 +3,10 @@ package com.chatter.connection;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public final class IpAddressUtils {
 
@@ -13,7 +16,23 @@ public final class IpAddressUtils {
 	}
 
 	public static List<String> getActiveHostAddressesInLAN() {
-		return getAllHostAddressesInLAN().parallelStream().filter(IpAddressUtils::pingHostAddress).toList();
+		List<String> ipList = Collections.synchronizedList(new ArrayList<>());
+		ExecutorService executorService = Executors.newFixedThreadPool(255);
+
+		for (String hostAddress : getAllHostAddressesInLAN()) {
+			executorService.submit(() -> {
+				if (pingHostAddress(hostAddress)) {
+					ipList.add(hostAddress);
+				}
+			});
+		}
+
+		executorService.shutdown();
+		while (!executorService.isTerminated()) {
+			// Do nothing, wait
+		}
+
+		return ipList;
 	}
 
 	private static List<String> getAllHostAddressesInLAN() {

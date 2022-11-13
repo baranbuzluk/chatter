@@ -2,9 +2,13 @@ package com.chatter.connection;
 
 import java.util.List;
 
+import com.chatter.data.entity.Message;
+
 public interface CommunicationManager {
 
 	List<String> getActiveHostAddressList();
 
-	CommunicationChannel connectToHostAddress(String hostAddress);
+	String getHostAddress();
+
+	boolean sendMessage(Message message);
 }

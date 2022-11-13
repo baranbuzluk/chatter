@@ -1,5 +1,6 @@
 package com.chatter.connection;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,11 +10,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.springframework.stereotype.Component;
+
+import com.chatter.data.entity.Message;
 
 @Component
 public class CommunicationManagerImpl implements CommunicationManager {
@@ -22,11 +27,24 @@ public class CommunicationManagerImpl implements CommunicationManager {
 
 	private List<String> activeHostAddressList = new ArrayList<>();
 
-	private Map<String, Socket> connectedHostAddress = Collections.synchronizedMap(new HashMap<>());
+	private Map<String, CommunicationChannel> connectedHostAddress = Collections.synchronizedMap(new HashMap<>());
 
 	public CommunicationManagerImpl() {
 		new Thread(() -> activeHostAddressList.addAll(IpAddressUtils.getActiveHostAddressesInLAN())).start();
 		initServer();
+
+		initCommunicationChannelListener();
+	}
+
+	private void initCommunicationChannelListener() {
+		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+			for (CommunicationChannel communicationChannel : connectedHostAddress.values()) {
+				List<String> message = communicationChannel.getMessage();
+				System.err.println(message);
+			}
+
+		}, 0, 500, TimeUnit.MILLISECONDS);
+
 	}
 
 	private void initServer() {
@@ -40,7 +58,11 @@ public class CommunicationManagerImpl implements CommunicationManager {
 					try {
 						Socket accept = serverSocket.accept();
 						String ipAddress = accept.getInetAddress().getHostAddress();
-						connectedHostAddress.put(ipAddress, accept);
+						if (connectedHostAddress.get(ipAddress) == null) {
+							CommunicationChannel communicationChannel = new CommunicationChannel(
+									accept.getInputStream(), accept.getOutputStream());
+							connectedHostAddress.put(ipAddress, communicationChannel);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -59,6 +81,33 @@ public class CommunicationManagerImpl implements CommunicationManager {
 
 	}
 
+	public void startConnectThread() {
+		Thread thread = new Thread(() -> {
+			while (true) {
+				try {
+					refreshConnectedHostAddress();
+					TimeUnit.MILLISECONDS.sleep(500);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		});
+		thread.setName("Connect Thread");
+		thread.setDaemon(true);
+		thread.start();
+
+	}
+
+	private void refreshConnectedHostAddress() {
+		for (String hostAddress : IpAddressUtils.getActiveHostAddressesInLAN()) {
+			CommunicationChannel communicationChannel = connectedHostAddress.get(hostAddress);
+			if (communicationChannel == null) {
+				connectToHostAddress(hostAddress);
+			}
+		}
+	}
+
 	@Override
 	public List<String> getActiveHostAddressList() {
 		try {
@@ -72,18 +121,41 @@ public class CommunicationManagerImpl implements CommunicationManager {
 		return new ArrayList<>();
 	}
 
-	@Override
-	public CommunicationChannel connectToHostAddress(String ip) {
+	public CommunicationChannel connectToHostAddress(String hostAddress) {
+		CommunicationChannel communicationChannel = connectedHostAddress.get(hostAddress);
 		try {
-			Socket socket = connectedHostAddress.get(ip);
-			if (socket == null) {
-				socket = new Socket(ip, PORT);
-				connectedHostAddress.put(ip, socket);
+			if (communicationChannel == null) {
+				Socket socket = new Socket(hostAddress, PORT);
+				communicationChannel = new CommunicationChannel(socket.getInputStream(), socket.getOutputStream());
+				connectedHostAddress.put(hostAddress, communicationChannel);
 			}
-			return new CommunicationChannel(socket.getInputStream(), socket.getOutputStream());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return communicationChannel;
+	}
+
+	@Override
+	public String getHostAddress() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	@Override
+	public boolean sendMessage(Message message) {
+		try {
+			String recipientHostAddress = message.getRecipientHostAddress();
+			CommunicationChannel communicationChannel = connectToHostAddress(recipientHostAddress);
+			if (communicationChannel != null) {
+				communicationChannel.writeData(message.toString());
+				return true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

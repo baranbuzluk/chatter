@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public final class CommunicationChannel {
 
@@ -33,11 +31,11 @@ public final class CommunicationChannel {
 	}
 
 	public void writeData(String data) throws IOException {
-		byte[] processedData = processIODataToWrite(data);
+		byte[] processedData = processDataToWrite(data);
 		writeData(processedData);
 	}
 
-	private static byte[] processIODataToWrite(String data) {
+	private static byte[] processDataToWrite(String data) {
 		byte[] bytesOfData = data.getBytes();
 		byte[] newArray = new byte[bytesOfData.length + 2];
 		newArray[0] = ASCIIControlChar.SOT;
@@ -88,23 +86,13 @@ public final class CommunicationChannel {
 		return new String(array);
 	}
 
-	public void registerListener(CommunicationChannelListener listener) {
-		Executors.newScheduledThreadPool(1, r -> {
-			Thread thread = new Thread(r);
-			thread.setDaemon(true);
-			return thread;
-		}).scheduleAtFixedRate(() -> {
-			try {
-				if (inputStream.available() > 0) {
-					List<String> processedData = getProcessedData();
-					for (String message : processedData) {
-						listener.messageReceived(message);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}, 0, 500, TimeUnit.MILLISECONDS);
+	public List<String> getMessage() {
+		try {
+			return getProcessedData();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList<>();
 	}
 
 }

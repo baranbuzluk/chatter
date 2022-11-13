@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
+import com.chatter.connection.CommunicationManager;
 import com.chatter.data.entity.Account;
 import com.chatter.data.entity.Message;
 import com.chatter.data.repository.AccountRepository;
 import com.chatter.data.repository.MessageRepository;
+import com.chatter.event.ChatterEvent;
 import com.chatter.event.ChatterEventListener;
+import com.chatter.event.ChatterEventProperties;
 import com.chatter.event.EventInfo;
 import com.chatter.event.EventManager;
 
@@ -27,13 +30,17 @@ public class CommonServiceImpl implements CommonService {
 
 	private final MessageRepository messageRepository;
 
+	private final CommunicationManager communicationManager;
+
 	@Autowired
 	public CommonServiceImpl(EventManager eventManager, MainViewService mainViewService,
-			AccountRepository accountRepository, MessageRepository messageRepository) {
+			AccountRepository accountRepository, MessageRepository messageRepository,
+			CommunicationManager communicationManager) {
 		this.eventManager = eventManager;
 		this.mainViewService = mainViewService;
 		this.accountRepository = accountRepository;
 		this.messageRepository = messageRepository;
+		this.communicationManager = communicationManager;
 	}
 
 	@Override
@@ -75,8 +82,13 @@ public class CommonServiceImpl implements CommonService {
 	}
 
 	@Override
-	public Message saveMessage(Message message) {
-		return messageRepository.save(message);
+	public boolean sendMessage(Message message) {
+		messageRepository.save(message);
+		communicationManager.sendMessage(message);
+		EventInfo eventInfo = new EventInfo(ChatterEvent.OUTGOING_MESSAGE);
+		eventInfo.put(ChatterEventProperties.MESSAGE, message);
+		sendEvent(eventInfo);
+		return true;
 	}
 
 	@Override

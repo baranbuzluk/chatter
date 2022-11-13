@@ -23,7 +23,7 @@ public interface CommonService {
 
 	List<Message> getAllMessagesFromDatabase();
 
-	Message saveMessage(Message message);
+	boolean sendMessage(Message message);
 
 	void registerEventListener(ChatterEventListener chatterEventListener);
 

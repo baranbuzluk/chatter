@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.chatter.connection.CommunicationManager;
-import com.chatter.controller.session.ChatterSession;
-import com.chatter.data.entity.Account;
 import com.chatter.data.entity.Message;
 import com.chatter.data.util.FileOutputType;
 import com.chatter.data.util.MessageUtils;
@@ -52,20 +50,36 @@ public class ChatClientController extends AbstractController {
 	public ChatClientController(CommonService commonService, CommunicationManager communicationManager) {
 		super("Chat.fxml", commonService);
 		this.communicationManager = communicationManager;
+
 	}
 
 	@FXML
 	void initialize() {
 		listViewHostAddress.getSelectionModel().selectedItemProperty().addListener((change, oldValue, newValue) -> {
 			if (newValue != null) {
-				communicationManager.connectToHostAddress(newValue);
+
 			}
 		});
 	}
 
 	@FXML
 	void buttonSendMessageOnAction(ActionEvent event) {
-		runOutgoingMessageOperations();
+		String content = textFieldMessage.getText();
+		if (content.isBlank()) {
+			return;
+		}
+
+		textFieldMessage.setText("");
+
+		String recipientHostAddress = listViewHostAddress.getSelectionModel().getSelectedItem();
+		String senderHostAdress = communicationManager.getHostAddress();
+		Message message = new Message(content, recipientHostAddress, senderHostAdress);
+
+		MessageUtils.write(message, new File("C:\\CHATTER"), FileOutputType.XML);
+		commonService.sendMessage(message);
+
+		addMessageToListView(message);
+
 	}
 
 	@FXML
@@ -73,25 +87,6 @@ public class ChatClientController extends AbstractController {
 		if (event.getCode().equals(KeyCode.ENTER)) {
 			buttonSendMessageOnAction(null);
 		}
-	}
-
-	private void runOutgoingMessageOperations() {
-		String text = textFieldMessage.getText();
-		if (text.isBlank()) {
-			return;
-		}
-		textFieldMessage.setText("");
-		Account activeAccount = ChatterSession.getInstance().getActiveAccount();
-		Message message = new Message(activeAccount, text);
-		activeAccount.addMessage(message);
-		addMessageToListView(message);
-
-		MessageUtils.write(message, new File("barna"), FileOutputType.XML);
-		commonService.saveMessage(message);
-
-		EventInfo eventInfo = new EventInfo(ChatterEvent.OUTGOING_MESSAGE);
-		eventInfo.put(ChatterEventProperties.MESSAGE, message);
-		commonService.sendEvent(eventInfo);
 	}
 
 	private void addMessageToListView(Message message) {

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.chatter.connection.IpAddressUtils;
+import com.chatter.connection.CommunicationManager;
 import com.chatter.controller.session.ChatterSession;
 import com.chatter.data.entity.Account;
 import com.chatter.data.entity.Message;
@@ -43,14 +43,24 @@ public class ChatClientController extends AbstractController {
 	@FXML
 	private MenuItem menuItemLogOut;
 
-    @FXML
-    private ListView<String> listViewHostAddress;
-	
+	@FXML
+	private ListView<String> listViewHostAddress;
+
+	private final CommunicationManager communicationManager;
+
 	@Autowired
-	public ChatClientController(CommonService commonService) {
+	public ChatClientController(CommonService commonService, CommunicationManager communicationManager) {
 		super("Chat.fxml", commonService);
-		
-	
+		this.communicationManager = communicationManager;
+	}
+
+	@FXML
+	void initialize() {
+		listViewHostAddress.getSelectionModel().selectedItemProperty().addListener((change, oldValue, newValue) -> {
+			if (newValue != null) {
+				communicationManager.connectToHostAddress(newValue);
+			}
+		});
 	}
 
 	@FXML
@@ -104,11 +114,7 @@ public class ChatClientController extends AbstractController {
 			if (event == ChatterEvent.LOGGED_IN_ACCOUNT) {
 				commonService.showInMainWindow(getRootPane());
 				loadAllMessageFromDatabase();
-				List<String> activeHostAddressesInLAN = IpAddressUtils.getActiveHostAddressesInLAN();
-				if(activeHostAddressesInLAN != null) {
-					listViewHostAddress.getItems().addAll(activeHostAddressesInLAN);
-				}
-				listViewHostAddress.refresh();
+				listViewHostAddress.getItems().addAll(communicationManager.getActiveHostAddressList());
 			} else if (event == ChatterEvent.INCOMING_MESSAGE) {
 				Message message = (Message) eventInfo.get(ChatterEventProperties.MESSAGE);
 				addMessageToListView(message);

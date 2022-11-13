@@ -24,7 +24,7 @@ public final class ChatterServerService {
 
 	private Thread thread;
 
-	private final Map<ChatterIOHandler, Socket> connectedSockets = new HashMap<>();
+	private final Map<CommunicationChannel, Socket> connectedSockets = new HashMap<>();
 
 	public synchronized void openServer() {
 		if (isOpened) {
@@ -40,7 +40,7 @@ public final class ChatterServerService {
 				while (isOpened && ((accept = serverSocket.accept()) != null)) {
 					OutputStream outputStream = accept.getOutputStream();
 					InputStream inputStream = accept.getInputStream();
-					ChatterIOHandler ioHandler = new ChatterIOHandler(inputStream, outputStream);
+					CommunicationChannel ioHandler = new CommunicationChannel(inputStream, outputStream);
 					connectedSockets.put(ioHandler, accept);
 				}
 			} catch (Exception e) {
@@ -74,10 +74,10 @@ public final class ChatterServerService {
 	private void startClientWorker() {
 
 		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-			Map<ChatterIOHandler, byte[]> rawDatasToDispatch = new HashMap<>();
+			Map<CommunicationChannel, byte[]> rawDatasToDispatch = new HashMap<>();
 
-			Set<ChatterIOHandler> chatterIOHandlers = connectedSockets.keySet();
-			for (ChatterIOHandler handler : chatterIOHandlers) {
+			Set<CommunicationChannel> chatterIOHandlers = connectedSockets.keySet();
+			for (CommunicationChannel handler : chatterIOHandlers) {
 				try {
 					byte[] rawData = handler.getRawData();
 					System.out.println(new String(rawData));
@@ -101,13 +101,13 @@ public final class ChatterServerService {
 
 	}
 
-	private void dispatch(Map<ChatterIOHandler, byte[]> rawDataToDispatch) {
+	private void dispatch(Map<CommunicationChannel, byte[]> rawDataToDispatch) {
 
-		for (Map.Entry<ChatterIOHandler, byte[]> entry : rawDataToDispatch.entrySet()) {
-			ChatterIOHandler key = entry.getKey();
+		for (Map.Entry<CommunicationChannel, byte[]> entry : rawDataToDispatch.entrySet()) {
+			CommunicationChannel key = entry.getKey();
 			byte[] val = entry.getValue();
 
-			for (ChatterIOHandler chatterIOHandler : connectedSockets.keySet()) {
+			for (CommunicationChannel chatterIOHandler : connectedSockets.keySet()) {
 				if (key != chatterIOHandler) {
 					try {
 						chatterIOHandler.writeData(val);

@@ -3,7 +3,6 @@ package com.chatter.connection;
 import java.io.IOException;
 import java.net.Socket;
 import java.text.MessageFormat;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,7 @@ import com.chatter.event.ChatterEventProperties;
 import com.chatter.event.EventInfo;
 
 @Component
-public class ChatterClientService implements ChatterIoListener, ChatterEventListener {
+public class ChatterClientService implements CommunicationChannelListener, ChatterEventListener {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ChatterClientService.class);
 
@@ -23,7 +22,7 @@ public class ChatterClientService implements ChatterIoListener, ChatterEventList
 
 	private static final int PORT = 9999;
 
-	private ChatterIOHandler ioHandler;
+	private CommunicationChannel ioHandler;
 
 	private Socket socket;
 
@@ -33,7 +32,7 @@ public class ChatterClientService implements ChatterIoListener, ChatterEventList
 			try {
 				if (socket == null && ioHandler == null) {
 					socket = new Socket(IP, PORT);
-					ioHandler = new ChatterIOHandler(socket.getInputStream(), socket.getOutputStream());
+					ioHandler = new CommunicationChannel(socket.getInputStream(), socket.getOutputStream());
 					ioHandler.registerListener(this);
 					LOG.info(MessageFormat.format("Connection to {0}  has been established.!", IP));
 
@@ -59,7 +58,7 @@ public class ChatterClientService implements ChatterIoListener, ChatterEventList
 	}
 
 	@Override
-	public void messageReceived(List<String> messages) {
+	public void messageReceived(String messages) {
 
 	}
 

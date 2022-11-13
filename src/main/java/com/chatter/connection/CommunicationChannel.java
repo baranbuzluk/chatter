@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public final class ChatterIOHandler {
+public final class CommunicationChannel {
 
 	private final InputStream inputStream;
 
@@ -16,7 +16,7 @@ public final class ChatterIOHandler {
 
 	private final List<Byte> buffer = new ArrayList<>();
 
-	public ChatterIOHandler(InputStream inputStream, OutputStream outputStream) {
+	public CommunicationChannel(InputStream inputStream, OutputStream outputStream) {
 		this.inputStream = inputStream;
 		this.outputStream = outputStream;
 	}
@@ -88,7 +88,7 @@ public final class ChatterIOHandler {
 		return new String(array);
 	}
 
-	public void registerListener(ChatterIoListener listener) {
+	public void registerListener(CommunicationChannelListener listener) {
 		Executors.newScheduledThreadPool(1, r -> {
 			Thread thread = new Thread(r);
 			thread.setDaemon(true);
@@ -97,7 +97,9 @@ public final class ChatterIOHandler {
 			try {
 				if (inputStream.available() > 0) {
 					List<String> processedData = getProcessedData();
-					listener.messageReceived(processedData);
+					for (String message : processedData) {
+						listener.messageReceived(message);
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

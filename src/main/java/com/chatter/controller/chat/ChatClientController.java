@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.connection.IpAddressUtils;
 import com.chatter.controller.session.ChatterSession;
 import com.chatter.data.entity.Account;
 import com.chatter.data.entity.Message;
@@ -42,9 +43,14 @@ public class ChatClientController extends AbstractController {
 	@FXML
 	private MenuItem menuItemLogOut;
 
+    @FXML
+    private ListView<String> listViewHostAddress;
+	
 	@Autowired
 	public ChatClientController(CommonService commonService) {
 		super("Chat.fxml", commonService);
+		
+	
 	}
 
 	@FXML
@@ -98,6 +104,11 @@ public class ChatClientController extends AbstractController {
 			if (event == ChatterEvent.LOGGED_IN_ACCOUNT) {
 				commonService.showInMainWindow(getRootPane());
 				loadAllMessageFromDatabase();
+				List<String> activeHostAddressesInLAN = IpAddressUtils.getActiveHostAddressesInLAN();
+				if(activeHostAddressesInLAN != null) {
+					listViewHostAddress.getItems().addAll(activeHostAddressesInLAN);
+				}
+				listViewHostAddress.refresh();
 			} else if (event == ChatterEvent.INCOMING_MESSAGE) {
 				Message message = (Message) eventInfo.get(ChatterEventProperties.MESSAGE);
 				addMessageToListView(message);

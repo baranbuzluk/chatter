@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -15,8 +16,9 @@
 <GridPane fx:id="rootPane" onKeyPressed="#rootPaneOnKeyPressed" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
 		<ColumnConstraints halignment="CENTER" />
-      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-		<ColumnConstraints />
+      <ColumnConstraints halignment="CENTER" />
+		<ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+      <ColumnConstraints />
 	</columnConstraints>
 	<rowConstraints>
 		<RowConstraints valignment="CENTER" vgrow="NEVER" />
@@ -37,7 +39,8 @@
 			</GridPane.margin>
 		</MenuBar>
       <ListView fx:id="listViewHostAddress" prefWidth="150.0" GridPane.rowIndex="1" />
-		<ListView fx:id="listViewMessages" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+		<ListView fx:id="listViewMessages" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 		<HBox GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 			<children>
 				<TextField fx:id="textFieldMessage" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefColumnCount="40" HBox.hgrow="ALWAYS">

@@ -17,6 +17,7 @@ import com.chatter.service.AbstractController;
 import com.chatter.service.CommonService;
 
 import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -55,11 +56,9 @@ public class ChatClientController extends AbstractController {
 
 	@FXML
 	void initialize() {
-		listViewHostAddress.getSelectionModel().selectedItemProperty().addListener((change, oldValue, newValue) -> {
-			if (newValue != null) {
-
-			}
-		});
+		BooleanBinding isSelected = listViewHostAddress.getSelectionModel().selectedItemProperty().isNull();
+		textFieldMessage.disableProperty().bind(isSelected);
+		buttonSendMessage.disableProperty().bind(isSelected);
 	}
 
 	@FXML

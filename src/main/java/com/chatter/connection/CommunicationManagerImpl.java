@@ -37,7 +37,12 @@ public class CommunicationManagerImpl implements CommunicationManager {
 	}
 
 	private void initCommunicationChannelListener() {
-		Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+		Executors.newScheduledThreadPool(1, r -> {
+			Thread thread = new Thread(r);
+			thread.setName("Message Listener");
+			thread.setDaemon(true);
+			return thread;
+		}).scheduleAtFixedRate(() -> {
 			for (CommunicationChannel communicationChannel : connectedHostAddress.values()) {
 				List<String> message = communicationChannel.getMessage();
 				System.err.println(message);

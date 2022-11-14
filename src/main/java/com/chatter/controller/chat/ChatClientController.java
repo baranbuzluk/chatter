@@ -1,6 +1,5 @@
 package com.chatter.controller.chat;
 
-import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +74,7 @@ public class ChatClientController extends AbstractController {
 		String senderHostAdress = communicationManager.getHostAddress();
 		Message message = new Message(content, recipientHostAddress, senderHostAdress);
 
-		MessageUtils.write(message, new File("C:\\CHATTER"), FileOutputType.XML);
+		MessageUtils.write(message, FileOutputType.XML);
 		commonService.sendMessage(message);
 
 		addMessageToListView(message);

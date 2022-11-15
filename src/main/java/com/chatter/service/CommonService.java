@@ -27,4 +27,7 @@ public interface CommonService {
 
 	void registerEventListener(ChatterEventListener chatterEventListener);
 
+	List<Message> findMessageByrecipientHostAddressAndSenderHostAdress(String recipientHostAddress,
+			String senderHostAddress);
+
 }

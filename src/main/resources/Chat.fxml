@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
 <GridPane fx:id="rootPane" onKeyPressed="#rootPaneOnKeyPressed" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
 	<columnConstraints>
@@ -38,7 +39,12 @@
 				<Insets left="10.0" right="10.0" />
 			</GridPane.margin>
 		</MenuBar>
-      <ListView fx:id="listViewHostAddress" prefWidth="150.0" GridPane.rowIndex="1" />
+      <VBox alignment="CENTER_RIGHT" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="btnRefresh" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#btnRefreshOnClick" text="refresh" />
+            <ListView fx:id="listViewHostAddress" prefWidth="150.0" />
+         </children>
+      </VBox>
       <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 		<ListView fx:id="listViewMessages" GridPane.columnIndex="2" GridPane.rowIndex="1" />
 		<HBox GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">

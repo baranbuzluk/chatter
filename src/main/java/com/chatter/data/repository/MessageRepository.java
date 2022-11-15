@@ -12,4 +12,7 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 
 	List<Message> findAllByOrderByCreatedAtAsc();
 
+	List<Message> findMessageByrecipientHostAddressAndSenderHostAdress(String recipientHostAddress,
+			String senderHostAddress);
+
 }

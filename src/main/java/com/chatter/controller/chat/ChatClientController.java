@@ -17,6 +17,8 @@ import com.chatter.service.CommonService;
 
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -39,6 +41,9 @@ public class ChatClientController extends AbstractController {
 	private TextField textFieldMessage;
 
 	@FXML
+	private Button btnRefresh;
+
+	@FXML
 	private MenuItem menuItemLogOut;
 
 	@FXML
@@ -58,6 +63,30 @@ public class ChatClientController extends AbstractController {
 		BooleanBinding isSelected = listViewHostAddress.getSelectionModel().selectedItemProperty().isNull();
 		textFieldMessage.disableProperty().bind(isSelected);
 		buttonSendMessage.disableProperty().bind(isSelected);
+		String hostAddress = this.communicationManager.getHostAddress();
+
+		listViewHostAddress.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue != null) {
+					List<Message> messages = commonService
+							.findMessageByrecipientHostAddressAndSenderHostAdress(newValue, hostAddress);
+					if (!messages.isEmpty()) {
+						listViewMessages.getItems().clear();
+						listViewMessages.getItems().addAll(messages);
+					}
+
+				}
+
+			}
+
+		});
+
+	}
+
+	@FXML
+	void btnRefreshOnClick(ActionEvent event) {
 	}
 
 	@FXML

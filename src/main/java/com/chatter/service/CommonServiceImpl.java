@@ -1,5 +1,6 @@
 package com.chatter.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,19 @@ public class CommonServiceImpl implements CommonService {
 	@Override
 	public void registerEventListener(ChatterEventListener chatterEventListener) {
 		eventManager.registerListener(chatterEventListener);
+	}
+
+	@Override
+	public List<Message> findMessageByrecipientHostAddressAndSenderHostAdress(String recipientHostAddress,
+			String senderHostAddress) {
+		if (recipientHostAddress != null && senderHostAddress != null) {
+			List<Message> messages = this.messageRepository
+					.findMessageByrecipientHostAddressAndSenderHostAdress(recipientHostAddress, senderHostAddress);
+			if (messages != null) {
+				return messages;
+			}
+		}
+		return Collections.emptyList();
 	}
 
 }

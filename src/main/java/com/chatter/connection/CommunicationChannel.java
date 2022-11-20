@@ -6,13 +6,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Arrays;
+
+import com.chatter.connection.processor.DataProcessor;
+
 public final class CommunicationChannel {
 
 	private final InputStream inputStream;
 
 	private final OutputStream outputStream;
-
-	private final List<Byte> buffer = new ArrayList<>();
 
 	public CommunicationChannel(InputStream inputStream, OutputStream outputStream) {
 		this.inputStream = inputStream;
@@ -31,59 +33,28 @@ public final class CommunicationChannel {
 	}
 
 	public void writeData(String data) throws IOException {
-		byte[] processedData = processDataToWrite(data);
+		byte[] processedData = DataProcessor.processSendingData(data.getBytes());
 		writeData(processedData);
-	}
-
-	private static byte[] processDataToWrite(String data) {
-		byte[] bytesOfData = data.getBytes();
-		byte[] newArray = new byte[bytesOfData.length + 2];
-		newArray[0] = ASCIIControlChar.SOT;
-		newArray[newArray.length - 1] = ASCIIControlChar.ETX;
-		System.arraycopy(bytesOfData, 0, newArray, 1, bytesOfData.length);
-		return newArray;
-	}
-
-	public byte[] getRawData() throws IOException {
-		byte[] rawData = new byte[0];
-		int available = inputStream.available();
-		if (available > 0) {
-			rawData = new byte[available];
-			for (int i = 0; i < available; i++) {
-				rawData[i] = (byte) inputStream.read();
-			}
-		}
-		return rawData;
 	}
 
 	public synchronized List<String> getProcessedData() throws IOException {
 		List<String> messages = new ArrayList<>();
 		int available = inputStream.available();
+		byte endOfTransmission = DataProcessor.getEndOfTransmission();
+		byte[] buffer = new byte[4000];
+		int bufferPosition = 0;
 		for (int i = 0; i < available; i++) {
-			byte data = (byte) inputStream.read();
-			if (data == ASCIIControlChar.SOT) {
-				buffer.clear();
-			} else if (data == ASCIIControlChar.ETX) {
-				messages.add(getData(buffer));
-			} else if (data == ASCIIControlChar.EOT) {
-				outputStream.close();
-				inputStream.close();
-				buffer.clear();
-				break;
+			byte read = (byte) inputStream.read();
+			if (read == endOfTransmission) {
+				byte[] data = Arrays.copyOfRange(buffer, 0, bufferPosition);
+				byte[] processReceivingData = DataProcessor.processReceivingData(data);
+				messages.add(new String(processReceivingData));
+				bufferPosition = 0;
 			} else {
-				buffer.add(data);
+				buffer[bufferPosition++] = read;
 			}
 		}
 		return messages;
-	}
-
-	private String getData(List<Byte> srcBytes) {
-		Object[] srcBytesArray = srcBytes.toArray();
-		byte[] array = new byte[srcBytesArray.length];
-		for (int i = 0; i < srcBytesArray.length; i++) {
-			array[i] = (byte) srcBytesArray[i];
-		}
-		return new String(array);
 	}
 
 	public List<String> getMessage() {

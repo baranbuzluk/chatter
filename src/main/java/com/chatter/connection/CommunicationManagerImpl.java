@@ -30,9 +30,8 @@ public class CommunicationManagerImpl implements CommunicationManager {
 	private Map<String, CommunicationChannel> connectedHostAddress = Collections.synchronizedMap(new HashMap<>());
 
 	public CommunicationManagerImpl() {
-		new Thread(() -> activeHostAddressList.addAll(IpAddressUtils.getActiveHostAddressesInLAN())).start();
 		initServer();
-
+		startConnectThread();
 		initCommunicationChannelListener();
 	}
 

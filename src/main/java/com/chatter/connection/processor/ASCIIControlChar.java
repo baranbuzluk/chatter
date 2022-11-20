@@ -1,6 +1,6 @@
-package com.chatter.connection;
+package com.chatter.connection.processor;
 
-public final class ASCIIControlChar {
+final class ASCIIControlChar {
 
 	/**
 	 * Start of Header.

@@ -6,10 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.springframework.stereotype.Component;
-
-@Component
-public class EventManagerImpl implements EventManager {
+class EventManagerImpl implements EventManager {
 
 	private final List<ChatterEventListener> chatterEventListeners = new ArrayList<>();
 

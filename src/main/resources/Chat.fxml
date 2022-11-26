@@ -6,60 +6,44 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 
-<GridPane fx:id="rootPane" onKeyPressed="#rootPaneOnKeyPressed" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
-	<columnConstraints>
-		<ColumnConstraints halignment="CENTER" />
-      <ColumnConstraints halignment="CENTER" />
-		<ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-      <ColumnConstraints />
-	</columnConstraints>
-	<rowConstraints>
-		<RowConstraints valignment="CENTER" vgrow="NEVER" />
-		<RowConstraints valignment="CENTER" vgrow="ALWAYS" />
-		<RowConstraints valignment="CENTER" vgrow="NEVER" />
-	</rowConstraints>
-	<children>
-		<MenuBar GridPane.columnSpan="2147483647">
-			<menus>
-				<Menu mnemonicParsing="false" text="Menu">
-					<items>
-						<MenuItem fx:id="menuItemLogOut" mnemonicParsing="false" onAction="#menuItemLogOutOnAction" text="Log Out" />
-					</items>
-				</Menu>
-			</menus>
-			<GridPane.margin>
-				<Insets left="10.0" right="10.0" />
-			</GridPane.margin>
-		</MenuBar>
-      <VBox alignment="CENTER_RIGHT" GridPane.rowIndex="1">
-         <children>
-            <Button fx:id="btnRefresh" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#btnRefreshOnClick" text="refresh" />
-            <ListView fx:id="listViewHostAddress" prefWidth="150.0" />
-         </children>
-      </VBox>
-      <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-		<ListView fx:id="listViewMessages" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-		<HBox GridPane.columnSpan="2147483647" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="2147483647" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-			<children>
-				<TextField fx:id="textFieldMessage" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefColumnCount="40" HBox.hgrow="ALWAYS">
-					<HBox.margin>
-						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-					</HBox.margin>
-				</TextField>
-				<Button fx:id="buttonSendMessage" mnemonicParsing="false" onAction="#buttonSendMessageOnAction" text="Gönder" HBox.hgrow="ALWAYS">
-					<HBox.margin>
-						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-					</HBox.margin>
-				</Button>
-			</children>
-		</HBox>
-	</children>
-</GridPane>
+<fx:root onKeyPressed="#rootPaneOnKeyPressed" type="StackPane" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane>
+         <bottom>
+      		<HBox BorderPane.alignment="CENTER">
+      			<children>
+      				<TextField fx:id="textFieldMessage" prefColumnCount="40" HBox.hgrow="ALWAYS">
+      					<HBox.margin>
+      						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      					</HBox.margin>
+      				</TextField>
+      				<Button fx:id="buttonSendMessage" mnemonicParsing="false" onAction="#buttonSendMessageOnAction" text="Gönder" HBox.hgrow="ALWAYS">
+      					<HBox.margin>
+      						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+      					</HBox.margin>
+      				</Button>
+      			</children>
+      		</HBox>
+         </bottom>
+         <center>
+      		<ListView fx:id="listViewMessages" BorderPane.alignment="CENTER" />
+         </center>
+         <top>
+      		<MenuBar BorderPane.alignment="CENTER">
+      			<menus>
+      				<Menu mnemonicParsing="false" text="Menu">
+      					<items>
+      						<MenuItem fx:id="menuItemLogOut" mnemonicParsing="false" onAction="#menuItemLogOutOnAction" text="Log Out" />
+      					</items>
+      				</Menu>
+      			</menus>
+      		</MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</fx:root>

@@ -10,6 +10,7 @@ import com.chatter.event.ChatterEvent;
 import com.chatter.event.ChatterEventListener;
 import com.chatter.event.EventInfo;
 import com.chatter.event.EventService;
+import com.chatter.event.Variable;
 import com.chatter.service.MessageService;
 import com.chatter.view.ViewService;
 
@@ -70,12 +71,8 @@ public class ChatClientController extends StackPane implements ChatterEventListe
 		}
 		textFieldMessage.setText("");
 
-		MessageDto messageDto = new MessageDto();
-		messageDto.content = content;
-		messageService.sendMessage(messageDto);
-
-		addMessageToListView(messageDto);
-
+		MessageDto sendMessage = messageService.sendMessage(content, null);
+		addMessageToListView(sendMessage);
 	}
 
 	@FXML
@@ -102,6 +99,9 @@ public class ChatClientController extends StackPane implements ChatterEventListe
 	public void handleEvent(EventInfo eventInfo) {
 		if (eventInfo.event == ChatterEvent.OPEN_CHAT_VIEW) {
 			viewService.show(this);
+		} else if (eventInfo.event == ChatterEvent.INCOMING_MESSAGE) {
+			MessageDto messageDto = (MessageDto) eventInfo.getVariable(Variable.MESSAGE);
+			listViewMessages.getItems().add(messageDto);
 		}
 	}
 

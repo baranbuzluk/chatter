@@ -25,6 +25,9 @@ class Account implements Serializable {
 	@Column(nullable = false)
 	private String password;
 
+	@Column(name = "ip_address")
+	private String ipAddress;
+
 	public Integer getId() {
 		return id;
 	}
@@ -45,6 +48,14 @@ class Account implements Serializable {
 		this.password = password;
 	}
 
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
 }
 
 @Repository
@@ -53,5 +64,7 @@ interface AccountRepository extends JpaRepository<Account, Integer> {
 	boolean existsByUsername(String username);
 
 	Account findByUsernameAndPassword(String username, String password);
+
+	Account findByUsername(String username);
 
 }

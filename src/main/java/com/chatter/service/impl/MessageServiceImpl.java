@@ -6,41 +6,108 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.chatter.communication.CommunicationService;
+import com.chatter.communication.MessageListener;
 import com.chatter.dto.MessageDto;
+import com.chatter.event.ChatterEvent;
+import com.chatter.event.ChatterEventListener;
+import com.chatter.event.EventInfo;
+import com.chatter.event.EventService;
+import com.chatter.event.Variable;
 import com.chatter.service.MessageService;
 
 @Component
-public class MessageServiceImpl implements MessageService {
+class MessageServiceImpl implements MessageService, ChatterEventListener, MessageListener {
 
-	private MessageRepository repository;
+	private MessageRepository messageRepository;
+
+	private AccountRepository accountRepository;
+
+	private EventService eventService;
+
+	private CommunicationService communicationService;
+
+	private Account loggedInAccount;
 
 	@Autowired
-	public MessageServiceImpl(MessageRepository repository) {
-		this.repository = repository;
+	public MessageServiceImpl(MessageRepository messageRepository, AccountRepository accountRepository,
+			EventService eventService, CommunicationService communicationService) {
+		this.messageRepository = messageRepository;
+		this.accountRepository = accountRepository;
+		this.eventService = eventService;
+		this.communicationService = communicationService;
+		this.communicationService.setMessageListener(this);
+
 	}
 
 	@Override
-	public boolean sendMessage(MessageDto message) {
-		MessageFileWriter.XML.write(message);
+	public MessageDto sendMessage(String message, String recipientUsername) {
+		Account senderAccount = loggedInAccount;
+		Account recipientAccount = accountRepository.findByUsername(recipientUsername);
+
 		Message entity = new Message();
-		entity.setContent(message.content);
-		return true;
+		entity.setSenderAccount(senderAccount);
+		entity.setRecipientAccount(recipientAccount);
+		entity.setContent(message);
+		messageRepository.saveAndFlush(entity);
+
+		MessageDto messageDto = new MessageDto();
+		messageDto.content = message;
+		messageDto.recipientUsername = recipientUsername;
+		messageDto.senderUsername = loggedInAccount.getUsername();
+		messageDto.createdTime = entity.getCreatedAt();
+
+		communicationService.sendMesssage(messageDto, "localhost");
+		return messageDto;
 	}
 
 	@Override
 	public List<MessageDto> getAllMessages() {
-		List<Message> messageEntities = repository.findAll();
+		List<Message> messageEntities = messageRepository.findAll();
 		List<MessageDto> messageDtos = new ArrayList<>(messageEntities.size());
 
 		for (Message entity : messageEntities) {
 			MessageDto dto = new MessageDto();
 			dto.content = entity.getContent();
 			dto.createdTime = entity.getCreatedAt();
-			dto.recipientUsername = "Test Recipient";
-			dto.senderUsername = "Test Sender";
+
+			Account recipientAccount = entity.getRecipientAccount();
+			if (recipientAccount != null) {
+				dto.recipientUsername = recipientAccount.getUsername();
+			}
+
+			Account senderAccount = entity.getSenderAccount();
+			if (senderAccount != null) {
+				dto.senderUsername = senderAccount.getUsername();
+			}
+
+			messageDtos.add(dto);
 		}
 
 		return messageDtos;
+	}
+
+	@Override
+	public void handleEvent(EventInfo eventInfo) {
+		if (eventInfo.event == ChatterEvent.LOGGED_IN_ACCOUNT) {
+			String username = (String) eventInfo.getVariable(Variable.USERNAME);
+			loggedInAccount = accountRepository.findByUsername(username);
+		}
+	}
+
+	@Override
+	public void receivedMessage(MessageDto messageDto) {
+		Account senderAccount = accountRepository.findByUsername(messageDto.senderUsername);
+		Account recipientAccount = accountRepository.findByUsername(messageDto.recipientUsername);
+		Message entity = new Message();
+		entity.setSenderAccount(senderAccount);
+		entity.setRecipientAccount(recipientAccount);
+		entity.setContent(messageDto.content);
+		messageRepository.saveAndFlush(entity);
+
+		EventInfo event = new EventInfo(ChatterEvent.INCOMING_MESSAGE);
+		event.putVariable(Variable.MESSAGE, messageDto);
+		eventService.sendEvent(event);
 	}
 
 }

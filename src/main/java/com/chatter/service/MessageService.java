@@ -6,7 +6,7 @@ import com.chatter.dto.MessageDto;
 
 public interface MessageService {
 
-	boolean sendMessage(MessageDto message);
+	MessageDto sendMessage(String message, String recipientUsername);
 
 	List<MessageDto> getAllMessages();
 

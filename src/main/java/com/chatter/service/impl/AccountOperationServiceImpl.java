@@ -1,5 +1,6 @@
 package com.chatter.service.impl;
 
+import java.net.InetAddress;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
 
 import com.chatter.dto.AccountDto;
+import com.chatter.event.ChatterEvent;
+import com.chatter.event.EventInfo;
+import com.chatter.event.EventService;
+import com.chatter.event.Variable;
 import com.chatter.service.LoginService;
 import com.chatter.service.RegistrationService;
 
@@ -15,9 +20,12 @@ class AccountOperationServiceImpl implements RegistrationService, LoginService {
 
 	private AccountRepository accountRepository;
 
+	private EventService eventService;
+
 	@Autowired
-	public AccountOperationServiceImpl(AccountRepository accountRepository) {
+	public AccountOperationServiceImpl(AccountRepository accountRepository, EventService eventService) {
 		this.accountRepository = accountRepository;
+		this.eventService = eventService;
 	}
 
 	@Override
@@ -46,16 +54,30 @@ class AccountOperationServiceImpl implements RegistrationService, LoginService {
 
 	}
 
-	private String convertMD5(String text) {
-		byte[] bytesOfText = text.getBytes();
-		return DigestUtils.md5DigestAsHex(bytesOfText);
-	}
-
 	@Override
 	public boolean login(String username, String password) {
 		String hashedPassword = convertMD5(password);
 		Account account = accountRepository.findByUsernameAndPassword(username, hashedPassword);
-		return account != null;
+		boolean login = account != null;
+		if (login) {
+			try {
+				String hostAddress = InetAddress.getLocalHost().getHostAddress();
+				account.setIpAddress(hostAddress);
+				accountRepository.saveAndFlush(account);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			EventInfo event = new EventInfo(ChatterEvent.LOGGED_IN_ACCOUNT);
+			event.putVariable(Variable.USERNAME, username);
+			eventService.sendEvent(event);
+		}
+		return login;
+	}
+
+	private String convertMD5(String text) {
+		byte[] bytesOfText = text.getBytes();
+		return DigestUtils.md5DigestAsHex(bytesOfText);
 	}
 
 }

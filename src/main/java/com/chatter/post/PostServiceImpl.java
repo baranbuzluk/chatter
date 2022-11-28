@@ -1,6 +1,8 @@
-package com.chatter.communication;
+package com.chatter.post;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -12,34 +14,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.chatter.dto.MessageDto;
-
 @Component
-class CommunicationServiceImpl implements CommunicationService {
+class PostServiceImpl implements PostService {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private static final int PORT = 9998;
 
-	private IOStreamHandler<MessageDto> streamHandler = MessageFileHandler.JSON;
+	private PostListener messageListener;
 
-	private ServerSocket serverSocket;
-
-	private MessageListener messageListener;
-
-	public CommunicationServiceImpl() {
+	public PostServiceImpl() {
 		startServerSocket();
 	}
 
-	public void setMessageListener(MessageListener messageListener) {
+	@Override
+	public void setPostListener(PostListener messageListener) {
 		this.messageListener = messageListener;
 	}
 
 	private void startServerSocket() {
-		try {
-			serverSocket = new ServerSocket(PORT);
-			logger.info("Server was started!");
-			Thread thread = new Thread(() -> {
+
+		logger.info("Server was started!");
+		Thread thread = new Thread(() -> {
+			try (ServerSocket serverSocket = new ServerSocket(PORT);) {
 				while (true) {
 					try {
 						logger.info("It is being waited for client");
@@ -49,25 +46,24 @@ class CommunicationServiceImpl implements CommunicationService {
 						e.printStackTrace();
 					}
 				}
-			});
-			thread.setDaemon(true);
-			thread.start();
-
-		} catch (IOException e) {
-			String message = "Server could not be established!";
-			logger.error(message, e);
-			JOptionPane.showMessageDialog(new JFrame(), message, "ERROR OCCURRED", JOptionPane.ERROR_MESSAGE);
-			System.exit(1);
-		}
-
+			} catch (IOException e) {
+				String message = "Server could not be established!";
+				logger.error(message, e);
+				JOptionPane.showMessageDialog(new JFrame(), message, "ERROR OCCURRED", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+		});
+		thread.setDaemon(true);
+		thread.start();
 	}
 
 	private void acceptSocket(Socket accept) {
 		logger.info(MessageFormat.format("{0} was accepted.", accept.getInetAddress().getHostAddress()));
 		try {
-			MessageDto messageDto = streamHandler.read(accept.getInputStream());
+			ObjectInputStream objectInputStream = new ObjectInputStream(accept.getInputStream());
+			Post post = (Post) objectInputStream.readObject();
 			if (messageListener != null) {
-				messageListener.receivedMessage(messageDto);
+				messageListener.receivedPost(post);
 			}
 			accept.close();
 		} catch (Exception e) {
@@ -76,9 +72,11 @@ class CommunicationServiceImpl implements CommunicationService {
 	}
 
 	@Override
-	public boolean sendMesssage(MessageDto messageDto, String hostAddress) {
+	public boolean sendPost(Post post, String hostAddress) {
 		try (Socket socket = new Socket(hostAddress, PORT)) {
-			MessageFileHandler.JSON.write(messageDto, socket.getOutputStream());
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+			objectOutputStream.writeObject(post);
+			objectOutputStream.close();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();

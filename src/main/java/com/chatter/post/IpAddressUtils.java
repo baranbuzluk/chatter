@@ -1,4 +1,4 @@
-package com.chatter.communication;
+package com.chatter.post;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -1,5 +1,6 @@
-package com.chatter.communication;
+package com.chatter.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-enum MessageFileHandler implements IOStreamHandler<MessageDto> {
+enum MessageFileHandler {
 
 	XML(new XmlMapper(), ".xml"), JSON(new JsonMapper(), ".json");
 
@@ -30,16 +31,15 @@ enum MessageFileHandler implements IOStreamHandler<MessageDto> {
 		mapper.configure(Feature.IGNORE_UNKNOWN, true);
 	}
 
-//	private static File getMessageDirectory() {
-//		String userHomePath = System.getProperty("user.home");
-//		File dstFile = new File(userHomePath, "CHATTER_MESSAGES");
-//		if (!dstFile.exists()) {
-//			dstFile.mkdir();
-//		}
-//		return dstFile;
-//	}
+	private static File getMessageDirectory() {
+		String userHomePath = System.getProperty("user.home");
+		File dstFile = new File(userHomePath, "CHATTER_MESSAGES");
+		if (!dstFile.exists()) {
+			dstFile.mkdir();
+		}
+		return dstFile;
+	}
 
-	@Override
 	public MessageDto read(InputStream stream) {
 		try (JsonParser parser = mapper.createParser(stream)) {
 			return parser.readValueAs(MessageDto.class);
@@ -50,7 +50,6 @@ enum MessageFileHandler implements IOStreamHandler<MessageDto> {
 		return null;
 	}
 
-	@Override
 	public void write(MessageDto obj, OutputStream outputStream) {
 		try (JsonGenerator generator = mapper.createGenerator(outputStream)) {
 			generator.writeObject(obj);

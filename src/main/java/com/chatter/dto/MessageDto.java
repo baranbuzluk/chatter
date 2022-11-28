@@ -2,7 +2,11 @@ package com.chatter.dto;
 
 import java.time.LocalDateTime;
 
-public class MessageDto {
+import com.chatter.post.Post;
+
+public class MessageDto implements Post {
+
+	private static final long serialVersionUID = -3055662042621540264L;
 
 	public LocalDateTime createdTime;
 

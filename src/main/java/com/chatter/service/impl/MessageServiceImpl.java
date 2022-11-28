@@ -6,18 +6,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.chatter.communication.CommunicationService;
-import com.chatter.communication.MessageListener;
 import com.chatter.dto.MessageDto;
 import com.chatter.event.ChatterEvent;
 import com.chatter.event.ChatterEventListener;
 import com.chatter.event.EventInfo;
 import com.chatter.event.EventService;
 import com.chatter.event.Variable;
+import com.chatter.post.Post;
+import com.chatter.post.PostListener;
+import com.chatter.post.PostService;
 import com.chatter.service.MessageService;
 
 @Component
-class MessageServiceImpl implements MessageService, ChatterEventListener, MessageListener {
+class MessageServiceImpl implements MessageService, ChatterEventListener, PostListener {
 
 	private MessageRepository messageRepository;
 
@@ -25,18 +26,18 @@ class MessageServiceImpl implements MessageService, ChatterEventListener, Messag
 
 	private EventService eventService;
 
-	private CommunicationService communicationService;
+	private PostService communicationService;
 
 	private Account loggedInAccount;
 
 	@Autowired
 	public MessageServiceImpl(MessageRepository messageRepository, AccountRepository accountRepository,
-			EventService eventService, CommunicationService communicationService) {
+			EventService eventService, PostService communicationService) {
 		this.messageRepository = messageRepository;
 		this.accountRepository = accountRepository;
 		this.eventService = eventService;
 		this.communicationService = communicationService;
-		this.communicationService.setMessageListener(this);
+		this.communicationService.setPostListener(this);
 
 	}
 
@@ -57,7 +58,7 @@ class MessageServiceImpl implements MessageService, ChatterEventListener, Messag
 		messageDto.senderUsername = loggedInAccount.getUsername();
 		messageDto.createdTime = entity.getCreatedAt();
 
-		communicationService.sendMesssage(messageDto, "localhost");
+		communicationService.sendPost(messageDto, "localhost");
 		return messageDto;
 	}
 
@@ -96,18 +97,21 @@ class MessageServiceImpl implements MessageService, ChatterEventListener, Messag
 	}
 
 	@Override
-	public void receivedMessage(MessageDto messageDto) {
-		Account senderAccount = accountRepository.findByUsername(messageDto.senderUsername);
-		Account recipientAccount = accountRepository.findByUsername(messageDto.recipientUsername);
-		Message entity = new Message();
-		entity.setSenderAccount(senderAccount);
-		entity.setRecipientAccount(recipientAccount);
-		entity.setContent(messageDto.content);
-		messageRepository.saveAndFlush(entity);
+	public void receivedPost(Post post) {
+		if (post instanceof MessageDto messageDto) {
+			Account senderAccount = accountRepository.findByUsername(messageDto.senderUsername);
+			Account recipientAccount = accountRepository.findByUsername(messageDto.recipientUsername);
+			Message entity = new Message();
+			entity.setSenderAccount(senderAccount);
+			entity.setRecipientAccount(recipientAccount);
+			entity.setContent(messageDto.content);
+			messageRepository.saveAndFlush(entity);
 
-		EventInfo event = new EventInfo(ChatterEvent.INCOMING_MESSAGE);
-		event.putVariable(Variable.MESSAGE, messageDto);
-		eventService.sendEvent(event);
+			EventInfo event = new EventInfo(ChatterEvent.INCOMING_MESSAGE);
+			event.putVariable(Variable.MESSAGE, messageDto);
+			eventService.sendEvent(event);
+		}
+
 	}
 
 }

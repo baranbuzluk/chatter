@@ -37,7 +37,7 @@ class MessageServiceImpl implements MessageService, ChatterEventListener, PostLi
 		this.accountRepository = accountRepository;
 		this.eventService = eventService;
 		this.communicationService = communicationService;
-		this.communicationService.setPostListener(this);
+		this.communicationService.addPostListener(this);
 
 	}
 

@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -17,29 +19,31 @@ import org.springframework.stereotype.Component;
 @Component
 class PostServiceImpl implements PostService {
 
+	private static final int PORT = 9999;
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final int PORT = 9998;
-
-	private PostListener messageListener;
+	private List<PostListener> postListeners = new ArrayList<>();
 
 	public PostServiceImpl() {
 		startServerSocket();
 	}
 
 	@Override
-	public void setPostListener(PostListener messageListener) {
-		this.messageListener = messageListener;
+	public void addPostListener(PostListener postListener) {
+		if (!postListeners.contains(postListener)) {
+			postListeners.add(postListener);
+		}
 	}
 
 	private void startServerSocket() {
 
-		logger.info("Server was started!");
 		Thread thread = new Thread(() -> {
-			try (ServerSocket serverSocket = new ServerSocket(PORT);) {
+			try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+				logger.info("Server was started!");
 				while (true) {
 					try {
-						logger.info("It is being waited for client");
+						logger.info("Server is waiting a client.");
 						Socket accept = serverSocket.accept();
 						acceptSocket(accept);
 					} catch (IOException e) {
@@ -62,26 +66,31 @@ class PostServiceImpl implements PostService {
 		try {
 			ObjectInputStream objectInputStream = new ObjectInputStream(accept.getInputStream());
 			Post post = (Post) objectInputStream.readObject();
-			if (messageListener != null) {
-				messageListener.receivedPost(post);
-			}
+			objectInputStream.close();
 			accept.close();
+
+			new Thread(() -> {
+				for (PostListener listener : postListeners) {
+					listener.receivedPost(post);
+				}
+			}).start();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public boolean sendPost(Post post, String hostAddress) {
-		try (Socket socket = new Socket(hostAddress, PORT)) {
+	public boolean sendPost(Post post, String dstHostAddress) {
+		try (Socket socket = new Socket(dstHostAddress, PORT)) {
 			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 			objectOutputStream.writeObject(post);
 			objectOutputStream.close();
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

@@ -2,8 +2,8 @@ package com.chatter.post;
 
 public interface PostService {
 
-	boolean sendPost(Post post, String hostAddress);
+	boolean sendPost(Post post, String dstHostAddress);
 
-	void setPostListener(PostListener postListener);
+	void addPostListener(PostListener postListener);
 
 }

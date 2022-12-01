@@ -44,6 +44,9 @@
       			</menus>
       		</MenuBar>
          </top>
+         <right>
+            <ListView fx:id="listViewFriends" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+         </right>
       </BorderPane>
    </children>
 </fx:root>

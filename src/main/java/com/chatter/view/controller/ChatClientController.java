@@ -11,18 +11,22 @@ import com.chatter.event.ChatterEventListener;
 import com.chatter.event.EventInfo;
 import com.chatter.event.EventService;
 import com.chatter.event.Variable;
+import com.chatter.post.IpAddressUtils;
 import com.chatter.service.MessageService;
 import com.chatter.view.ViewService;
 
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 
 @Component
 public class ChatClientController extends StackPane implements ChatterEventListener {
@@ -35,6 +39,9 @@ public class ChatClientController extends StackPane implements ChatterEventListe
 
 	@FXML
 	private TextField textFieldMessage;
+
+	@FXML
+	private ListView<String> listViewFriends;
 
 	@FXML
 	private MenuItem menuItemLogOut;
@@ -56,6 +63,35 @@ public class ChatClientController extends StackPane implements ChatterEventListe
 	@FXML
 	void initialize() {
 		loadAllMessages();
+		initiateFriendsListView();
+	}
+
+	private void initiateFriendsListView() {
+		listViewFriends.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+
+			@Override
+			public ListCell<String> call(ListView<String> param) {
+				return new ListCell<>() {
+					@Override
+					public void updateItem(String username, boolean empty) {
+						super.updateItem(username, empty);
+						if (empty || username == null) {
+							setText(null);
+						} else {
+							setText(username);
+						}
+					}
+				};
+			};
+		});
+
+		List<String> hostAddresses = IpAddressUtils.getActiveHostAddressesInLAN();
+		listViewFriends.getItems().clear();
+		listViewFriends.getItems().addAll(hostAddresses);
+
+		BooleanBinding isSelected = listViewFriends.getSelectionModel().selectedItemProperty().isNull();
+		buttonSendMessage.disableProperty().bind(isSelected);
+
 	}
 
 	@FXML
@@ -71,7 +107,9 @@ public class ChatClientController extends StackPane implements ChatterEventListe
 		}
 		textFieldMessage.setText("");
 
-		MessageDto sendMessage = messageService.sendMessage(content, null);
+		String selectedIpAddress = listViewFriends.getSelectionModel().getSelectedItem();
+
+		MessageDto sendMessage = messageService.sendMessage(content, selectedIpAddress);
 		addMessageToListView(sendMessage);
 	}
 

@@ -1,4 +1,4 @@
-package com.chatter.event.impl;
+package com.chatter.event;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,9 +7,6 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.chatter.configuration.ChatterApplicationContext;
-import com.chatter.event.ChatterEventListener;
-import com.chatter.event.EventInfo;
-import com.chatter.event.EventService;
 
 import javafx.application.Platform;
 

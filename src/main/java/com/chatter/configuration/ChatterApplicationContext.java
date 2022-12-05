@@ -5,14 +5,13 @@ import java.util.List;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
 import javafx.embed.swing.JFXPanel;
 
 @Configuration
 @ComponentScan(basePackages = "com.chatter")
-@Import({ DatabaseConfig.class })
+//@Import({ DatabaseConfig.class })
 @PropertySource("classpath:application.properties")
 public class ChatterApplicationContext {
 

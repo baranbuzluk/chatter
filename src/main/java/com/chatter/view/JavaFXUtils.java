@@ -1,4 +1,4 @@
-package com.chatter.view.controller;
+package com.chatter.view;
 
 import java.net.URL;
 import java.text.MessageFormat;

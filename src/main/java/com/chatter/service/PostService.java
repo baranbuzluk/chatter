@@ -1,8 +1,9 @@
-package com.chatter.post;
+package com.chatter.service;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -15,6 +16,21 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+interface PostService {
+
+	boolean sendPost(Post post, String dstHostAddress);
+
+	void addPostListener(PostListener postListener);
+}
+
+interface PostListener {
+
+	void receivedPost(Post post);
+}
+
+interface Post extends Serializable {
+}
 
 @Component
 class PostServiceImpl implements PostService {

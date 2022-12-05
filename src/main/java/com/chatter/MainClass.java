@@ -9,6 +9,8 @@ import java.nio.channels.FileLock;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.chatter.view.MainFX;
+
 public class MainClass {
 
 	private static FileLock tryLock;

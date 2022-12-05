@@ -1,10 +1,9 @@
-package com.chatter;
+package com.chatter.view;
 
 import com.chatter.configuration.ChatterApplicationContext;
 import com.chatter.event.ChatterEvent;
 import com.chatter.event.EventInfo;
 import com.chatter.event.EventService;
-import com.chatter.view.ViewService;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -17,7 +16,7 @@ public class MainFX extends Application {
 		mainWindowService.setMainStage(primaryStage);
 
 		EventService eventService = ChatterApplicationContext.getBean(EventService.class);
-		eventService.sendEvent(new EventInfo(ChatterEvent.OPEN_LOGIN_VIEW));
+		eventService.sendEvent(new EventInfo(ChatterEvent.OPEN_CHAT_VIEW));
 	}
 
 	public static void main(String[] args) {

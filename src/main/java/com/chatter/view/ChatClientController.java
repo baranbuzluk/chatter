@@ -1,9 +1,17 @@
 package com.chatter.view;
 
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +24,9 @@ import com.chatter.event.EventService;
 import com.chatter.event.Variable;
 import com.chatter.service.CommunicationService;
 import com.chatter.service.MessageService;
+import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamPanel;
+import com.github.sarxos.webcam.WebcamResolution;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -39,6 +50,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 
 	@FXML
 	private TextField textFieldMessage;
+
+	@FXML
+	private Button btnOpenCamera;
 
 	@FXML
 	private ListView<String> listViewFriends;
@@ -67,6 +81,38 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 	@FXML
 	void initialize() {
 		buttonRefreshOnlineHostAddressesOnAction(null);
+	}
+
+	@FXML
+	void btnOpenCameraOnAction(ActionEvent event) {
+		Webcam webcam = Webcam.getDefault();
+		webcam.setViewSize(WebcamResolution.VGA.getSize());
+
+		WebcamPanel panel = new WebcamPanel(webcam);
+		panel.setFPSDisplayed(true);
+		panel.setDisplayDebugInfo(true);
+		panel.setImageSizeDisplayed(true);
+		panel.setMirrored(true);
+
+		JFrame window = new JFrame("Test Webcam Panel");
+		JButton captureButton = new JButton("Capture");
+
+		captureButton.addActionListener((actionEvent) -> {
+			BufferedImage bim = webcam.getImage();
+			try {
+				ImageIO.write(bim, "PNG", new File("test.png"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
+
+		window.setLayout(new BorderLayout());
+		window.add(panel, BorderLayout.CENTER);
+		window.add(captureButton, BorderLayout.SOUTH);
+		window.setResizable(true);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.pack();
+		window.setVisible(true);
 	}
 
 	@FXML

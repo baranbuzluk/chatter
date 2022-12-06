@@ -59,6 +59,7 @@
                <children>
                   <Button fx:id="buttonRefreshOnlineHostAddresses" mnemonicParsing="false" onAction="#buttonRefreshOnlineHostAddressesOnAction" text="Refresh" GridPane.halignment="RIGHT" />
                   <ListView fx:id="listViewFriends" GridPane.rowIndex="1" />
+                  <Button fx:id="btnOpenCamera" mnemonicParsing="false" onAction="#btnOpenCameraOnAction" text="openCamera" />
                </children>
                <BorderPane.margin>
                   <Insets />

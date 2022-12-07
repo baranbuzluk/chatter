@@ -2,8 +2,10 @@ package com.chatter.view;
 
 import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -29,6 +31,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import com.github.sarxos.webcam.WebcamResolution;
 
 import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -81,6 +84,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 	@FXML
 	void initialize() {
 		buttonRefreshOnlineHostAddressesOnAction(null);
+		BooleanBinding isSelected = listViewFriends.getSelectionModel().selectedItemProperty().isNull();
+		btnOpenCamera.disableProperty().bind(isSelected);
+
 	}
 
 	@FXML
@@ -99,8 +105,14 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 
 		captureButton.addActionListener((actionEvent) -> {
 			BufferedImage bim = webcam.getImage();
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+
 			try {
-				ImageIO.write(bim, "PNG", new File("test.png"));
+				ImageIO.write(bim, "PNG", os);
+				InputStream is = new ByteArrayInputStream(os.toByteArray());
+				Message message = getMessage();
+				message.setAttachment(is);
+				sendMessage(message);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -113,6 +125,27 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
 		window.setVisible(true);
+	}
+
+	private void sendMessage(Message message) {
+		if (messageService.sendMessage(message)) {
+			listViewMessages.getItems().add(message);
+			listViewMessages.scrollTo(message);
+		}
+	}
+
+	private Message getMessage() {
+		Message message = new Message();
+		String selectedFriend = listViewFriends.getSelectionModel().getSelectedItem();
+		message.setCreatedTime(LocalDateTime.now());
+		try {
+			message.setSenderHostAddress(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		message.setContent(textFieldMessage.getText());
+		message.setRecipientHostAddress(selectedFriend);
+		return message;
 	}
 
 	@FXML
@@ -169,6 +202,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 			viewService.show(this);
 		} else if (eventInfo.event == ChatterEvent.INCOMING_MESSAGE) {
 			Message messageDto = (Message) eventInfo.getVariable(Variable.MESSAGE);
+			if (messageDto.getAttachment() != null) {
+				// TODO open ımage popup
+			}
 			listViewMessages.getItems().add(messageDto);
 		}
 	}

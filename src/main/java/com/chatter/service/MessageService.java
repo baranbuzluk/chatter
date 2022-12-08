@@ -47,6 +47,16 @@ class MessageServiceImpl implements MessageService, PostListener {
 
 	}
 
+	@Override
+	public void receivedImagePost(Post post) {
+		if (post instanceof MessagePost messagePost) {
+			EventInfo event = new EventInfo(ChatterEvent.INCOMING_IMAGE_MESSAGE);
+			event.putVariable(Variable.MESSAGE, messagePost);
+			eventService.sendEvent(event);
+
+		}
+	}
+
 }
 
 class MessagePost implements Post {

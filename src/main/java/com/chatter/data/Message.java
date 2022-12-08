@@ -1,6 +1,5 @@
 package com.chatter.data;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -17,8 +16,6 @@ public class Message implements Serializable {
 	private String content;
 
 	private String senderHostAddress;
-
-	private InputStream attachment;
 
 	private String recipientHostAddress;
 
@@ -66,14 +63,6 @@ public class Message implements Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
-	}
-
-	public InputStream getAttachment() {
-		return attachment;
-	}
-
-	public void setAttachment(InputStream attachment) {
-		this.attachment = attachment;
 	}
 
 }

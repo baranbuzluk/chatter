@@ -111,7 +111,7 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 				ImageIO.write(bim, "PNG", os);
 				InputStream is = new ByteArrayInputStream(os.toByteArray());
 				Message message = getMessage();
-				message.setAttachment(is);
+				message.setContent(is.toString());
 				sendMessage(message);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -202,10 +202,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 			viewService.show(this);
 		} else if (eventInfo.event == ChatterEvent.INCOMING_MESSAGE) {
 			Message messageDto = (Message) eventInfo.getVariable(Variable.MESSAGE);
-			if (messageDto.getAttachment() != null) {
-				// TODO open ımage popup
-			}
 			listViewMessages.getItems().add(messageDto);
+		} else if (eventInfo.event == ChatterEvent.INCOMING_IMAGE_MESSAGE) {
+			// TODO IMAGE CONTAINER design
 		}
 	}
 

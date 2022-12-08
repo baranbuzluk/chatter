@@ -27,6 +27,8 @@ interface PostService {
 interface PostListener {
 
 	void receivedPost(Post post);
+
+	void receivedImagePost(Post post);
 }
 
 interface Post extends Serializable {
@@ -37,18 +39,65 @@ class PostServiceImpl implements PostService {
 
 	private static final int PORT = 9999;
 
+	private static final int FILE_PORT = 9998;
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private List<PostListener> postListeners = new ArrayList<>();
 
 	public PostServiceImpl() {
 		startServerSocket();
+		startFileServerSocket();
 	}
 
 	@Override
 	public void addPostListener(PostListener postListener) {
 		if (!postListeners.contains(postListener)) {
 			postListeners.add(postListener);
+		}
+	}
+
+	private void startFileServerSocket() {
+		Thread thread = new Thread(() -> {
+			try (ServerSocket serverSocket = new ServerSocket(FILE_PORT)) {
+				logger.info("File Server was started!");
+				while (true) {
+					try {
+						logger.info("File Server is waiting a client.");
+						Socket accept = serverSocket.accept();
+						acceptFileSocket(accept);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} catch (IOException e) {
+				String message = "File Server could not be established!";
+				logger.error(message, e);
+				JOptionPane.showMessageDialog(new JFrame(), message, "ERROR OCCURRED", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+		});
+		thread.setDaemon(true);
+		thread.start();
+
+	}
+
+	private void acceptFileSocket(Socket fileSocket) {
+		logger.info(MessageFormat.format("{0} was accepted.", fileSocket.getInetAddress().getHostAddress()));
+		try {
+			ObjectInputStream objectInputStream = new ObjectInputStream(fileSocket.getInputStream());
+			Post post = (Post) objectInputStream.readObject();
+			objectInputStream.close();
+			fileSocket.close();
+
+			new Thread(() -> {
+				for (PostListener listener : postListeners) {
+					listener.receivedPost(post);
+				}
+			}).start();
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

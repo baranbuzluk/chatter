@@ -1,5 +1,6 @@
 package com.chatter.view;
 
+import java.io.ByteArrayInputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
@@ -12,11 +13,12 @@ import com.chatter.data.Message;
 import com.chatter.event.ChatterEvent;
 import com.chatter.event.ChatterEventListener;
 import com.chatter.event.EventInfo;
-import com.chatter.event.EventService;
 import com.chatter.event.Variable;
+import com.chatter.service.CameraService;
 import com.chatter.service.CommunicationService;
 import com.chatter.service.MessageService;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +26,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -35,6 +40,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 	private Button buttonSendMessage;
 
 	@FXML
+	private ToggleButton toggleButtonCamera;
+
+	@FXML
 	private ListView<Message> listViewMessages;
 
 	@FXML
@@ -44,22 +52,30 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 	private ListView<String> listViewFriends;
 
 	@FXML
+	private ImageView imageViewFirstUser;
+
+	@FXML
+	private ImageView imageViewSecondUser;
+
+	@FXML
 	private MenuItem menuItemLogOut;
 
 	private MessageService messageService;
 
 	private ViewService viewService;
 
-	private EventService eventService;
+	private CameraService cameraService;
 
 	private CommunicationService communicationService;
 
+	private AnimationTimer animationTimerFirstUser;
+
 	@Autowired
-	public ChatClientController(MessageService messageService, ViewService viewService, EventService eventService,
+	public ChatClientController(MessageService messageService, ViewService viewService, CameraService cameraService,
 			CommunicationService communicationService) {
 		this.messageService = messageService;
 		this.viewService = viewService;
-		this.eventService = eventService;
+		this.cameraService = cameraService;
 		this.communicationService = communicationService;
 		JavaFXUtils.loadFXMLWithRoot(this, "Chat.fxml");
 	}
@@ -67,6 +83,26 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 	@FXML
 	void initialize() {
 		buttonRefreshOnlineHostAddressesOnAction(null);
+
+		animationTimerFirstUser = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				imageViewFirstUser.setImage(new Image(new ByteArrayInputStream(cameraService.getImageBytes())));
+			}
+		};
+
+		toggleButtonCamera.selectedProperty().addListener((obs, oldVal, newVal) -> {
+			if (newVal) {
+				if (cameraService.startCamera()) {
+					animationTimerFirstUser.start();
+				}
+			} else {
+				cameraService.stopCamera();
+				animationTimerFirstUser.stop();
+				imageViewFirstUser.setImage(null);
+			}
+		});
+
 	}
 
 	@FXML

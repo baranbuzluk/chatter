@@ -15,6 +15,8 @@ public class Message implements Serializable {
 
 	private String content;
 
+	private byte[] imageContent;
+
 	private String senderHostAddress;
 
 	private String recipientHostAddress;
@@ -63,6 +65,14 @@ public class Message implements Serializable {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public byte[] getImageContent() {
+		return imageContent;
+	}
+
+	public void setImageContent(byte[] imageContent) {
+		this.imageContent = imageContent;
 	}
 
 }

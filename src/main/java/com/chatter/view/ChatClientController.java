@@ -70,6 +70,8 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 
 	private AnimationTimer animationTimerFirstUser;
 
+	private AnimationTimer animationTimerSecondUser;
+
 	@Autowired
 	public ChatClientController(MessageService messageService, ViewService viewService, CameraService cameraService,
 			CommunicationService communicationService) {
@@ -91,16 +93,37 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 			}
 		};
 
+		animationTimerSecondUser = new AnimationTimer() {
+
+			@Override
+			public void handle(long now) {
+				String friendHostAddress = listViewFriends.getSelectionModel().getSelectedItem();
+				if (friendHostAddress != null) {
+					// TODO send stream bytes
+					boolean hasStream = messageService.sendStream(cameraService.getImageBytes(), friendHostAddress);
+
+				}
+
+			}
+		};
+
 		toggleButtonCamera.selectedProperty().addListener((obs, oldVal, newVal) -> {
 			if (newVal) {
 				if (cameraService.startCamera()) {
 					animationTimerFirstUser.start();
+					animationTimerSecondUser.start();
+
 				}
 			} else {
 				cameraService.stopCamera();
 				animationTimerFirstUser.stop();
+				animationTimerSecondUser.stop();
 				imageViewFirstUser.setImage(null);
 			}
+		});
+
+		listViewFriends.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
+
 		});
 
 	}
@@ -165,11 +188,11 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 			viewService.show(this);
 		} else if (eventInfo.event == ChatterEvent.INCOMING_MESSAGE) {
 			Message messageDto = (Message) eventInfo.getVariable(Variable.MESSAGE);
-			if (messageDto.getImageContent() != null) {
-				Image image = new Image(new ByteArrayInputStream(messageDto.getImageContent()));
-				imageViewSecondUser.setImage(image);
-			}
 			listViewMessages.getItems().add(messageDto);
+		} else if (eventInfo.event == ChatterEvent.INCOMING_STREAM) {
+			ByteArrayInputStream stream = (ByteArrayInputStream) eventInfo.getVariable(Variable.MESSAGE);
+			Image image = new Image(stream);
+			imageViewSecondUser.setImage(image);
 		}
 	}
 

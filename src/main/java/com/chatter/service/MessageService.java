@@ -6,4 +6,6 @@ public interface MessageService {
 
 	boolean sendMessage(Message message);
 
+	boolean sendStream(byte[] data, String dstHostAddress);
+
 }

@@ -1,8 +1,12 @@
 package com.chatter.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.MessageFormat;
@@ -21,12 +25,15 @@ class PostServiceImpl implements PostService {
 
 	private static final int PORT = 9999;
 
+	private static final int UDP_PORT = 9998;
+
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	private List<PostListener> postListeners = new ArrayList<>();
 
 	public PostServiceImpl() {
 		startServerSocket();
+		startUdpSocket();
 	}
 
 	@Override
@@ -61,6 +68,49 @@ class PostServiceImpl implements PostService {
 		thread.start();
 	}
 
+	private void startUdpSocket() {
+
+		Thread thread = new Thread(() -> {
+			try (DatagramSocket serverSocket = new DatagramSocket(UDP_PORT)) {
+				byte[] databyte = new byte[512];
+				DatagramPacket data = new DatagramPacket(databyte, databyte.length);
+				logger.info("Udp server was started");
+				while (true) {
+					logger.info("Upd server is waiting a stream");
+					serverSocket.receive(data);
+					acceptUdpStream(data);
+				}
+			} catch (Exception e) {
+				String message = "Server could not be established!";
+				logger.error(message, e);
+				JOptionPane.showMessageDialog(new JFrame(), message, "ERROR OCCURRED", JOptionPane.ERROR_MESSAGE);
+				System.exit(1);
+			}
+		});
+
+		thread.setDaemon(true);
+		thread.start();
+
+	}
+
+	private void acceptUdpStream(DatagramPacket data) {
+		logger.info("{0} stream was accepted", data.getAddress().getHostAddress());
+
+		try {
+			if (data != null) {
+				ByteArrayInputStream stream = new ByteArrayInputStream(data.getData());
+				new Thread(() -> {
+					for (PostListener listener : postListeners) {
+						listener.receivedStream(stream);
+					}
+				}).start();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
 	private void acceptSocket(Socket accept) {
 		logger.info(MessageFormat.format("{0} was accepted.", accept.getInetAddress().getHostAddress()));
 		try {
@@ -88,6 +138,18 @@ class PostServiceImpl implements PostService {
 			objectOutputStream.close();
 			return true;
 		} catch (IOException e) {
+		}
+		return false;
+	}
+
+	@Override
+	public boolean sendStream(byte[] data, String dstHostAddress) {
+		try (DatagramSocket socket = new DatagramSocket(UDP_PORT, InetAddress.getByName(dstHostAddress))) {
+			DatagramPacket packet = new DatagramPacket(data, data.length);
+			socket.send(packet);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}

@@ -1,5 +1,6 @@
 package com.chatter.service;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import com.chatter.event.EventService;
 import com.chatter.event.Variable;
 
 @Component
-class MessageServiceImpl implements MessageService, PostListener {
+abstract class MessageServiceImpl implements MessageService, PostListener {
 
 	private EventService eventService;
 
@@ -39,6 +40,20 @@ class MessageServiceImpl implements MessageService, PostListener {
 			eventService.sendEvent(event);
 		}
 
+	}
+
+	@Override
+	public void receivedStream(ByteArrayInputStream stream) {
+		if (stream != null) {
+			EventInfo event = new EventInfo(ChatterEvent.INCOMING_STREAM);
+			event.putVariable(Variable.MESSAGE, stream);
+			eventService.sendEvent(event);
+		}
+	}
+
+	@Override
+	public boolean sendStream(byte[] data, String dstHostAddress) {
+		return postService.sendStream(data, dstHostAddress);
 	}
 
 }

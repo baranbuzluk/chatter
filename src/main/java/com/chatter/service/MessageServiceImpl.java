@@ -13,7 +13,7 @@ import com.chatter.event.EventService;
 import com.chatter.event.Variable;
 
 @Component
-abstract class MessageServiceImpl implements MessageService, PostListener {
+class MessageServiceImpl implements MessageService, PostListener {
 
 	private EventService eventService;
 

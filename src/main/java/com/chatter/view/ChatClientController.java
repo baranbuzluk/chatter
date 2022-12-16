@@ -101,7 +101,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 				if (friendHostAddress != null) {
 					// TODO send stream bytes
 					boolean hasStream = messageService.sendStream(cameraService.getImageBytes(), friendHostAddress);
-
+					if (!hasStream) {
+						animationTimerSecondUser.stop();
+					}
 				}
 
 			}

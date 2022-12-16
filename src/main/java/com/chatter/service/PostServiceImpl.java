@@ -84,7 +84,6 @@ class PostServiceImpl implements PostService {
 				String message = "Server could not be established!";
 				logger.error(message, e);
 				JOptionPane.showMessageDialog(new JFrame(), message, "ERROR OCCURRED", JOptionPane.ERROR_MESSAGE);
-				System.exit(1);
 			}
 		});
 
@@ -106,7 +105,6 @@ class PostServiceImpl implements PostService {
 				}).start();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 	}
@@ -144,7 +142,8 @@ class PostServiceImpl implements PostService {
 
 	@Override
 	public boolean sendStream(byte[] data, String dstHostAddress) {
-		try (DatagramSocket socket = new DatagramSocket(UDP_PORT, InetAddress.getByName(dstHostAddress))) {
+		InetAddress byName = null;
+		try (DatagramSocket socket = new DatagramSocket(UDP_PORT)) {
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			socket.send(packet);
 			return true;

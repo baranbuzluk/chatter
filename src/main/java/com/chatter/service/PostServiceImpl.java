@@ -72,13 +72,14 @@ class PostServiceImpl implements PostService {
 
 		Thread thread = new Thread(() -> {
 			try (DatagramSocket serverSocket = new DatagramSocket(UDP_PORT)) {
-				byte[] databyte = new byte[512];
+				byte[] databyte = new byte[1024];
 				DatagramPacket data = new DatagramPacket(databyte, databyte.length);
 				logger.info("Udp server was started");
 				while (true) {
 					logger.info("Upd server is waiting a stream");
 					serverSocket.receive(data);
 					acceptUdpStream(data);
+					System.err.println("Data alındı " + data.getSocketAddress());
 				}
 			} catch (Exception e) {
 				String message = "Server could not be established!";
@@ -105,6 +106,7 @@ class PostServiceImpl implements PostService {
 				}).start();
 			}
 		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 
 	}
@@ -142,13 +144,15 @@ class PostServiceImpl implements PostService {
 
 	@Override
 	public boolean sendStream(byte[] data, String dstHostAddress) {
-		InetAddress byName = null;
-		try (DatagramSocket socket = new DatagramSocket(UDP_PORT)) {
-			DatagramPacket packet = new DatagramPacket(data, data.length);
+		;
+		try (DatagramSocket socket = new DatagramSocket()) {
+			DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(dstHostAddress),
+					UDP_PORT);
 			socket.send(packet);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.err.println("Send stream ERROR ## -> " + e.getMessage());
 		}
 		return false;
 	}

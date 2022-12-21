@@ -20,6 +20,7 @@ import com.chatter.service.MessageService;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -94,12 +95,10 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 		};
 
 		animationTimerSecondUser = new AnimationTimer() {
-
 			@Override
 			public void handle(long now) {
 				String friendHostAddress = listViewFriends.getSelectionModel().getSelectedItem();
 				if (friendHostAddress != null) {
-					// TODO send stream bytes
 					boolean hasStream = messageService.sendStream(cameraService.getImageBytes(), friendHostAddress);
 					if (!hasStream) {
 						animationTimerSecondUser.stop();
@@ -123,6 +122,9 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 				imageViewFirstUser.setImage(null);
 			}
 		});
+
+		BooleanBinding isSelected = listViewFriends.getSelectionModel().selectedItemProperty().isNull();
+		toggleButtonCamera.disableProperty().bind(isSelected);
 
 		listViewFriends.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
 

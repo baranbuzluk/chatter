@@ -151,7 +151,7 @@ class PostServiceImpl implements PostService {
 			socket.send(packet);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Length " + data.length);
 			System.err.println("Send stream ERROR ## -> " + e.getMessage());
 		}
 		return false;

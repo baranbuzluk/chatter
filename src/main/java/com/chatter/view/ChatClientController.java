@@ -99,10 +99,7 @@ class ChatClientController extends StackPane implements ChatterEventListener {
 			public void handle(long now) {
 				String friendHostAddress = listViewFriends.getSelectionModel().getSelectedItem();
 				if (friendHostAddress != null) {
-					boolean hasStream = messageService.sendStream(cameraService.getImageBytes(), friendHostAddress);
-					if (!hasStream) {
-						animationTimerSecondUser.stop();
-					}
+					messageService.sendStream(cameraService.getImageBytes(), friendHostAddress);
 				}
 
 			}

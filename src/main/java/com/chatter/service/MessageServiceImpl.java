@@ -52,8 +52,8 @@ class MessageServiceImpl implements MessageService, PostListener {
 	}
 
 	@Override
-	public boolean sendStream(byte[] data, String dstHostAddress) {
-		return postService.sendStream(data, dstHostAddress);
+	public void sendStream(byte[] data, String dstHostAddress) {
+		postService.sendStream(data, dstHostAddress);
 	}
 
 }
